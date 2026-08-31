@@ -219,7 +219,7 @@ def admin_dashboard(request):
 
     return render(
         request,
-        "admin_dashboard.html"
+        "admin/admin_dashboard.html"
     )
 
 
@@ -236,7 +236,7 @@ def teacher_dashboard(request):
 
     return render(
         request,
-        "teacher_dashboard.html"
+        "teacher/teacher_dashboard.html"
     )
 
 
@@ -253,7 +253,7 @@ def mentor_dashboard(request):
 
     return render(
         request,
-        "mentor_dashboard.html"
+        "mentor/mentor_dashboard.html"
     )
 
 
