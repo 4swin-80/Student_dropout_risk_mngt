@@ -62,13 +62,15 @@ def register_view(request):
 
     if request.method == "POST":
 
-        username = request.POST.get("username")
-        email = request.POST.get("email")
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         role = request.POST.get("role")
 
-        # Validation
+        # -------------------------
+        # Basic validation
+        # -------------------------
 
         if not username or not password:
             messages.error(
@@ -81,6 +83,10 @@ def register_view(request):
                 "accounts/register.html"
             )
 
+        # -------------------------
+        # Password validation
+        # -------------------------
+
         if password != confirm_password:
             messages.error(
                 request,
@@ -91,6 +97,10 @@ def register_view(request):
                 request,
                 "accounts/register.html"
             )
+
+        # -------------------------
+        # Username validation
+        # -------------------------
 
         if User.objects.filter(username=username).exists():
             messages.error(
@@ -103,7 +113,27 @@ def register_view(request):
                 "accounts/register.html"
             )
 
-        # Create user
+        # -------------------------
+        # SECURITY:
+        # Only Teacher and Mentor
+        # can register publicly.
+        # -------------------------
+
+        if role not in ["TEACHER", "MENTOR"]:
+
+            messages.error(
+                request,
+                "Public registration is available only for Teachers and Mentors."
+            )
+
+            return render(
+                request,
+                "accounts/register.html"
+            )
+
+        # -------------------------
+        # Create User
+        # -------------------------
 
         user = User.objects.create_user(
             username=username,
@@ -111,7 +141,9 @@ def register_view(request):
             password=password
         )
 
-        # Create role profile
+        # -------------------------
+        # Create UserProfile
+        # -------------------------
 
         UserProfile.objects.create(
             user=user,
@@ -134,10 +166,15 @@ def register_view(request):
 @login_required
 def dashboard_redirect(request):
 
+    # Django superuser = Administrator
+    if request.user.is_superuser:
+        return redirect("admin_dashboard")
+
     try:
         role = request.user.profile.role
 
     except UserProfile.DoesNotExist:
+
         messages.error(
             request,
             "User role is not configured."
@@ -169,7 +206,10 @@ def dashboard_redirect(request):
 @login_required
 def admin_dashboard(request):
 
-    if request.user.profile.role != "ADMIN":
+    if not (
+        request.user.is_superuser
+        or request.user.profile.role == "ADMIN"
+    ):
         messages.error(
             request,
             "You are not authorized to access this dashboard."
