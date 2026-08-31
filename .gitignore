@@ -1,0 +1,30 @@
+<<<<<<< HEAD
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Django
+db.sqlite3
+.env
+
+# VS Code
+.vscode/
+
+# media files
+media/
+=======
+__pycache__/
+*.pyc
+
+venv/
+
+db.sqlite3
+.env
+
+.vscode/
+
+media/
+>>>>>>> f706e9a (first commit)
