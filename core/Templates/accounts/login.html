@@ -39,7 +39,7 @@
                 <!-- Django Messages -->
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
 
                             {{ message }}
 
