@@ -1,258 +1,409 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+```
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Register - Student Risk Management</title>
+<title>Register | Student Risk Management</title>
 
-    <!-- Bootstrap 5 -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+<style>
+
+    body {
+        min-height: 100vh;
+        background: #f5f7fb;
+    }
+
+    .register-wrapper {
+        min-height: 100vh;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 520px;
+        border: 0;
+        border-radius: 18px;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 50px;
+        border-radius: 10px;
+    }
+
+    .btn-register {
+        min-height: 50px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .role-card {
+        border-radius: 12px;
+        background: #f8f9fa;
+    }
+
+    .security-note {
+        border-radius: 10px;
+    }
+
+</style>
+```
 
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container">
+<div class="container register-wrapper d-flex
+            align-items-center justify-content-center
+            py-5">
 
-    <div class="row justify-content-center align-items-center min-vh-100">
-
-        <div class="col-md-6 col-lg-5">
-
-            <div class="card shadow border-0">
-
-                <div class="card-body p-4">
-
-                    <!-- Heading -->
-
-                    <div class="text-center mb-4">
-
-                        <h3 class="fw-bold">
-                            Create Account
-                        </h3>
-
-                        <p class="text-muted">
-                            Student Dropout Risk Management System
-                        </p>
-
-                    </div>
+```
+<div class="card register-card shadow-sm">
 
 
-                    <!-- Messages -->
+    <div class="card-body p-4 p-md-5">
 
-                    {% if messages %}
 
-                        {% for message in messages %}
+        <!-- =================================================
+             HEADER
+        ================================================== -->
 
-                            <div
-                                class="alert alert-danger alert-dismissible fade show"
-                                role="alert"
-                            >
+        <div class="text-center mb-4">
 
-                                {{ message }}
 
-                                <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="alert"
-                                ></button>
+            <div class="mb-3">
 
-                            </div>
+                <span
+                    class="d-inline-flex align-items-center
+                           justify-content-center
+                           bg-primary text-white
+                           rounded-circle"
+                    style="width:60px;height:60px;"
+                >
+                    SR
+                </span>
 
-                        {% endfor %}
+            </div>
 
+
+            <h2 class="fw-bold mb-2">
+                Create Your Account
+            </h2>
+
+
+            <p class="text-secondary mb-0">
+                Join the Student Risk Management System
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div
+                    class="alert
+                    {% if message.tags == 'error' %}
+                        alert-danger
+                    {% elif message.tags == 'success' %}
+                        alert-success
+                    {% else %}
+                        alert-info
                     {% endif %}
+                    alert-dismissible fade show"
+                    role="alert"
+                >
+
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                    ></button>
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
 
 
-                    <!-- Registration Form -->
+        <!-- =================================================
+             SECURITY NOTICE
+        ================================================== -->
 
-                    <form method="POST">
+        <div class="alert alert-info security-note">
 
-                        {% csrf_token %}
+            <div class="fw-semibold mb-1">
+                Account Registration
+            </div>
+
+            <small>
+                Public registration is available for
+                Teachers and Mentors. Administrator accounts
+                are created by the system administrator.
+            </small>
+
+        </div>
 
 
-                        <!-- Username -->
+        <!-- =================================================
+             REGISTRATION FORM
+        ================================================== -->
 
-                        <div class="mb-3">
+        <form method="POST">
 
-                            <label
-                                for="username"
-                                class="form-label"
-                            >
-                                Username
-                            </label>
+            {% csrf_token %}
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="username"
-                                name="username"
-                                placeholder="Enter username"
-                                required
-                            >
 
+            <!-- Username -->
+
+            <div class="mb-3">
+
+                <label
+                    for="username"
+                    class="form-label fw-semibold"
+                >
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="mb-3">
+
+                <label
+                    for="email"
+                    class="form-label fw-semibold"
+                >
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                >
+
+            </div>
+
+
+            <!-- Role -->
+
+            <div class="mb-3">
+
+                <label
+                    for="role"
+                    class="form-label fw-semibold"
+                >
+                    Register As
+                </label>
+
+
+                <select
+                    class="form-select"
+                    id="role"
+                    name="role"
+                    required
+                >
+
+                    <option
+                        value=""
+                        selected
+                        disabled
+                    >
+                        Select your role
+                    </option>
+
+                    <option value="TEACHER">
+                        Teacher
+                    </option>
+
+                    <option value="MENTOR">
+                        Mentor
+                    </option>
+
+                </select>
+
+
+                <div class="form-text">
+                    Choose the role associated with your
+                    responsibilities in the system.
+                </div>
+
+            </div>
+
+
+            <!-- Role Information -->
+
+            <div class="row g-3 mb-4">
+
+
+                <div class="col-md-6">
+
+                    <div class="role-card p-3 h-100">
+
+                        <div class="fw-semibold mb-1">
+                            Teacher
                         </div>
 
-
-                        <!-- Email -->
-
-                        <div class="mb-3">
-
-                            <label
-                                for="email"
-                                class="form-label"
-                            >
-                                Email
-                            </label>
-
-                            <input
-                                type="email"
-                                class="form-control"
-                                id="email"
-                                name="email"
-                                placeholder="Enter email"
-                            >
-
-                        </div>
-
-
-                        <!-- Role -->
-
-                        <div class="mb-3">
-
-                            <label
-                                for="role"
-                                class="form-label"
-                            >
-                                Register As
-                            </label>
-
-                            <select
-                                class="form-select"
-                                id="role"
-                                name="role"
-                                required
-                            >
-
-                                <option value="" selected disabled>
-                                    Select your role
-                                </option>
-
-                                <option value="TEACHER">
-                                    Teacher
-                                </option>
-
-                                <option value="MENTOR">
-                                    Mentor
-                                </option>
-
-                            </select>
-
-                            <div class="form-text">
-                                Administrator accounts are created by the system administrator.
-                            </div>
-
-                        </div>
-
-
-                        <!-- Password -->
-
-                        <div class="mb-3">
-
-                            <label
-                                for="password"
-                                class="form-label"
-                            >
-                                Password
-                            </label>
-
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="password"
-                                name="password"
-                                placeholder="Enter password"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- Confirm Password -->
-
-                        <div class="mb-4">
-
-                            <label
-                                for="confirm_password"
-                                class="form-label"
-                            >
-                                Confirm Password
-                            </label>
-
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="confirm_password"
-                                name="confirm_password"
-                                placeholder="Confirm password"
-                                required
-                            >
-
-                        </div>
-
-
-                        <!-- Register -->
-
-                        <div class="d-grid">
-
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
-                                Register
-                            </button>
-
-                        </div>
-
-                    </form>
-
-
-                    <!-- Login -->
-
-                    <div class="text-center mt-4">
-
-                        <span class="text-muted">
-                            Already have an account?
-                        </span>
-
-                        <a
-                            href="{% url 'login' %}"
-                            class="text-decoration-none"
-                        >
-                            Login
-                        </a>
+                        <small class="text-secondary">
+                            Manages attendance, marks,
+                            assignments and examination
+                            results.
+                        </small>
 
                     </div>
 
                 </div>
 
+
+                <div class="col-md-6">
+
+                    <div class="role-card p-3 h-100">
+
+                        <div class="fw-semibold mb-1">
+                            Mentor
+                        </div>
+
+                        <small class="text-secondary">
+                            Monitors assigned students and
+                            records counseling and
+                            interventions.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
             </div>
 
+
+            <!-- Password -->
+
+            <div class="mb-3">
+
+                <label
+                    for="password"
+                    class="form-label fw-semibold"
+                >
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Confirm Password -->
+
+            <div class="mb-4">
+
+                <label
+                    for="confirm_password"
+                    class="form-label fw-semibold"
+                >
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Register -->
+
+            <div class="d-grid">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-register"
+                >
+                    Create Account
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+        <!-- =================================================
+             LOGIN LINK
+        ================================================== -->
+
+        <div class="text-center mt-4">
+
+            <p class="text-secondary mb-2">
+                Already have an account?
+            </p>
+
+            <a
+                href="{% url 'login' %}"
+                class="btn btn-outline-secondary px-4"
+            >
+                Back to Login
+            </a>
+
         </div>
+
 
     </div>
 
 </div>
+```
 
-
-<!-- Bootstrap JS -->
+</div>
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
