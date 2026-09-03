@@ -1,10 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 
 <html lang="en">
 
 <head>
 
-```
+
 <meta charset="UTF-8">
 
 <meta
@@ -63,8 +65,14 @@
         border-radius: 12px;
     }
 
+    .auth-logo-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+    }
+
 </style>
-```
+
 
 </head>
 
@@ -72,7 +80,7 @@
 
 <div class="container-fluid">
 
-```
+
 <div class="row login-wrapper">
 
 
@@ -172,15 +180,11 @@
 
                     <div class="mb-3">
 
-                        <span
-                            class="d-inline-flex align-items-center
-                                   justify-content-center
-                                   bg-primary text-white
-                                   rounded-circle"
-                            style="width:60px;height:60px;"
+                        <img
+                            src="{% static 'core/img/no-photo-login-register.jpg' %}"
+                            alt="Student Risk Management"
+                            class="auth-logo-img rounded-circle"
                         >
-                            SR
-                        </span>
 
                     </div>
 
@@ -344,7 +348,7 @@
     </div>
 
 </div>
-```
+
 
 </div>
 
