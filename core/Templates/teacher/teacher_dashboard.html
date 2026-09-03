@@ -1,149 +1,578 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Teacher Dashboard</title>
+```
+<meta charset="UTF-8">
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Teacher Dashboard</title>
+
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+<style>
+
+    body {
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        min-height: 100vh;
+    }
+
+    .sidebar .nav-link {
+        color: rgba(255,255,255,.75);
+        border-radius: 8px;
+        margin-bottom: 5px;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+        color: #fff;
+        background: rgba(255,255,255,.12);
+    }
+
+    .dashboard-card,
+    .function-card {
+        border-radius: 14px;
+        transition: .2s ease;
+    }
+
+    .dashboard-card:hover,
+    .function-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
+    }
+
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+    }
+
+</style>
+```
+
 </head>
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-primary shadow-sm">
-        <div class="container">
+<div class="container-fluid">
 
-            <span class="navbar-brand fw-bold">
-                Student Risk Management
-            </span>
+```
+<div class="row">
 
-            <a href="{% url 'logout' %}" class="btn btn-light btn-sm">
-                Logout
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="col-md-3 col-lg-2 bg-dark text-white sidebar p-3">
+
+        <h5 class="fw-bold mb-4">
+            Student Risk
+        </h5>
+
+        <div class="text-white-50 small mb-3">
+            TEACHER
+        </div>
+
+
+        <nav class="nav flex-column">
+
+            <a href="{% url 'teacher_dashboard' %}"
+               class="nav-link active">
+                Dashboard
             </a>
 
-        </div>
-    </nav>
+            <a href="#students"
+               class="nav-link">
+                Students
+            </a>
+
+            <a href="#attendance"
+               class="nav-link">
+                Attendance
+            </a>
+
+            <a href="#marks"
+               class="nav-link">
+                Marks
+            </a>
+
+            <a href="#assignments"
+               class="nav-link">
+                Assignments
+            </a>
+
+            <a href="#exams"
+               class="nav-link">
+                Examination Results
+            </a>
+
+            <a href="#risk"
+               class="nav-link">
+                Risk Scores
+            </a>
+
+            <a href="#alerts"
+               class="nav-link">
+                Alerts
+            </a>
+
+        </nav>
 
 
-    <div class="container py-5">
-
-        <div class="mb-4">
-
-            <h1 class="fw-bold">
-                Teacher Dashboard
-            </h1>
-
-            <p class="text-secondary">
-                Welcome,
-                {{ request.user.get_full_name|default:request.user.username }}
-            </p>
-
-        </div>
+        <hr class="border-secondary">
 
 
-        <div class="card shadow-sm border-0">
+        <a href="{% url 'logout' %}"
+           class="btn btn-outline-light btn-sm w-100">
+            Logout
+        </a>
 
-            <div class="card-body">
+    </aside>
 
-                <h2 class="h4 fw-bold mb-4">
-                    Teacher Functions
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="col-md-9 col-lg-10 px-md-4 py-4">
+
+
+        <!-- Header -->
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h2 class="fw-bold mb-1">
+                    Teacher Dashboard
                 </h2>
+
+                <p class="text-secondary mb-0">
+                    Manage academic information and monitor student performance.
+                </p>
+
+            </div>
+
+
+            <div class="text-end">
+
+                <div class="fw-semibold">
+                    {{ request.user.get_full_name|default:request.user.username }}
+                </div>
+
+                <small class="text-secondary">
+                    Teacher
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= OVERVIEW ================= -->
+
+        <div class="row g-4 mb-4">
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="card dashboard-card border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <small class="text-secondary">
+                                    Students
+                                </small>
+
+                                <h3 class="fw-bold mt-2">
+                                    —
+                                </h3>
+
+                            </div>
+
+                            <div class="icon-box bg-primary-subtle text-primary">
+                                S
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="card dashboard-card border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <small class="text-secondary">
+                                    Attendance
+                                </small>
+
+                                <h3 class="fw-bold mt-2">
+                                    —
+                                </h3>
+
+                            </div>
+
+                            <div class="icon-box bg-success-subtle text-success">
+                                A
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="card dashboard-card border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <small class="text-secondary">
+                                    Assignments
+                                </small>
+
+                                <h3 class="fw-bold mt-2">
+                                    —
+                                </h3>
+
+                            </div>
+
+                            <div class="icon-box bg-warning-subtle text-warning">
+                                As
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6 col-xl-3">
+
+                <div class="card dashboard-card border-0 shadow-sm">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+
+                            <div>
+
+                                <small class="text-secondary">
+                                    Risk Alerts
+                                </small>
+
+                                <h3 class="fw-bold mt-2">
+                                    —
+                                </h3>
+
+                            </div>
+
+                            <div class="icon-box bg-danger-subtle text-danger">
+                                !
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= FUNCTIONS ================= -->
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body p-4">
+
+                <div class="mb-4">
+
+                    <h4 class="fw-bold mb-1">
+                        Teacher Functions
+                    </h4>
+
+                    <p class="text-secondary mb-0">
+                        Enter academic information and monitor student performance.
+                    </p>
+
+                </div>
+
 
                 <div class="row g-4">
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-primary">
+
+                    <!-- STUDENTS -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="students">
+
+                        <div class="card function-card h-100 border-primary">
+
                             <div class="card-body">
-                                <h5 class="card-title">View Students</h5>
-                                <p class="card-text text-secondary">
-                                    View student information and academic details.
+
+                                <span class="badge bg-primary mb-3">
+                                    Student Records
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    View Students
+                                </h5>
+
+                                <p class="text-secondary">
+                                    View student information and academic
+                                    details relevant to teaching.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-success">
+
+                    <!-- ATTENDANCE -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="attendance">
+
+                        <div class="card function-card h-100 border-success">
+
                             <div class="card-body">
-                                <h5 class="card-title">Enter Attendance</h5>
-                                <p class="card-text text-secondary">
-                                    Record and update student attendance.
+
+                                <span class="badge bg-success mb-3">
+                                    Academic Data
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    Enter Attendance
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Record and update student attendance
+                                    information.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-info">
+
+                    <!-- MARKS -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="marks">
+
+                        <div class="card function-card h-100 border-info">
+
                             <div class="card-body">
-                                <h5 class="card-title">Enter Marks</h5>
-                                <p class="card-text text-secondary">
-                                    Enter and manage student marks.
+
+                                <span class="badge bg-info text-dark mb-3">
+                                    Academic Data
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    Enter Marks
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Enter and manage student academic
+                                    performance and marks.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-warning">
+
+                    <!-- ASSIGNMENTS -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="assignments">
+
+                        <div class="card function-card h-100 border-warning">
+
                             <div class="card-body">
-                                <h5 class="card-title">Manage Assignments</h5>
-                                <p class="card-text text-secondary">
-                                    Manage student assignments and submissions.
+
+                                <span class="badge bg-warning text-dark mb-3">
+                                    Assignments
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    Manage Assignments
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Record assignment submissions,
+                                    performance and related information.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-secondary">
+
+                    <!-- EXAMS -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="exams">
+
+                        <div class="card function-card h-100 border-secondary">
+
                             <div class="card-body">
-                                <h5 class="card-title">Examination Results</h5>
-                                <p class="card-text text-secondary">
-                                    Enter and manage examination results.
+
+                                <span class="badge bg-secondary mb-3">
+                                    Examinations
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    Examination Results
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Enter and manage student examination
+                                    results.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-danger">
+
+                    <!-- RISK -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="risk">
+
+                        <div class="card function-card h-100 border-danger">
+
                             <div class="card-body">
-                                <h5 class="card-title">View Risk Scores</h5>
-                                <p class="card-text text-secondary">
-                                    View student dropout risk scores.
+
+                                <span class="badge bg-danger mb-3">
+                                    AI Monitoring
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    View Risk Scores
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Monitor AI-generated dropout risk
+                                    scores for students.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-danger">
+
+                    <!-- ALERTS -->
+
+                    <div class="col-md-6 col-xl-4"
+                         id="alerts">
+
+                        <div class="card function-card h-100 border-danger">
+
                             <div class="card-body">
-                                <h5 class="card-title">View Alerts</h5>
-                                <p class="card-text text-secondary">
-                                    View important student risk alerts.
+
+                                <span class="badge bg-danger mb-3">
+                                    Early Warning
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    View Alerts
+                                </h5>
+
+                                <p class="text-secondary">
+                                    View important student risk alerts
+                                    requiring attention.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="card h-100 border-danger">
+
+                    <!-- SUPPORT -->
+
+                    <div class="col-md-6 col-xl-4">
+
+                        <div class="card function-card h-100 border-primary">
+
                             <div class="card-body">
-                                <h5 class="card-title">Support Students</h5>
-                                <p class="card-text text-secondary">
-                                    Provide support and guidance to students.
+
+                                <span class="badge bg-primary mb-3">
+                                    Student Support
+                                </span>
+
+                                <h5 class="fw-bold">
+                                    Support Students
+                                </h5>
+
+                                <p class="text-secondary">
+                                    Monitor student performance and
+                                    identify students requiring support.
                                 </p>
+
                             </div>
+
                         </div>
+
                     </div>
+
 
                 </div>
 
@@ -151,14 +580,18 @@
 
         </div>
 
-    </div>
 
+    </main>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+</div>
+```
+
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 
 </html>
-
