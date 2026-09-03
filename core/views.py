@@ -1,8 +1,15 @@
 from django.contrib import messages
+from functools import wraps
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render
+from django.shortcuts import (
+    redirect,
+    render,
+    get_object_or_404,
+)
+
+from .forms import StudentForm
 
 from .models import (
     UserProfile,
@@ -39,37 +46,44 @@ def get_user_role(user):
         return None
 
 
+from functools import wraps
+from django.shortcuts import redirect
+from django.contrib import messages
+from .models import UserProfile
+
+
 def role_required(required_role):
-    """
-    Check whether the logged-in user has the required role.
-
-    Unauthorized users are redirected to their own dashboard.
-    """
-
     def decorator(view_func):
-
-        @login_required
+        @wraps(view_func)
         def wrapper(request, *args, **kwargs):
 
-            role = get_user_role(request.user)
-
-            if role is None:
-                messages.error(
-                    request,
-                    "Your account does not have a valid role configured."
-                )
-
-                logout(request)
+            if not request.user.is_authenticated:
                 return redirect("login")
 
-            if role != required_role:
-
+            # Superusers are NOT allowed to access any application dashboard
+            if request.user.is_superuser:
                 messages.error(
                     request,
-                    "You are not authorized to access this dashboard."
+                    "Superuser accounts cannot access application dashboards."
                 )
+                return redirect("login")
 
-                return redirect("dashboard_redirect")
+            try:
+                profile = request.user.profile
+            except UserProfile.DoesNotExist:
+                messages.error(
+                    request,
+                    "Your account does not have a valid role."
+                )
+                return redirect("login")
+
+            # NONE or another role cannot access this dashboard
+            if profile.role != required_role:
+                messages.error(
+                    request,
+                    "You do not have permission to access this page."
+                )
+                return redirect("login")
 
             return view_func(request, *args, **kwargs)
 
@@ -102,29 +116,79 @@ def home(request):
 
 def login_view(request):
 
-    if request.user.is_authenticated:
-        return redirect("dashboard_redirect")
-
     if request.method == "POST":
 
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
 
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
+            return render(
+                request,
+                "accounts/login.html"
+            )
 
-        if user is not None:
+        # Check username + password only
+        if not user.check_password(password):
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
+            return render(
+                request,
+                "accounts/login.html"
+            )
 
+        # Check UserProfile role only
+        try:
+            role = user.profile.role
+        except UserProfile.DoesNotExist:
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
+            return render(
+                request,
+                "accounts/login.html"
+            )
+
+        # NONE = invalid login
+        if role == "NONE":
+            messages.error(
+                request,
+                "Invalid username or password."
+            )
+            return render(
+                request,
+                "accounts/login.html"
+            )
+
+        # Only these three roles can enter
+        if role == "ADMIN":
             login(request, user)
+            return redirect("admin_dashboard")
 
-            return redirect("dashboard_redirect")
+        elif role == "TEACHER":
+            login(request, user)
+            return redirect("teacher_dashboard")
 
+        elif role == "MENTOR":
+            login(request, user)
+            return redirect("mentor_dashboard")
+
+        # Any unexpected role
         messages.error(
             request,
             "Invalid username or password."
+        )
+        return render(
+            request,
+            "accounts/login.html"
         )
 
     return render(
@@ -259,52 +323,35 @@ def register_view(request):
 @login_required
 def dashboard_redirect(request):
 
-    role = get_user_role(request.user)
-
-    # No valid role
-    if role is None:
-
+    try:
+        role = request.user.profile.role
+    except UserProfile.DoesNotExist:
         messages.error(
             request,
-            "Your account does not have a valid role configured."
+            "Your account does not have a valid role."
         )
-
-        logout(request)
-
         return redirect("login")
-
-    # --------------------------------------------------------
-    # ADMIN
-    # --------------------------------------------------------
 
     if role == "ADMIN":
         return redirect("admin_dashboard")
 
-    # --------------------------------------------------------
-    # TEACHER
-    # --------------------------------------------------------
-
-    if role == "TEACHER":
+    elif role == "TEACHER":
         return redirect("teacher_dashboard")
 
-    # --------------------------------------------------------
-    # MENTOR
-    # --------------------------------------------------------
-
-    if role == "MENTOR":
+    elif role == "MENTOR":
         return redirect("mentor_dashboard")
 
-    # --------------------------------------------------------
-    # Invalid role
-    # --------------------------------------------------------
+    elif role == "NONE":
+        messages.error(
+            request,
+            "Your account has not been assigned a role yet."
+        )
+        return redirect("login")
 
     messages.error(
         request,
-        "Invalid user role."
+        "Your account does not have a valid role."
     )
-
-    logout(request)
-
     return redirect("login")
 
 
@@ -504,3 +551,162 @@ def logout_view(request):
     )
 
     return redirect("login")
+
+
+# ============================================================
+# ADMIN - STUDENT MANAGEMENT
+# ============================================================
+
+@role_required("ADMIN")
+def student_list(request):
+
+    students = Student.objects.select_related(
+        "department",
+        "mentor",
+    ).order_by("student_id")
+
+    context = {
+        "students": students,
+    }
+
+    return render(
+        request,
+        "admin/students/student_list.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def student_create(request):
+
+    if request.method == "POST":
+
+        form = StudentForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Student added successfully."
+            )
+
+            return redirect("student_list")
+
+    else:
+
+        form = StudentForm()
+
+    context = {
+        "form": form,
+        "page_title": "Add Student",
+        "submit_text": "Add Student",
+    }
+
+    return render(
+        request,
+        "admin/students/student_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def student_detail(request, student_id):
+
+    student = get_object_or_404(
+        Student.objects.select_related(
+            "department",
+            "mentor",
+        ),
+        id=student_id
+    )
+
+    context = {
+        "student": student,
+    }
+
+    return render(
+        request,
+        "admin/students/student_detail.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def student_update(request, student_id):
+
+    student = get_object_or_404(
+        Student,
+        id=student_id
+    )
+
+    if request.method == "POST":
+
+        form = StudentForm(
+            request.POST,
+            instance=student
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Student information updated successfully."
+            )
+
+            return redirect(
+                "student_detail",
+                student_id=student.id
+            )
+
+    else:
+
+        form = StudentForm(
+            instance=student
+        )
+
+    context = {
+        "form": form,
+        "student": student,
+        "page_title": "Edit Student",
+        "submit_text": "Update Student",
+    }
+
+    return render(
+        request,
+        "admin/students/student_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def student_delete(request, student_id):
+
+    student = get_object_or_404(
+        Student,
+        id=student_id
+    )
+
+    if request.method == "POST":
+
+        student.delete()
+
+        messages.success(
+            request,
+            "Student deleted successfully."
+        )
+
+        return redirect("student_list")
+
+    context = {
+        "student": student,
+    }
+
+    return render(
+        request,
+        "admin/students/student_confirm_delete.html",
+        context
+    )
