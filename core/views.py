@@ -9,7 +9,7 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
-from .forms import StudentForm
+from .forms import StudentForm, TeacherForm
 
 from .models import (
     UserProfile,
@@ -552,6 +552,161 @@ def logout_view(request):
 
     return redirect("login")
 
+# ============================================================
+# ADMIN - TEACHER MANAGEMENT
+# ============================================================
+
+@role_required("ADMIN")
+def teacher_list(request):
+
+    teachers = Teacher.objects.select_related(
+        "user",
+        "department",
+    ).order_by(
+        "employee_id"
+    )
+
+    context = {
+        "teachers": teachers,
+    }
+
+    return render(
+        request,
+        "admin/teachers/teacher_list.html",
+        context
+    )
+
+@role_required("ADMIN")
+def teacher_create(request):
+
+    if request.method == "POST":
+
+        form = TeacherForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Teacher added successfully."
+            )
+
+            return redirect("teacher_list")
+
+    else:
+
+        form = TeacherForm()
+
+    context = {
+        "form": form,
+        "page_title": "Add Teacher",
+        "submit_text": "Add Teacher",
+    }
+
+    return render(
+        request,
+        "admin/teachers/teacher_form.html",
+        context
+    )   
+
+@role_required("ADMIN")
+def teacher_detail(request, teacher_id):
+
+    teacher = get_object_or_404(
+        Teacher.objects.select_related(
+            "user",
+            "department",
+        ),
+        id=teacher_id
+    )
+
+    context = {
+        "teacher": teacher,
+    }
+
+    return render(
+        request,
+        "admin/teachers/teacher_detail.html",
+        context
+    ) 
+
+@role_required("ADMIN")
+def teacher_update(request, teacher_id):
+
+    teacher = get_object_or_404(
+        Teacher,
+        id=teacher_id
+    )
+
+    if request.method == "POST":
+
+        form = TeacherForm(
+            request.POST,
+            instance=teacher
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                "Teacher updated successfully."
+            )
+
+            return redirect(
+                "teacher_detail",
+                teacher_id=teacher.id
+            )
+
+    else:
+
+        form = TeacherForm(
+            instance=teacher
+        )
+
+    context = {
+        "form": form,
+        "page_title": "Edit Teacher",
+        "submit_text": "Update Teacher",
+        "teacher": teacher,
+    }
+
+    return render(
+        request,
+        "admin/teachers/teacher_form.html",
+        context
+    )
+
+@role_required("ADMIN")
+def teacher_delete(request, teacher_id):
+
+    teacher = get_object_or_404(
+        Teacher,
+        id=teacher_id
+    )
+
+    if request.method == "POST":
+
+        teacher.delete()
+
+        messages.success(
+            request,
+            "Teacher deleted successfully."
+        )
+
+        return redirect("teacher_list")
+
+    context = {
+        "teacher": teacher,
+    }
+
+    return render(
+        request,
+        "admin/teachers/teacher_confirm_delete.html",
+        context
+    )    
 
 # ============================================================
 # ADMIN - STUDENT MANAGEMENT
