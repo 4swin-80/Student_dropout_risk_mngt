@@ -1,4 +1,5 @@
 from django.contrib import messages
+from decimal import Decimal
 from functools import wraps
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -31,12 +32,6 @@ def get_user_role(user):
         return user.profile.role
     except UserProfile.DoesNotExist:
         return None
-
-
-from functools import wraps
-from django.shortcuts import redirect
-from django.contrib import messages
-from .models import UserProfile
 
 
 def role_required(required_role):
@@ -437,6 +432,191 @@ def teacher_dashboard(request):
         request,
         "teacher/teacher_dashboard.html",
         context
+    )
+
+
+# ============================================================
+# TEACHER - ATTENDANCE MANAGEMENT
+# ============================================================
+
+@role_required("TEACHER")
+def attendance_create(request):
+
+    try:
+        teacher = Teacher.objects.get(
+            user=request.user
+        )
+    except Teacher.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+
+        return redirect("teacher_dashboard")
+
+    if request.method == "POST":
+
+        form = AttendanceForm(request.POST)
+
+        if form.is_valid():
+
+            attendance = form.save(commit=False)
+
+            # Calculate attendance percentage
+            if attendance.classes_conducted > 0:
+
+                attendance.attendance_percentage = (
+                    Decimal(attendance.classes_attended)
+                    / Decimal(attendance.classes_conducted)
+                    * Decimal("100")
+                )
+
+            else:
+
+                attendance.attendance_percentage = Decimal("0")
+
+            # Store the teacher who entered the record
+            attendance.entered_by = teacher
+
+            attendance.save()
+
+            messages.success(
+                request,
+                "Attendance record added successfully."
+            )
+
+            return redirect("attendance_create")
+
+    else:
+
+        form = AttendanceForm()
+
+    return render(
+        request,
+        "teacher/attendance_form.html",
+        {
+            "form": form,
+        }
+    )
+
+
+@role_required("TEACHER")
+def attendance_list(request):
+
+    try:
+        teacher = Teacher.objects.get(
+            user=request.user
+        )
+    except Teacher.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+
+        return redirect("teacher_dashboard")
+
+    attendance_records = (
+        Attendance.objects
+        .filter(entered_by=teacher)
+        .select_related("student")
+        .order_by("-date", "student")
+    )
+
+    return render(
+        request,
+        "teacher/attendance_list.html",
+        {
+            "attendance_records": attendance_records,
+        }
+    )
+
+
+# ============================================================
+# TEACHER - ACADEMIC PERFORMANCE MANAGEMENT
+# ============================================================
+
+@role_required("TEACHER")
+def academic_performance_create(request):
+
+    try:
+        teacher = Teacher.objects.get(
+            user=request.user
+        )
+    except Teacher.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+
+        return redirect("teacher_dashboard")
+
+    if request.method == "POST":
+
+        form = AcademicPerformanceForm(request.POST)
+
+        if form.is_valid():
+
+            performance = form.save(commit=False)
+
+            # Record the teacher who entered the information
+            performance.entered_by = teacher
+
+            performance.save()
+
+            messages.success(
+                request,
+                "Academic performance added successfully."
+            )
+
+            return redirect(
+                "academic_performance_create"
+            )
+
+    else:
+
+        form = AcademicPerformanceForm()
+
+    return render(
+        request,
+        "teacher/academic_performance_form.html",
+        {
+            "form": form,
+        }
+    )
+
+
+@role_required("TEACHER")
+def academic_performance_list(request):
+
+    try:
+        teacher = Teacher.objects.get(
+            user=request.user
+        )
+    except Teacher.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+
+        return redirect("teacher_dashboard")
+
+    performance_records = (
+        AcademicPerformance.objects
+        .filter(entered_by=teacher)
+        .select_related("student")
+        .order_by("-created_at", "student", "subject")
+    )
+
+    return render(
+        request,
+        "teacher/academic_performance_list.html",
+        {
+            "performance_records": performance_records,
+        }
     )
 
 

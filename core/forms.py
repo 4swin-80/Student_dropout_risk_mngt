@@ -2,7 +2,14 @@ from django import forms
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from .models import Student, Teacher, Mentor, Department
+from .models import (
+    Student,
+    Teacher,
+    Mentor,
+    Department,
+    Attendance,
+    AcademicPerformance,
+)
 
 
 class StudentForm(forms.ModelForm):
@@ -272,4 +279,146 @@ class DepartmentForm(forms.ModelForm):
 
         labels = {
             "name": "Department Name",
-        }        
+        }       
+
+
+class AttendanceForm(forms.ModelForm):
+
+    class Meta:
+        model = Attendance
+
+        fields = [
+            "student",
+            "date",
+            "classes_conducted",
+            "classes_attended",
+        ]
+
+        widgets = {
+
+            "student": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+
+            "date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                }
+            ),
+
+            "classes_conducted": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter classes conducted",
+                    "min": "0",
+                }
+            ),
+
+            "classes_attended": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter classes attended",
+                    "min": "0",
+                }
+            ),
+        }
+
+        labels = {
+            "student": "Student",
+            "date": "Attendance Date",
+            "classes_conducted": "Classes Conducted",
+            "classes_attended": "Classes Attended",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        classes_conducted = cleaned_data.get("classes_conducted")
+        classes_attended = cleaned_data.get("classes_attended")
+
+        if (
+            classes_conducted is not None
+            and classes_attended is not None
+            and classes_attended > classes_conducted
+        ):
+            raise forms.ValidationError(
+                "Classes attended cannot be greater than classes conducted."
+            )
+
+        return cleaned_data       
+
+
+class AcademicPerformanceForm(forms.ModelForm):
+
+    class Meta:
+        model = AcademicPerformance
+
+        fields = [
+            "student",
+            "subject",
+            "internal_marks",
+            "total_internal_marks",
+        ]
+
+        widgets = {
+
+            "student": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+
+            "subject": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter subject name",
+                }
+            ),
+
+            "internal_marks": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter marks obtained",
+                    "min": "0",
+                    "step": "0.01",
+                }
+            ),
+
+            "total_internal_marks": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter total marks",
+                    "min": "0.01",
+                    "step": "0.01",
+                }
+            ),
+        }
+
+        labels = {
+            "student": "Student",
+            "subject": "Subject",
+            "internal_marks": "Internal Marks",
+            "total_internal_marks": "Total Internal Marks",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        internal_marks = cleaned_data.get("internal_marks")
+        total_internal_marks = cleaned_data.get(
+            "total_internal_marks"
+        )
+
+        if (
+            internal_marks is not None
+            and total_internal_marks is not None
+            and internal_marks > total_internal_marks
+        ):
+            raise forms.ValidationError(
+                "Internal marks cannot be greater than total internal marks."
+            )
+
+        return cleaned_data 

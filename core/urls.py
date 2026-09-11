@@ -104,6 +104,31 @@ path(
     name="teacher_delete"
 ),
 
+path(
+    "teacher/attendance/",
+    views.attendance_list,
+    name="attendance_list",
+),
+
+path(
+    "teacher/attendance/add/",
+    views.attendance_create,
+    name="attendance_create",
+),
+
+path(
+    "teacher/academic-performance/",
+    views.academic_performance_list,
+    name="academic_performance_list",
+),
+
+path(
+    "teacher/academic-performance/add/",
+    views.academic_performance_create,
+    name="academic_performance_create",
+),
+
+
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),
 path("mentors/<int:mentor_id>/", views.mentor_detail, name="mentor_detail"),

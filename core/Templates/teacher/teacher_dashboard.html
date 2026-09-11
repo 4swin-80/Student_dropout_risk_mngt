@@ -374,60 +374,88 @@
 
                     <!-- ATTENDANCE -->
 
-                    <div class="col-md-6 col-xl-4"
-                         id="attendance">
+<div class="col-md-6 col-xl-4"
+     id="attendance">
 
-                        <div class="card function-card h-100 border-success">
+    <div class="card function-card h-100 border-success">
 
-                            <div class="card-body">
+        <div class="card-body">
 
-                                <span class="badge bg-success mb-3">
-                                    Academic Data
-                                </span>
+            <span class="badge bg-success mb-3">
+                Academic Data
+            </span>
 
-                                <h5 class="fw-bold">
-                                    Enter Attendance
-                                </h5>
+            <h5 class="fw-bold">
+                Enter Attendance
+            </h5>
 
-                                <p class="text-secondary">
-                                    Record and update student attendance
-                                    information.
-                                </p>
+            <p class="text-secondary">
+                Record and update student attendance
+                information.
+            </p>
 
-                            </div>
+            <a
+                href="{% url 'attendance_create' %}"
+                class="btn btn-success btn-sm mt-2"
+            >
+                Enter Attendance
+            </a>
 
-                        </div>
+            <a
+    href="{% url 'attendance_list' %}"
+    class="btn btn-outline-secondary btn-sm mt-2"
+>
+    View Records
+</a>
 
-                    </div>
+        </div>
+
+    </div>
+
+</div>
 
 
-                    <!-- MARKS -->
+<!-- MARKS -->
 
-                    <div class="col-md-6 col-xl-4"
-                         id="marks">
+<div class="col-md-6 col-xl-4"
+     id="marks">
 
-                        <div class="card function-card h-100 border-info">
+    <div class="card function-card h-100 border-info">
 
-                            <div class="card-body">
+        <div class="card-body">
 
-                                <span class="badge bg-info text-dark mb-3">
-                                    Academic Data
-                                </span>
+            <span class="badge bg-info text-dark mb-3">
+                Academic Data
+            </span>
 
-                                <h5 class="fw-bold">
-                                    Enter Marks
-                                </h5>
+            <h5 class="fw-bold">
+                Enter Marks
+            </h5>
 
-                                <p class="text-secondary">
-                                    Enter and manage student academic
-                                    performance and marks.
-                                </p>
+            <p class="text-secondary">
+                Enter and manage student academic
+                performance and marks.
+            </p>
 
-                            </div>
+            <a
+                href="{% url 'academic_performance_create' %}"
+                class="btn btn-info btn-sm mt-2"
+            >
+                Enter Performance
+            </a>
 
-                        </div>
+            <a
+    href="{% url 'academic_performance_list' %}"
+    class="btn btn-outline-secondary btn-sm mt-2"
+>
+    View Records
+</a>
 
-                    </div>
+        </div>
+
+    </div>
+
+</div>
 
 
                     <!-- ASSIGNMENTS -->
