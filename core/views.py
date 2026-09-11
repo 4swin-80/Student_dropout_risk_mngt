@@ -9,21 +9,8 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
-from .forms import StudentForm, TeacherForm
-
-from .models import (
-    UserProfile,
-    Student,
-    Teacher,
-    Mentor,
-    Attendance,
-    AcademicPerformance,
-    Assignment,
-    ExamResult,
-    RiskPrediction,
-    Alert,
-    Intervention,
-)
+from .forms import *
+from .models import *
 
 
 # ============================================================
@@ -706,7 +693,272 @@ def teacher_delete(request, teacher_id):
         request,
         "admin/teachers/teacher_confirm_delete.html",
         context
-    )    
+    )  
+
+
+@role_required("ADMIN")
+def mentor_list(request):
+    mentors = Mentor.objects.select_related(
+        "user", "department"
+    ).order_by("employee_id")
+
+    context = {
+        "mentors": mentors
+    }
+
+    return render(
+        request,
+        "admin/mentors/mentor_list.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def mentor_create(request):
+    if request.method == "POST":
+        form = MentorForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Mentor added successfully."
+            )
+            return redirect("mentor_list")
+
+    else:
+        form = MentorForm()
+
+    context = {
+        "form": form,
+        "page_title": "Add Mentor",
+        "submit_text": "Add Mentor",
+    }
+
+    return render(
+        request,
+        "admin/mentors/mentor_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def mentor_detail(request, mentor_id):
+    mentor = get_object_or_404(
+        Mentor.objects.select_related(
+            "user", "department"
+        ),
+        id=mentor_id
+    )
+
+    context = {
+        "mentor": mentor
+    }
+
+    return render(
+        request,
+        "admin/mentors/mentor_detail.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def mentor_update(request, mentor_id):
+    mentor = get_object_or_404(
+        Mentor,
+        id=mentor_id
+    )
+
+    if request.method == "POST":
+        form = MentorForm(
+            request.POST,
+            instance=mentor
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Mentor updated successfully."
+            )
+            return redirect(
+                "mentor_detail",
+                mentor_id=mentor.id
+            )
+
+    else:
+        form = MentorForm(instance=mentor)
+
+    context = {
+        "form": form,
+        "page_title": "Edit Mentor",
+        "submit_text": "Update Mentor",
+        "mentor": mentor,
+    }
+
+    return render(
+        request,
+        "admin/mentors/mentor_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def mentor_delete(request, mentor_id):
+    mentor = get_object_or_404(
+        Mentor,
+        id=mentor_id
+    )
+
+    if request.method == "POST":
+        mentor.delete()
+        messages.success(
+            request,
+            "Mentor deleted successfully."
+        )
+        return redirect("mentor_list")
+
+    context = {
+        "mentor": mentor
+    }
+
+    return render(
+        request,
+        "admin/mentors/mentor_confirm_delete.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def department_list(request):
+    departments = Department.objects.all().order_by("name")
+
+    context = {
+        "departments": departments
+    }
+
+    return render(
+        request,
+        "admin/departments/department_list.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def department_create(request):
+    if request.method == "POST":
+        form = DepartmentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Department added successfully."
+            )
+            return redirect("department_list")
+
+    else:
+        form = DepartmentForm()
+
+    context = {
+        "form": form,
+        "page_title": "Add Department",
+        "submit_text": "Add Department",
+    }
+
+    return render(
+        request,
+        "admin/departments/department_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def department_detail(request, department_id):
+    department = get_object_or_404(
+        Department,
+        id=department_id
+    )
+
+    context = {
+        "department": department
+    }
+
+    return render(
+        request,
+        "admin/departments/department_detail.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def department_update(request, department_id):
+    department = get_object_or_404(
+        Department,
+        id=department_id
+    )
+
+    if request.method == "POST":
+        form = DepartmentForm(
+            request.POST,
+            instance=department
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Department updated successfully."
+            )
+            return redirect(
+                "department_detail",
+                department_id=department.id
+            )
+
+    else:
+        form = DepartmentForm(
+            instance=department
+        )
+
+    context = {
+        "form": form,
+        "page_title": "Edit Department",
+        "submit_text": "Update Department",
+        "department": department,
+    }
+
+    return render(
+        request,
+        "admin/departments/department_form.html",
+        context
+    )
+
+
+@role_required("ADMIN")
+def department_delete(request, department_id):
+    department = get_object_or_404(
+        Department,
+        id=department_id
+    )
+
+    if request.method == "POST":
+        department.delete()
+        messages.success(
+            request,
+            "Department deleted successfully."
+        )
+        return redirect("department_list")
+
+    context = {
+        "department": department
+    }
+
+    return render(
+        request,
+        "admin/departments/department_confirm_delete.html",
+        context
+    )
+
 
 # ============================================================
 # ADMIN - STUDENT MANAGEMENT

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from .models import Student, Teacher
+from .models import Student, Teacher, Mentor, Department
 
 
 class StudentForm(forms.ModelForm):
@@ -211,3 +211,65 @@ class TeacherForm(forms.ModelForm):
             if user.get_full_name()
             else user.username
         )
+
+class MentorForm(forms.ModelForm):
+    class Meta:
+        model = Mentor
+        fields = ["user", "employee_id", "department", "phone"]
+        widgets = {
+            "user": forms.Select(attrs={
+                "class": "form-select"
+            }),
+            "employee_id": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter employee ID"
+            }),
+            "department": forms.Select(attrs={
+                "class": "form-select"
+            }),
+            "phone": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter phone number"
+            }),
+        }
+        labels = {
+            "user": "Mentor Account",
+            "employee_id": "Employee ID",
+            "department": "Department",
+            "phone": "Phone Number",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        mentor_users = User.objects.filter(
+            profile__role="MENTOR"
+        ).filter(
+            Q(mentor__isnull=True) |
+            Q(pk=self.instance.user_id if self.instance.pk else None)
+        ).distinct()
+
+        self.fields["user"].queryset = mentor_users
+
+        self.fields["user"].label_from_instance = (
+            lambda user:
+            f"{user.get_full_name()} ({user.username})"
+            if user.get_full_name()
+            else user.username
+        )
+
+class DepartmentForm(forms.ModelForm):
+    class Meta:
+        model = Department
+        fields = ["name"]
+
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "class": "form-control",
+                "placeholder": "Enter department name"
+            }),
+        }
+
+        labels = {
+            "name": "Department Name",
+        }        

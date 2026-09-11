@@ -104,4 +104,16 @@ path(
     name="teacher_delete"
 ),
 
+path("mentors/", views.mentor_list, name="mentor_list"),
+path("mentors/add/", views.mentor_create, name="mentor_create"),
+path("mentors/<int:mentor_id>/", views.mentor_detail, name="mentor_detail"),
+path("mentors/<int:mentor_id>/edit/", views.mentor_update, name="mentor_update"),
+path("mentors/<int:mentor_id>/delete/", views.mentor_delete, name="mentor_delete"),
+
+path("departments/", views.department_list, name="department_list"),
+path("departments/add/", views.department_create, name="department_create"),
+path("departments/<int:department_id>/", views.department_detail, name="department_detail"),
+path("departments/<int:department_id>/edit/", views.department_update, name="department_update"),
+path("departments/<int:department_id>/delete/", views.department_delete, name="department_delete"),
+
 ]
