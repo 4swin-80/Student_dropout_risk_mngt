@@ -140,6 +140,12 @@ path(
     name="assignment_list"
 ),
 
+path(
+    "teacher/students/",
+    views.teacher_student_list,
+    name="teacher_student_list"
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),

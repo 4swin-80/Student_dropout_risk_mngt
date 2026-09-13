@@ -345,31 +345,38 @@
 
                     <!-- STUDENTS -->
 
-                    <div class="col-md-6 col-xl-4"
-                         id="students">
+<div class="col-md-6 col-xl-4"
+     id="students">
 
-                        <div class="card function-card h-100 border-primary">
+    <div class="card function-card h-100 border-primary">
 
-                            <div class="card-body">
+        <div class="card-body">
 
-                                <span class="badge bg-primary mb-3">
-                                    Student Records
-                                </span>
+            <span class="badge bg-primary mb-3">
+                Student Records
+            </span>
 
-                                <h5 class="fw-bold">
-                                    View Students
-                                </h5>
+            <h5 class="fw-bold">
+                View Students
+            </h5>
 
-                                <p class="text-secondary">
-                                    View student information and academic
-                                    details relevant to teaching.
-                                </p>
+            <p class="text-secondary">
+                View student information and academic
+                details relevant to teaching.
+            </p>
 
-                            </div>
+            <a
+                href="{% url 'teacher_student_list' %}"
+                class="btn btn-primary btn-sm mt-2"
+            >
+                View Students
+            </a>
 
-                        </div>
+        </div>
 
-                    </div>
+    </div>
+
+</div>
 
 
                     <!-- ATTENDANCE -->

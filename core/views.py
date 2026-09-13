@@ -621,6 +621,24 @@ def academic_performance_list(request):
 
 
 @role_required("TEACHER")
+def teacher_student_list(request):
+
+    students = (
+        Student.objects
+        .select_related("department", "mentor")
+        .order_by("student_id")
+    )
+
+    return render(
+        request,
+        "teacher/student_list.html",
+        {
+            "students": students
+        }
+    )
+
+
+@role_required("TEACHER")
 def assignment_create(request):
 
     try:
