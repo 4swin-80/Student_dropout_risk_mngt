@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
 
@@ -203,10 +204,14 @@ class Assignment(models.Model):
     )
 
     marks = models.DecimalField(
-        max_digits=5,
+        max_digits=4,
         decimal_places=2,
         null=True,
-        blank=True
+        blank=True,
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(20),
+        ]
     )
 
     entered_by = models.ForeignKey(

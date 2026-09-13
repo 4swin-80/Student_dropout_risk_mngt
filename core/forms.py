@@ -9,6 +9,7 @@ from .models import (
     Department,
     Attendance,
     AcademicPerformance,
+    Assignment,
 )
 
 
@@ -422,3 +423,91 @@ class AcademicPerformanceForm(forms.ModelForm):
             )
 
         return cleaned_data 
+
+
+class AssignmentForm(forms.ModelForm):
+
+    class Meta:
+        model = Assignment
+
+        fields = [
+            "student",
+            "title",
+            "subject",
+            "submission_date",
+            "status",
+            "marks",
+        ]
+
+        widgets = {
+
+            "student": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter assignment title",
+                }
+            ),
+
+            "subject": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter subject name",
+                }
+            ),
+
+            "submission_date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                }
+            ),
+
+            "status": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+
+            "marks": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter marks out of 20",
+                    "min": "0",
+                    "max": "20",
+                    "step": "0.01",
+                }
+            ),
+        }
+
+        labels = {
+            "student": "Student",
+            "title": "Assignment Title",
+            "subject": "Subject",
+            "submission_date": "Submission Date",
+            "status": "Status",
+            "marks": "Marks (Out of 20)",
+        }
+
+def clean(self):
+    cleaned_data = super().clean()
+
+    status = cleaned_data.get("status")
+    marks = cleaned_data.get("marks")
+
+    if marks is not None and marks > 20:
+        raise forms.ValidationError(
+            "Assignment marks cannot be greater than 20."
+        )
+
+    if status == "Submitted" and marks is None:
+        raise forms.ValidationError(
+            "Marks are required for a submitted assignment."
+        )
+
+    return cleaned_data   

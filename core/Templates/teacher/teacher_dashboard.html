@@ -460,31 +460,45 @@
 
                     <!-- ASSIGNMENTS -->
 
-                    <div class="col-md-6 col-xl-4"
-                         id="assignments">
+<div class="col-md-6 col-xl-4"
+     id="assignments">
 
-                        <div class="card function-card h-100 border-warning">
+    <div class="card function-card h-100 border-warning">
 
-                            <div class="card-body">
+        <div class="card-body">
 
-                                <span class="badge bg-warning text-dark mb-3">
-                                    Assignments
-                                </span>
+            <span class="badge bg-warning text-dark mb-3">
+                Assignments
+            </span>
 
-                                <h5 class="fw-bold">
-                                    Manage Assignments
-                                </h5>
+            <h5 class="fw-bold">
+                Manage Assignments
+            </h5>
 
-                                <p class="text-secondary">
-                                    Record assignment submissions,
-                                    performance and related information.
-                                </p>
+            <p class="text-secondary">
+                Record assignment submissions,
+                performance and related information.
+            </p>
 
-                            </div>
+            <a
+                href="{% url 'assignment_create' %}"
+                class="btn btn-warning btn-sm mt-2"
+            >
+                Add Assignment
+            </a>
 
-                        </div>
+            <a
+                href="{% url 'assignment_list' %}"
+                class="btn btn-outline-secondary btn-sm mt-2"
+            >
+                View Records
+            </a>
 
-                    </div>
+        </div>
+
+    </div>
+
+</div>
 
 
                     <!-- EXAMS -->

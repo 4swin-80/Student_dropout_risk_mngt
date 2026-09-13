@@ -128,6 +128,18 @@ path(
     name="academic_performance_create",
 ),
 
+path(
+    "teacher/assignments/add/",
+    views.assignment_create,
+    name="assignment_create"
+),
+
+path(
+    "teacher/assignments/",
+    views.assignment_list,
+    name="assignment_list"
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),

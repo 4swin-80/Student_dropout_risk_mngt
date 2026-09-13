@@ -620,6 +620,79 @@ def academic_performance_list(request):
     )
 
 
+@role_required("TEACHER")
+def assignment_create(request):
+
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+
+    except Teacher.DoesNotExist:
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+        return redirect("teacher_dashboard")
+
+    if request.method == "POST":
+
+        form = AssignmentForm(request.POST)
+
+        if form.is_valid():
+
+            assignment = form.save(commit=False)
+
+            assignment.entered_by = teacher
+
+            assignment.save()
+
+            messages.success(
+                request,
+                "Assignment added successfully."
+            )
+
+            return redirect("assignment_create")
+
+    else:
+        form = AssignmentForm()
+
+    return render(
+        request,
+        "teacher/assignment_form.html",
+        {
+            "form": form
+        }
+    )
+
+
+@role_required("TEACHER")
+def assignment_list(request):
+
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+
+    except Teacher.DoesNotExist:
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+        return redirect("teacher_dashboard")
+
+    assignment_records = (
+        Assignment.objects
+        .filter(entered_by=teacher)
+        .select_related("student")
+        .order_by("-created_at", "student", "subject")
+    )
+
+    return render(
+        request,
+        "teacher/assignment_list.html",
+        {
+            "assignment_records": assignment_records
+        }
+    )
+
+
 # ============================================================
 # MENTOR DASHBOARD
 # ============================================================
