@@ -6,412 +6,2373 @@
 
 <head>
 
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <title>Register | Student Risk Management</title>
 
-<title>Register | Student Risk Management</title>
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+    <!-- =========================================================
+         BOOTSTRAP
+    ========================================================== -->
 
-<style>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    
 
-    body {
-        min-height: 100vh;
-        background: #f5f7fb;
-    }
 
-    .register-wrapper {
-        min-height: 100vh;
-    }
+    <!-- =========================================================
+         BOOTSTRAP ICONS
+    ========================================================== -->
 
-    .register-card {
-        width: 100%;
-        max-width: 520px;
-        border: 0;
-        border-radius: 18px;
-    }
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
 
-    .form-control,
-    .form-select {
-        min-height: 50px;
-        border-radius: 10px;
-    }
 
-    .btn-register {
-        min-height: 50px;
-        border-radius: 10px;
-        font-weight: 600;
-    }
+    <!-- =========================================================
+         GOOGLE FONT
+    ========================================================== -->
 
-    .role-card {
-        border-radius: 12px;
-        background: #f8f9fa;
-    }
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-    .security-note {
-        border-radius: 10px;
-    }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amarante&display=swap" rel="stylesheet">
 
-    .auth-logo-img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-    }
 
-</style>
+    <style>
 
+        /* =========================================================
+           GLOBAL
+        ========================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+
+            font-family: "Inter", sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(37, 99, 235, .20),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(6, 182, 212, .16),
+                    transparent 30%
+                ),
+
+                #07111f;
+
+            color: #ffffff;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           ANIMATED BACKGROUND
+        ========================================================== */
+
+        .background {
+            position: fixed;
+            inset: 0;
+
+            overflow: hidden;
+
+            pointer-events: none;
+
+            z-index: 0;
+        }
+
+
+        .background-grid {
+            position: absolute;
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255, 255, 255, .025) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, .025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 50px 50px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    transparent,
+                    black 20%,
+                    black 80%,
+                    transparent
+                );
+        }
+
+
+        .orb {
+            position: absolute;
+
+            border-radius: 50%;
+
+            opacity: .45;
+
+            animation:
+                floatOrb 12s ease-in-out infinite;
+        }
+
+
+        .orb-one {
+            width: 330px;
+            height: 330px;
+
+            top: -110px;
+            left: -90px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(37, 99, 235, .35),
+                    transparent 70%
+                );
+        }
+
+
+        .orb-two {
+            width: 300px;
+            height: 300px;
+
+            right: -80px;
+            bottom: -80px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(6, 182, 212, .28),
+                    transparent 70%
+                );
+
+            animation-delay: -4s;
+        }
+
+
+        .orb-three {
+            width: 190px;
+            height: 190px;
+
+            top: 42%;
+            left: 46%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(99, 102, 241, .20),
+                    transparent 70%
+                );
+
+            animation-delay: -8s;
+        }
+
+
+        @keyframes floatOrb {
+
+            0%,
+            100% {
+                transform:
+                    translate3d(0, 0, 0);
+            }
+
+            50% {
+                transform:
+                    translate3d(0, -25px, 15px);
+            }
+        }
+
+
+        /* =========================================================
+           MOUSE GLOW
+        ========================================================== */
+
+        .cursor-glow {
+            position: fixed;
+
+            width: 270px;
+            height: 270px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(59, 130, 246, .12),
+                    rgba(6, 182, 212, .05),
+                    transparent 70%
+                );
+
+            transform:
+                translate(-50%, -50%);
+
+            pointer-events: none;
+
+            z-index: 10;
+
+            transition:
+                left .12s ease-out,
+                top .12s ease-out;
+        }
+
+
+        /* =========================================================
+           MAIN WRAPPER
+        ========================================================== */
+
+        .register-wrapper {
+            position: relative;
+
+            z-index: 1;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================================================
+           BRAND SECTION
+        ========================================================== */
+
+        .brand-section {
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 60px;
+        }
+
+
+        .brand-content {
+            width: 100%;
+
+            max-width: 570px;
+        }
+
+
+        .brand-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 9px 14px;
+
+            border:
+                1px solid
+                rgba(96, 165, 250, .25);
+
+            border-radius: 50px;
+
+            background:
+                rgba(37, 99, 235, .10);
+
+            color: #93c5fd;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+        }
+
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: #22d3ee;
+
+            box-shadow:
+                0 0 10px
+                rgba(34, 211, 238, .8);
+
+            animation:
+                pulseDot 2s infinite;
+        }
+
+
+        @keyframes pulseDot {
+
+            0% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(34, 211, 238, .5);
+            }
+
+            70% {
+                box-shadow:
+                    0 0 0 8px
+                    rgba(34, 211, 238, 0);
+            }
+
+            100% {
+                box-shadow:
+                    0 0 0 0
+                    rgba(34, 211, 238, 0);
+            }
+        }
+
+.amarante-regular {
+  font-family: "Amarante", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
+
+
+        .brand-title {
+            margin-top: 28px;
+            font-family: "Amarante", serif;
+
+            font-size:
+                clamp(2.6rem, 5vw, 7.8rem);
+
+            line-height: 1.03;
+
+            font-weight: 800;
+            
+
+            letter-spacing: 0px;
+        }
+
+
+        .brand-title span {
+            background:
+                linear-gradient(
+                    90deg,
+                    #60a5fa,
+                    #22d3ee
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        .brand-description {
+            margin-top: 24px;
+
+            color: #94a3b8;
+
+            font-size: 1.02rem;
+
+            line-height: 1.8;
+
+            max-width: 530px;
+        }
+
+
+        /* =========================================================
+           BRAND FEATURES
+        ========================================================== */
+
+        .feature-list {
+            margin-top: 40px;
+        }
+
+
+        .feature-item {
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            padding: 15px 17px;
+
+            margin-bottom: 12px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, .07);
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, .035);
+
+            backdrop-filter: blur(12px);
+
+            transition:
+                transform .3s ease,
+                background .3s ease,
+                border-color .3s ease;
+        }
+
+
+        .feature-item:hover {
+            transform:
+                translateX(6px);
+
+            background:
+                rgba(255, 255, 255, .06);
+
+            border-color:
+                rgba(96, 165, 250, .25);
+        }
+
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                rgba(37, 99, 235, .15);
+
+            color: #60a5fa;
+
+            font-size: 19px;
+        }
+
+
+        .feature-item h6 {
+            margin: 0 0 4px;
+
+            font-weight: 700;
+        }
+
+
+        .feature-item p {
+            margin: 0;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           REGISTER SECTION
+        ========================================================== */
+
+        .register-section {
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 35px 40px;
+        }
+
+
+        /* =========================================================
+           REGISTER CARD
+        ========================================================== */
+
+        .register-card {
+            width: 100%;
+
+            max-width: 530px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, .09);
+
+            border-radius: 26px;
+
+            background:
+                rgba(15, 23, 42, .72);
+
+            backdrop-filter: blur(25px);
+
+            -webkit-backdrop-filter: blur(25px);
+
+            box-shadow:
+                0 30px 80px
+                rgba(0, 0, 0, .35),
+
+                inset 0 1px 0
+                rgba(255, 255, 255, .05);
+
+            animation:
+                cardEnter .8s ease;
+        }
+
+
+        @keyframes cardEnter {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(25px)
+                    scale(.98);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        .register-card-body {
+            padding: 38px;
+        }
+
+
+        /* =========================================================
+           LOGO
+        ========================================================== */
+
+        .logo-wrapper {
+            width: 76px;
+            height: 76px;
+
+            padding: 3px;
+
+            margin:
+                0 auto 20px;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #070087,
+                    #000000
+                );
+
+            box-shadow:
+                0 10px 35px
+                rgba(37, 99, 235, .25);
+        }
+
+
+        .auth-logo-img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            border-radius: 17px;
+
+            border:
+                3px solid
+                #0f172a;
+        }
+
+
+        .register-heading {
+            font-size: 30px;
+
+            font-weight: 500;
+
+            letter-spacing: 0px;
+        }
+
+
+        .register-subtitle {
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           DJANGO ALERTS
+        ========================================================== */
+
+        .custom-alert {
+            border-radius: 12px;
+
+            border:
+                1px solid
+                rgba(255, 255, 255, .08);
+
+            font-size: 12px;
+
+            background:
+                rgba(255, 255, 255, .05);
+
+            color: #e2e8f0;
+        }
+
+
+        /* =========================================================
+           SECURITY NOTICE
+        ========================================================== */
+
+        .security-note {
+            display: flex;
+
+            gap: 11px;
+
+            align-items: flex-start;
+
+            padding: 14px;
+
+            margin-bottom: 24px;
+
+            border-radius: 13px;
+
+            border:
+                1px solid
+                rgba(34, 211, 238, .12);
+
+            background:
+                rgba(34, 211, 238, .045);
+
+            color: #94a3b8;
+        }
+
+
+        .security-note i {
+            color: #22d3ee;
+
+            font-size: 17px;
+
+            margin-top: 1px;
+        }
+
+
+        .security-note strong {
+            display: block;
+
+            color: #cbd5e1;
+
+            font-size: 12px;
+
+            margin-bottom: 3px;
+        }
+
+
+        .security-note small {
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           FORM
+        ========================================================== */
+
+        .form-label {
+            color: #cbd5e1;
+
+            font-size: 15px;
+
+            font-weight: 500;
+
+            margin-bottom: 7px;
+        }
+
+
+        .input-wrapper {
+            position: relative;
+        }
+
+
+        .input-icon {
+            position: absolute;
+
+            left: 16px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            color: #64748b;
+
+            pointer-events: none;
+
+            transition:
+                color .2s ease;
+
+            z-index: 2;
+        }
+
+
+        .form-control {
+            min-height: 50px;
+
+            padding-left: 45px;
+
+            padding-right: 45px;
+
+            border-radius: 13px;
+
+            border:
+                1px solid
+                rgba(148, 163, 184, .16);
+
+            background:
+                rgba(15, 23, 42, .65);
+
+            color: #f8fafc;
+
+            font-size: 13px;
+
+            transition:
+                border-color .25s ease,
+                box-shadow .25s ease,
+                background .25s ease;
+        }
+
+
+        .form-control::placeholder {
+            color: #475569;
+        }
+
+
+        .form-control:focus {
+            color: #ffffff;
+
+            background:
+                rgba(15, 23, 42, .9);
+
+            border-color: #3b82f6;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(59, 130, 246, .10);
+
+            outline: none;
+        }
+
+
+        .input-wrapper:focus-within .input-icon {
+            color: #60a5fa;
+        }
+
+
+        /* =========================================================
+           BROWSER AUTOFILL FIX
+        ========================================================== */
+
+        .form-control:-webkit-autofill,
+        .form-control:-webkit-autofill:hover,
+        .form-control:-webkit-autofill:focus,
+        .form-control:-webkit-autofill:active {
+
+            -webkit-text-fill-color:
+                #f8fafc !important;
+
+            -webkit-box-shadow:
+                0 0 0 1000px
+                rgba(15, 23, 42, .9)
+                inset !important;
+
+            box-shadow:
+                0 0 0 1000px
+                rgba(15, 23, 42, .9)
+                inset !important;
+
+            transition:
+                background-color
+                5000s
+                ease-in-out
+                0s;
+        }
+
+
+        /* =========================================================
+           PASSWORD TOGGLE
+        ========================================================== */
+
+        .password-toggle {
+            position: absolute;
+
+            right: 12px;
+
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            border: 0;
+
+            background: transparent;
+
+            color: #64748b;
+
+            padding: 6px;
+
+            cursor: pointer;
+
+            transition:
+                color .2s ease;
+
+            z-index: 3;
+        }
+
+
+        .password-toggle:hover {
+            color: #60a5fa;
+        }
+
+
+        /* =========================================================
+           ROLE SELECTION
+        ========================================================== */
+
+        .role-selection-label {
+            color: #cbd5e1;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            margin-bottom: 10px;
+        }
+
+
+        .role-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+        }
+
+
+        .role-card {
+            position: relative;
+
+            min-height: 155px;
+
+            padding: 20px 15px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            border:
+                1px solid
+                rgba(148, 163, 184, .16);
+
+            border-radius: 16px;
+
+            background:
+                rgba(15, 23, 42, .55);
+
+            cursor: pointer;
+
+            user-select: none;
+
+            transition:
+                transform .25s ease,
+                border-color .25s ease,
+                background .25s ease,
+                box-shadow .25s ease;
+        }
+
+
+        .role-card:hover {
+            transform:
+                translateY(-4px);
+
+            border-color:
+                rgba(96, 165, 250, .45);
+
+            background:
+                rgba(15, 23, 42, .80);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0, 0, 0, .20);
+        }
+
+
+        /* Selected state */
+
+        .role-card.selected {
+            border-color:
+                #38bdf8;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(37, 99, 235, .22),
+                    rgba(6, 182, 212, .12)
+                );
+
+            box-shadow:
+                0 0 0 1px
+                rgba(56, 189, 248, .25),
+
+                0 12px 35px
+                rgba(37, 99, 235, .12);
+        }
+
+
+        /* Selection check */
+
+        .role-check {
+            position: absolute;
+
+            top: 10px;
+
+            right: 10px;
+
+            width: 22px;
+            height: 22px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                rgba(56, 189, 248, .15);
+
+            color: #67e8f9;
+
+            font-size: 12px;
+
+            opacity: 0;
+
+            transform:
+                scale(.7);
+
+            transition:
+                opacity .2s ease,
+                transform .2s ease;
+        }
+
+
+        .role-card.selected .role-check {
+            opacity: 1;
+
+            transform:
+                scale(1);
+        }
+
+
+        /* Role icon */
+
+        .role-icon {
+            width: 50px;
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 11px;
+
+            border-radius: 13px;
+
+            background:
+                rgba(37, 99, 235, .12);
+
+            color: #60a5fa;
+
+            font-size: 22px;
+
+            transition:
+                background .25s ease,
+                color .25s ease,
+                transform .25s ease;
+        }
+
+
+        .role-card:hover .role-icon {
+            transform:
+                scale(1.05);
+        }
+
+
+        .role-card.selected .role-icon {
+            background:
+                rgba(56, 189, 248, .15);
+
+            color: #67e8f9;
+        }
+
+
+        .role-name {
+            color: #e2e8f0;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+
+        .role-description {
+            color: #64748b;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+
+            max-width: 190px;
+        }
+
+
+        .role-error {
+            display: none;
+
+            margin-top: 8px;
+
+            color: #f87171;
+
+            font-size: 11px;
+        }
+
+
+        .role-error.show {
+            display: block;
+        }
+
+
+        /* =========================================================
+           REGISTER BUTTON
+        ========================================================== */
+
+        .btn-register {
+            position: relative;
+
+            min-height: 52px;
+
+            border: 0;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #0891b2
+                );
+
+            color: #ffffff;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            overflow: hidden;
+
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease;
+        }
+
+
+        .btn-register::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, .22),
+                    transparent
+                );
+
+            transition:
+                left .6s ease;
+        }
+
+
+        .btn-register:hover {
+            color: #ffffff;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 12px 30px
+                rgba(37, 99, 235, .25);
+        }
+
+
+        .btn-register:hover::before {
+            left: 100%;
+        }
+
+
+        .btn-register:active {
+            transform:
+                translateY(0);
+        }
+
+
+        /* =========================================================
+           LOGIN LINK
+        ========================================================== */
+
+        .login-section-link {
+            margin-top: 22px;
+
+            padding-top: 21px;
+
+            border-top:
+                1px solid
+                rgba(255, 255, 255, .07);
+        }
+
+
+        .login-text {
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+
+        .login-link {
+            color: #60a5fa;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            text-decoration: none;
+
+            transition:
+                color .2s ease;
+        }
+
+
+        .login-link:hover {
+            color: #22d3ee;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================== */
+
+        @media (max-width: 991.98px) {
+
+            .register-section {
+                padding:
+                    25px 18px;
+            }
+
+            .register-card {
+                max-width: 560px;
+            }
+        }
+
+
+        @media (max-width: 575.98px) {
+
+            .register-section {
+                padding:
+                    18px 12px;
+            }
+
+            .register-card-body {
+                padding:
+                    28px 20px;
+            }
+
+            .register-heading {
+                font-size: 24px;
+            }
+
+            .role-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .role-card {
+                min-height: 135px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                    .01ms !important;
+
+                animation-iteration-count:
+                    1 !important;
+
+                transition-duration:
+                    .01ms !important;
+            }
+
+            .cursor-glow {
+                display: none;
+            }
+        }
+
+
+        /* =========================================================
+           TOUCH DEVICES
+        ========================================================== */
+
+        @media (hover: none) {
+
+            .cursor-glow {
+                display: none;
+            }
+        }
+
+        .register-heading.mb-2 {
+            font-family: "palatino-linotype", serif;
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-<div class="container register-wrapper d-flex
-            align-items-center justify-content-center
-            py-5">
 
+    <!-- =========================================================
+         BACKGROUND
+    ========================================================== -->
 
-<div class="card register-card shadow-sm">
+    <div class="background">
 
+        <div class="background-grid"></div>
 
-    <div class="card-body p-4 p-md-5">
+        <div class="orb orb-one"></div>
 
+        <div class="orb orb-two"></div>
 
-        <!-- =================================================
-             HEADER
-        ================================================== -->
-
-        <div class="text-center mb-4">
-
-
-            <div class="mb-3">
-
-                <img
-                    src="{% static 'core/img/no-photo-login-register.jpg' %}"
-                    alt="Student Risk Management"
-                    class="auth-logo-img rounded-circle"
-                >
-
-            </div>
-
-
-            <h2 class="fw-bold mb-2">
-                Create Your Account
-            </h2>
-
-
-            <p class="text-secondary mb-0">
-                Join the Student Risk Management System
-            </p>
-
-        </div>
-
-
-        <!-- =================================================
-             MESSAGES
-        ================================================== -->
-
-        {% if messages %}
-
-            {% for message in messages %}
-
-                <div
-                    class="alert
-                    {% if message.tags == 'error' %}
-                        alert-danger
-                    {% elif message.tags == 'success' %}
-                        alert-success
-                    {% else %}
-                        alert-info
-                    {% endif %}
-                    alert-dismissible fade show"
-                    role="alert"
-                >
-
-                    {{ message }}
-
-                    <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                    ></button>
-
-                </div>
-
-            {% endfor %}
-
-        {% endif %}
-
-
-        <!-- =================================================
-             SECURITY NOTICE
-        ================================================== -->
-
-        <div class="alert alert-info security-note">
-
-            <div class="fw-semibold mb-1">
-                Account Registration
-            </div>
-
-            <small>
-                Public registration is available for
-                Teachers and Mentors. Administrator accounts
-                are created by the system administrator.
-            </small>
-
-        </div>
-
-
-        <!-- =================================================
-             REGISTRATION FORM
-        ================================================== -->
-
-        <form method="POST">
-
-            {% csrf_token %}
-
-
-            <!-- Username -->
-
-            <div class="mb-3">
-
-                <label
-                    for="username"
-                    class="form-label fw-semibold"
-                >
-                    Username
-                </label>
-
-                <input
-                    type="text"
-                    class="form-control"
-                    id="username"
-                    name="username"
-                    placeholder="Choose a username"
-                    autocomplete="username"
-                    required
-                >
-
-            </div>
-
-
-            <!-- Email -->
-
-            <div class="mb-3">
-
-                <label
-                    for="email"
-                    class="form-label fw-semibold"
-                >
-                    Email Address
-                </label>
-
-                <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email address"
-                    autocomplete="email"
-                >
-
-            </div>
-
-
-            <!-- Role -->
-
-            <div class="mb-3">
-
-                <label
-                    for="role"
-                    class="form-label fw-semibold"
-                >
-                    Register As
-                </label>
-
-
-                <select
-                    class="form-select"
-                    id="role"
-                    name="role"
-                    required
-                >
-
-                    <option
-                        value=""
-                        selected
-                        disabled
-                    >
-                        Select your role
-                    </option>
-
-                    <option value="TEACHER">
-                        Teacher
-                    </option>
-
-                    <option value="MENTOR">
-                        Mentor
-                    </option>
-
-                </select>
-
-
-                <div class="form-text">
-                    Choose the role associated with your
-                    responsibilities in the system.
-                </div>
-
-            </div>
-
-
-            <!-- Role Information -->
-
-            <div class="row g-3 mb-4">
-
-
-                <div class="col-md-6">
-
-                    <div class="role-card p-3 h-100">
-
-                        <div class="fw-semibold mb-1">
-                            Teacher
-                        </div>
-
-                        <small class="text-secondary">
-                            Manages attendance, marks,
-                            assignments and examination
-                            results.
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-
-                    <div class="role-card p-3 h-100">
-
-                        <div class="fw-semibold mb-1">
-                            Mentor
-                        </div>
-
-                        <small class="text-secondary">
-                            Monitors assigned students and
-                            records counseling and
-                            interventions.
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-            </div>
-
-
-            <!-- Password -->
-
-            <div class="mb-3">
-
-                <label
-                    for="password"
-                    class="form-label fw-semibold"
-                >
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    name="password"
-                    placeholder="Create a password"
-                    autocomplete="new-password"
-                    required
-                >
-
-            </div>
-
-
-            <!-- Confirm Password -->
-
-            <div class="mb-4">
-
-                <label
-                    for="confirm_password"
-                    class="form-label fw-semibold"
-                >
-                    Confirm Password
-                </label>
-
-                <input
-                    type="password"
-                    class="form-control"
-                    id="confirm_password"
-                    name="confirm_password"
-                    placeholder="Confirm your password"
-                    autocomplete="new-password"
-                    required
-                >
-
-            </div>
-
-
-            <!-- Register -->
-
-            <div class="d-grid">
-
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-register"
-                >
-                    Create Account
-                </button>
-
-            </div>
-
-
-        </form>
-
-
-        <!-- =================================================
-             LOGIN LINK
-        ================================================== -->
-
-        <div class="text-center mt-4">
-
-            <p class="text-secondary mb-2">
-                Already have an account?
-            </p>
-
-            <a
-                href="{% url 'login' %}"
-                class="btn btn-outline-secondary px-4"
-            >
-                Back to Login
-            </a>
-
-        </div>
-
+        <div class="orb orb-three"></div>
 
     </div>
 
-</div>
+
+    <!-- =========================================================
+         MOUSE GLOW
+    ========================================================== -->
+
+    <div
+        class="cursor-glow"
+        id="cursorGlow"
+    ></div>
 
 
-</div>
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    <div class="container-fluid">
+
+        <div class="row register-wrapper">
+
+
+            <!-- =====================================================
+                 BRAND SECTION
+            ====================================================== -->
+
+            <div
+                class="col-lg-6 d-none d-lg-flex brand-section"
+            >
+
+                <div class="brand-content">
+
+
+                    <div class="brand-badge">
+
+                        <span class="status-dot"></span>
+
+                        STUDENT SUCCESS PLATFORM
+
+                    </div>
+
+
+                    <h1 class="brand-title">
+
+                        Build better
+
+                        <br>
+
+                        <span>
+                            student outcomes.
+                        </span>
+
+                    </h1>
+
+
+                    <p class="brand-description">
+
+                        Join a role-based platform designed
+                        to help educational staff monitor
+                        student performance, recognize risk
+                        indicators and coordinate meaningful
+                        support.
+
+                    </p>
+
+
+                    <!-- FEATURES -->
+
+                    <div class="feature-list">
+
+
+                        <!-- FEATURE 1 -->
+
+                        <div class="feature-item">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-person-check"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>
+                                    Role-Based Access
+                                </h6>
+
+                                <p>
+                                    Dedicated tools for Teachers
+                                    and Mentors.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FEATURE 2 -->
+
+                        <div class="feature-item">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-graph-up-arrow"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>
+                                    Student Monitoring
+                                </h6>
+
+                                <p>
+                                    Manage academic information
+                                    and student performance.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FEATURE 3 -->
+
+                        <div class="feature-item">
+
+                            <div class="feature-icon">
+
+                                <i class="bi bi-heart-pulse"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h6>
+                                    Early Support
+                                </h6>
+
+                                <p>
+                                    Help identify students who may
+                                    require additional attention.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 REGISTER SECTION
+            ====================================================== -->
+
+            <div
+                class="col-lg-6 register-section"
+            >
+
+
+                <div class="register-card">
+
+
+                    <div class="register-card-body">
+
+
+                        <!-- =================================================
+                             HEADER
+                        ================================================== -->
+
+                        <div class="text-center mb-4">
+
+
+                            <div class="logo-wrapper">
+
+                                <img
+                                    src="{% static 'core/img/logo_Image_ahvaxgahvaxgahva.png' %}"
+                                    alt="Student Risk Management"
+                                    class="auth-logo-img"
+                                >
+
+                            </div>
+
+
+                            <h2 class="register-heading mb-2">
+
+                                Create your account
+
+                            </h2>
+
+
+                            <p class="register-subtitle mb-0">
+
+                                Join the Student Risk Management System
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             DJANGO MESSAGES
+                        ================================================== -->
+
+                        {% if messages %}
+
+                            {% for message in messages %}
+
+                                <div
+                                    class="alert
+                                    {% if message.tags == 'error' %}
+                                        alert-danger
+                                    {% elif message.tags == 'success' %}
+                                        alert-success
+                                    {% else %}
+                                        alert-info
+                                    {% endif %}
+                                    custom-alert
+                                    alert-dismissible
+                                    fade
+                                    show"
+                                    role="alert"
+                                >
+
+                                    {{ message }}
+
+
+                                    <button
+                                        type="button"
+                                        class="btn-close btn-close-white"
+                                        data-bs-dismiss="alert"
+                                        aria-label="Close"
+                                    ></button>
+
+                                </div>
+
+                            {% endfor %}
+
+                        {% endif %}
+
+
+                        <!-- =================================================
+                             SECURITY NOTICE
+                        ================================================== -->
+
+                        <div class="security-note">
+
+                            <i class="bi bi-shield-lock-fill"></i>
+
+                            <div>
+
+                                <strong>
+                                    Account Registration
+                                </strong>
+
+                                <small>
+
+                                    Public registration is available
+                                    for Teachers and Mentors.
+                                    Administrator accounts are created
+                                    through the administrative system.
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             REGISTRATION FORM
+                        ================================================== -->
+
+                        <form
+                            method="POST"
+                            autocomplete="on"
+                            id="registerForm"
+                        >
+
+                            {% csrf_token %}
+
+
+                            <!-- =================================================
+                                 USERNAME
+                            ================================================== -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="username"
+                                    class="form-label"
+                                >
+                                    Username
+                                </label>
+
+
+                                <div class="input-wrapper">
+
+                                    <i
+                                        class="bi bi-person input-icon"
+                                    ></i>
+
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Choose a username"
+                                        autocomplete="username"
+                                        value="{{ request.POST.username|default:'' }}"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 EMAIL
+                            ================================================== -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="email"
+                                    class="form-label"
+                                >
+                                    Email Address
+                                </label>
+
+
+                                <div class="input-wrapper">
+
+                                    <i
+                                        class="bi bi-envelope input-icon"
+                                    ></i>
+
+
+                                    <input
+                                        type="email"
+                                        class="form-control"
+                                        id="email"
+                                        name="email"
+                                        placeholder="Enter your email address"
+                                        autocomplete="email"
+                                        value="{{ request.POST.email|default:'' }}"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 ROLE SELECTION
+                            ================================================== -->
+
+                            <div class="mb-4">
+
+
+                                <div class="role-selection-label">
+
+                                    Select your role
+
+                                </div>
+
+
+                                <div class="role-grid">
+
+
+                                    <!-- =================================================
+                                         TEACHER
+                                    ================================================== -->
+
+                                    <div
+                                        class="role-card"
+                                        data-role="TEACHER"
+                                        tabindex="0"
+                                        role="button"
+                                        aria-label="Select Teacher role"
+                                        aria-pressed="false"
+                                    >
+
+                                        <div class="role-check">
+
+                                            <i class="bi bi-check-lg"></i>
+
+                                        </div>
+
+
+                                        <div class="role-icon">
+
+                                            <i class="bi bi-mortarboard-fill"></i>
+
+                                        </div>
+
+
+                                        <div class="role-name">
+
+                                            Teacher
+
+                                        </div>
+
+
+                                        <div class="role-description">
+
+                                            Manage attendance, marks,
+                                            assignments and examination
+                                            results.
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =================================================
+                                         MENTOR
+                                    ================================================== -->
+
+                                    <div
+                                        class="role-card"
+                                        data-role="MENTOR"
+                                        tabindex="0"
+                                        role="button"
+                                        aria-label="Select Mentor role"
+                                        aria-pressed="false"
+                                    >
+
+                                        <div class="role-check">
+
+                                            <i class="bi bi-check-lg"></i>
+
+                                        </div>
+
+
+                                        <div class="role-icon">
+
+                                            <i class="bi bi-people-fill"></i>
+
+                                        </div>
+
+
+                                        <div class="role-name">
+
+                                            Mentor
+
+                                        </div>
+
+
+                                        <div class="role-description">
+
+                                            Monitor assigned students
+                                            and record counseling and
+                                            interventions.
+
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <!-- Hidden role field -->
+
+                                <input
+                                    type="hidden"
+                                    name="role"
+                                    id="roleInput"
+                                    value="{{ request.POST.role|default:'' }}"
+                                >
+
+
+                                <!-- Role validation -->
+
+                                <div
+                                    id="roleError"
+                                    class="role-error"
+                                >
+
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+
+                                    Please select a role.
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 PASSWORD
+                            ================================================== -->
+
+                            <div class="mb-3">
+
+                                <label
+                                    for="password"
+                                    class="form-label"
+                                >
+                                    Password
+                                </label>
+
+
+                                <div class="input-wrapper">
+
+                                    <i
+                                        class="bi bi-lock input-icon"
+                                    ></i>
+
+
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="password"
+                                        name="password"
+                                        placeholder="Create a password"
+                                        autocomplete="new-password"
+                                        required
+                                    >
+
+
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        id="togglePassword"
+                                        aria-label="Show password"
+                                    >
+
+                                        <i
+                                            class="bi bi-eye"
+                                            id="passwordIcon"
+                                        ></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 CONFIRM PASSWORD
+                            ================================================== -->
+
+                            <div class="mb-4">
+
+                                <label
+                                    for="confirm_password"
+                                    class="form-label"
+                                >
+                                    Confirm Password
+                                </label>
+
+
+                                <div class="input-wrapper">
+
+                                    <i
+                                        class="bi bi-lock-fill input-icon"
+                                    ></i>
+
+
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="confirm_password"
+                                        name="confirm_password"
+                                        placeholder="Confirm your password"
+                                        autocomplete="new-password"
+                                        required
+                                    >
+
+
+                                    <button
+                                        type="button"
+                                        class="password-toggle"
+                                        id="toggleConfirmPassword"
+                                        aria-label="Show password"
+                                    >
+
+                                        <i
+                                            class="bi bi-eye"
+                                            id="confirmPasswordIcon"
+                                        ></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 REGISTER BUTTON
+                            ================================================== -->
+
+                            <div class="d-grid">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-register"
+                                >
+
+                                    <i
+                                        class="bi bi-person-plus me-2"
+                                    ></i>
+
+                                    Create Account
+
+                                </button>
+
+                            </div>
+
+
+                        </form>
+
+
+                        <!-- =================================================
+                             LOGIN
+                        ================================================== -->
+
+                        <div
+                            class="login-section-link text-center"
+                        >
+
+                            <div class="login-text mb-2">
+
+                                Already have an account?
+
+                            </div>
+
+
+                            <a
+                                href="{% url 'login' %}"
+                                class="login-link"
+                            >
+
+                                Back to Login
+
+                                <i
+                                    class="bi bi-arrow-right ms-1"
+                                ></i>
+
+                            </a>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         BOOTSTRAP JS
+    ========================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+
+    <script>
+
+        /* =========================================================
+           AUTO CLOSE DJANGO ALERTS
+        ========================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                setTimeout(
+                    function () {
+
+                        document
+                            .querySelectorAll(".alert")
+                            .forEach(
+                                function (alertElement) {
+
+                                    const alert =
+                                        bootstrap.Alert
+                                        .getOrCreateInstance(
+                                            alertElement
+                                        );
+
+                                    alert.close();
+
+                                }
+                            );
+
+                    },
+                    4000
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           PASSWORD TOGGLE
+        ========================================================== */
+
+        function setupPasswordToggle(
+            buttonId,
+            inputId,
+            iconId
+        ) {
+
+            const button =
+                document.getElementById(buttonId);
+
+            const input =
+                document.getElementById(inputId);
+
+            const icon =
+                document.getElementById(iconId);
+
+
+            if (!button || !input || !icon) {
+                return;
+            }
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const isPassword =
+                        input.type === "password";
+
+
+                    input.type =
+                        isPassword
+                            ? "text"
+                            : "password";
+
+
+                    icon.className =
+                        isPassword
+                            ? "bi bi-eye-slash"
+                            : "bi bi-eye";
+
+
+                    button.setAttribute(
+                        "aria-label",
+                        isPassword
+                            ? "Hide password"
+                            : "Show password"
+                    );
+
+                }
+            );
+        }
+
+
+        setupPasswordToggle(
+            "togglePassword",
+            "password",
+            "passwordIcon"
+        );
+
+
+        setupPasswordToggle(
+            "toggleConfirmPassword",
+            "confirm_password",
+            "confirmPasswordIcon"
+        );
+
+
+        /* =========================================================
+           ROLE SELECTION
+        ========================================================== */
+
+        const roleCards =
+            document.querySelectorAll(
+                ".role-card"
+            );
+
+        const roleInput =
+            document.getElementById(
+                "roleInput"
+            );
+
+        const roleError =
+            document.getElementById(
+                "roleError"
+            );
+
+
+        function selectRole(card) {
+
+            const selectedRole =
+                card.dataset.role;
+
+
+            /* Remove selection from all cards */
+
+            roleCards.forEach(
+                function (item) {
+
+                    item.classList.remove(
+                        "selected"
+                    );
+
+                    item.setAttribute(
+                        "aria-pressed",
+                        "false"
+                    );
+
+                }
+            );
+
+
+            /* Select clicked card */
+
+            card.classList.add(
+                "selected"
+            );
+
+
+            card.setAttribute(
+                "aria-pressed",
+                "true"
+            );
+
+
+            /* Store role */
+
+            roleInput.value =
+                selectedRole;
+
+
+            /* Hide validation error */
+
+            roleError.classList.remove(
+                "show"
+            );
+        }
+
+
+        /* Mouse / touch selection */
+
+        roleCards.forEach(
+            function (card) {
+
+                card.addEventListener(
+                    "click",
+                    function () {
+
+                        selectRole(card);
+
+                    }
+                );
+
+
+                /* Keyboard accessibility */
+
+                card.addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (
+                            event.key === "Enter" ||
+                            event.key === " "
+                        ) {
+
+                            event.preventDefault();
+
+                            selectRole(card);
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           RESTORE ROLE AFTER VALIDATION ERROR
+        ========================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const existingRole =
+                    roleInput.value;
+
+
+                if (existingRole) {
+
+                    const card =
+                        document.querySelector(
+                            '.role-card[data-role="' +
+                            existingRole +
+                            '"]'
+                        );
+
+
+                    if (card) {
+
+                        selectRole(card);
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           FORM VALIDATION
+        ========================================================== */
+
+        const registerForm =
+            document.getElementById(
+                "registerForm"
+            );
+
+
+        registerForm.addEventListener(
+            "submit",
+            function (event) {
+
+                if (!roleInput.value) {
+
+                    event.preventDefault();
+
+                    roleError.classList.add(
+                        "show"
+                    );
+
+
+                    document
+                        .querySelector(
+                            ".role-grid"
+                        )
+                        .scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           MOUSE FOLLOWING GLOW
+        ========================================================== */
+
+        const cursorGlow =
+            document.getElementById(
+                "cursorGlow"
+            );
+
+
+        document.addEventListener(
+            "mousemove",
+            function (event) {
+
+                cursorGlow.style.left =
+                    event.clientX + "px";
+
+                cursorGlow.style.top =
+                    event.clientY + "px";
+
+            }
+        );
+
+
+        /* =========================================================
+           INPUT FOCUS INTERACTION
+        ========================================================== */
+
+        document
+            .querySelectorAll(
+                ".form-control"
+            )
+            .forEach(
+                function (input) {
+
+                    input.addEventListener(
+                        "focus",
+                        function () {
+
+                            const wrapper =
+                                this.closest(
+                                    ".input-wrapper"
+                                );
+
+
+                            if (wrapper) {
+
+                                wrapper.classList.add(
+                                    "focused"
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                    input.addEventListener(
+                        "blur",
+                        function () {
+
+                            const wrapper =
+                                this.closest(
+                                    ".input-wrapper"
+                                );
+
+
+                            if (wrapper) {
+
+                                wrapper.classList.remove(
+                                    "focused"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+    </script>
+
 
 </body>
 
