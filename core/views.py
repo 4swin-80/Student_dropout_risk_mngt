@@ -711,6 +711,79 @@ def assignment_list(request):
     )
 
 
+@role_required("TEACHER")
+def exam_result_create(request):
+
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+
+    except Teacher.DoesNotExist:
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+        return redirect("teacher_dashboard")
+
+    if request.method == "POST":
+
+        form = ExamResultForm(request.POST)
+
+        if form.is_valid():
+
+            exam_result = form.save(commit=False)
+
+            exam_result.entered_by = teacher
+
+            exam_result.save()
+
+            messages.success(
+                request,
+                "Examination result added successfully."
+            )
+
+            return redirect("exam_result_create")
+
+    else:
+        form = ExamResultForm()
+
+    return render(
+        request,
+        "teacher/exam_result_form.html",
+        {
+            "form": form
+        }
+    )
+
+
+@role_required("TEACHER")
+def exam_result_list(request):
+
+    try:
+        teacher = Teacher.objects.get(user=request.user)
+
+    except Teacher.DoesNotExist:
+        messages.error(
+            request,
+            "Your teacher profile has not been created yet."
+        )
+        return redirect("teacher_dashboard")
+
+    exam_results = (
+        ExamResult.objects
+        .filter(entered_by=teacher)
+        .select_related("student")
+        .order_by("-exam_date", "-created_at", "student", "subject")
+    )
+
+    return render(
+        request,
+        "teacher/exam_result_list.html",
+        {
+            "exam_results": exam_results
+        }
+    )
+
+
 # ============================================================
 # MENTOR DASHBOARD
 # ============================================================

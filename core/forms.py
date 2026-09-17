@@ -10,6 +10,7 @@ from .models import (
     Attendance,
     AcademicPerformance,
     Assignment,
+    ExamResult,
 )
 
 
@@ -511,3 +512,93 @@ def clean(self):
         )
 
     return cleaned_data   
+
+
+class ExamResultForm(forms.ModelForm):
+
+    class Meta:
+        model = ExamResult
+
+        fields = [
+            "student",
+            "exam_name",
+            "subject",
+            "marks_obtained",
+            "total_marks",
+            "exam_date",
+        ]
+
+        widgets = {
+
+            "student": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+
+            "exam_name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter exam name",
+                }
+            ),
+
+            "subject": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter subject name",
+                }
+            ),
+
+            "marks_obtained": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter marks obtained",
+                    "min": "0",
+                    "step": "0.01",
+                }
+            ),
+
+            "total_marks": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter total marks",
+                    "min": "0.01",
+                    "step": "0.01",
+                }
+            ),
+
+            "exam_date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                }
+            ),
+        }
+
+        labels = {
+            "student": "Student",
+            "exam_name": "Exam Name",
+            "subject": "Subject",
+            "marks_obtained": "Marks Obtained",
+            "total_marks": "Total Marks",
+            "exam_date": "Exam Date",
+        }
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+        marks_obtained = cleaned_data.get("marks_obtained")
+        total_marks = cleaned_data.get("total_marks")
+
+        if (
+            marks_obtained is not None
+            and total_marks is not None
+            and marks_obtained > total_marks
+        ):
+            raise forms.ValidationError(
+                "Marks obtained cannot be greater than total marks."
+            )
+
+        return cleaned_data

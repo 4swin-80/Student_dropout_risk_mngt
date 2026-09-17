@@ -4,7 +4,7 @@
 
 <head>
 
-```
+
 <meta charset="UTF-8">
 
 <meta
@@ -63,7 +63,7 @@
     }
 
 </style>
-```
+
 
 </head>
 
@@ -71,7 +71,7 @@
 
 <div class="container-fluid">
 
-```
+
 <div class="row">
 
 
@@ -510,31 +510,41 @@
 
                     <!-- EXAMS -->
 
-                    <div class="col-md-6 col-xl-4"
-                         id="exams">
+<div class="col-md-6 col-xl-4"
+     id="exams">
 
-                        <div class="card function-card h-100 border-secondary">
+    <div class="card function-card h-100 border-secondary">
 
-                            <div class="card-body">
+        <div class="card-body">
 
-                                <span class="badge bg-secondary mb-3">
-                                    Examinations
-                                </span>
+            <span class="badge bg-secondary mb-3">
+                Examinations
+            </span>
 
-                                <h5 class="fw-bold">
-                                    Examination Results
-                                </h5>
+            <h5 class="fw-bold">
+                Examination Results
+            </h5>
 
-                                <p class="text-secondary">
-                                    Enter and manage student examination
-                                    results.
-                                </p>
+            <p class="text-secondary">
+                Enter and manage student examination
+                results.
+            </p>
 
-                            </div>
+            <a href="{% url 'exam_result_create' %}"
+               class="btn btn-warning btn-sm mt-2">
+                Enter Result
+            </a>
 
-                        </div>
+            <a href="{% url 'exam_result_list' %}"
+   class="btn btn-outline-secondary btn-sm mt-2">
+    View Records
+</a>
 
-                    </div>
+        </div>
+
+    </div>
+
+</div>
 
 
                     <!-- RISK -->
@@ -633,7 +643,7 @@
     </main>
 
 </div>
-```
+
 
 </div>
 

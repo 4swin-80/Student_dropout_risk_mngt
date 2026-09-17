@@ -146,6 +146,18 @@ path(
     name="teacher_student_list"
 ),
 
+path(
+    "teacher/exam-results/add/",
+    views.exam_result_create,
+    name="exam_result_create"
+),
+
+path(
+    "teacher/exam-results/",
+    views.exam_result_list,
+    name="exam_result_list"
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),
