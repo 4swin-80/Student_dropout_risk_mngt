@@ -158,6 +158,12 @@ path(
     name="exam_result_list"
 ),
 
+path(
+    "mentor/assigned-students/",
+    views.mentor_assigned_students,
+    name="mentor_assigned_students",
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),

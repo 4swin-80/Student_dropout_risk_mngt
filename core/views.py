@@ -868,6 +868,45 @@ def mentor_dashboard(request):
 
 
 # ============================================================
+# MENTOR - ASSIGNED STUDENTS
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_assigned_students(request):
+
+    try:
+        mentor = Mentor.objects.get(
+            user=request.user
+        )
+
+    except Mentor.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+
+        return redirect("mentor_dashboard")
+
+    assigned_students = (
+        Student.objects
+        .filter(mentor=mentor)
+        .select_related("department")
+        .order_by("student_id")
+    )
+
+    context = {
+        "assigned_students": assigned_students,
+    }
+
+    return render(
+        request,
+        "mentor/assigned_students.html",
+        context
+    )
+
+
+# ============================================================
 # LOGOUT
 # ============================================================
 
