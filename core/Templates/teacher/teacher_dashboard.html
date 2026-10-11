@@ -120,7 +120,7 @@
                 Examination Results
             </a>
 
-            <a href="#risk"
+            <a href="{% url 'teacher_risk_scores' %}"
                class="nav-link">
                 Risk Scores
             </a>
@@ -564,10 +564,19 @@
                                     View Risk Scores
                                 </h5>
 
-                                <p class="text-secondary">
-                                    Monitor AI-generated dropout risk
-                                    scores for students.
-                                </p>
+                                
+<p class="text-secondary">
+    Monitor dropout risk scores based on attendance, grades, assignments, and exams.
+</p>
+
+                                
+<a
+    href="{% url 'teacher_risk_scores' %}"
+    class="btn btn-danger btn-sm mt-2"
+>
+    View Risk Scores
+</a>
+
 
                             </div>
 

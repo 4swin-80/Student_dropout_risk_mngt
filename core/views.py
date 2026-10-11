@@ -1,3 +1,4 @@
+from .risk_utils import calculate_student_risk
 from django.contrib import messages
 from decimal import Decimal
 from functools import wraps
@@ -433,6 +434,43 @@ def teacher_dashboard(request):
         "teacher/teacher_dashboard.html",
         context
     )
+
+
+# ============================================================
+# TEACHER - RISK SCORES
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_risk_scores(request):
+    """
+    Calculate and display current risk scores for students.
+    This view does not create or modify RiskPrediction records.
+    """
+
+    students = Student.objects.all().order_by("student_id")
+
+    risk_results = []
+
+    for student in students:
+        result = calculate_student_risk(student)
+
+        risk_results.append({
+            "student": student,
+            "risk_score": result["risk_score"],
+            "risk_level": result["risk_level"],
+        })
+
+    context = {
+        "risk_results": risk_results,
+        "total_students": len(risk_results),
+    }
+
+    return render(
+        request,
+        "teacher/risk_scores.html",
+        context,
+    )
+
 
 
 # ============================================================

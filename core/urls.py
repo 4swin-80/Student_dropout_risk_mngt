@@ -165,6 +165,14 @@ path(
 ),
 
 
+path(
+    "teacher/risk-scores/",
+    views.teacher_risk_scores,
+    name="teacher_risk_scores",
+),
+
+
+
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),
 path("mentors/<int:mentor_id>/", views.mentor_detail, name="mentor_detail"),
