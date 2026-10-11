@@ -265,9 +265,11 @@ class ExamResult(models.Model):
 
 class RiskPrediction(models.Model):
     RISK_LEVEL_CHOICES = [
+        ("Very Low", "Very Low"),
         ("Low", "Low"),
         ("Medium", "Medium"),
         ("High", "High"),
+        ("Very High", "Very High"),
     ]
 
     student = models.ForeignKey(
