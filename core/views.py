@@ -1074,6 +1074,103 @@ def mentor_assigned_students(request):
     )
 
 
+
+# ============================================================
+# MENTOR - VIEW ASSIGNED STUDENT RISK SCORES
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_risk_scores(request):
+    """
+    Calculate and display risk scores for students
+    assigned to the logged-in mentor.
+    """
+
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    assigned_students = (
+        Student.objects
+        .filter(mentor=mentor)
+        .order_by("student_id")
+    )
+
+    risk_results = []
+
+    for student in assigned_students:
+        result = calculate_student_risk(student)
+
+        risk_results.append({
+            "student": student,
+            "risk_score": result["risk_score"],
+            "risk_level": result["risk_level"],
+        })
+
+    context = {
+        "risk_results": risk_results,
+        "total_students": len(risk_results),
+    }
+
+    return render(
+        request,
+        "mentor/risk_scores.html",
+        context,
+    )
+
+
+
+# ============================================================
+# MENTOR - VIEW ASSIGNED STUDENT RISK ALERTS
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_risk_alerts(request):
+    """
+    Display High and Very High risk predictions
+    for students assigned to the logged-in mentor.
+    """
+
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    high_risk_predictions = (
+        RiskPrediction.objects
+        .filter(
+            student__mentor=mentor,
+            risk_level__in=["High", "Very High"],
+        )
+        .select_related("student")
+        .order_by("-prediction_date")
+    )
+
+    context = {
+        "high_risk_predictions": high_risk_predictions,
+        "total_alerts": high_risk_predictions.count(),
+    }
+
+    return render(
+        request,
+        "mentor/alerts.html",
+        context,
+    )
+    
+
+
+
 # ============================================================
 # LOGOUT
 # ============================================================

@@ -192,6 +192,22 @@ path(
 
 
 path(
+    "mentor/risk-scores/",
+    views.mentor_risk_scores,
+    name="mentor_risk_scores",
+),
+
+
+path(
+    "mentor/alerts/",
+    views.mentor_risk_alerts,
+    name="mentor_risk_alerts",
+),
+
+
+
+
+path(
     "teacher/generate-predictions/",
     views.teacher_generate_predictions,
     name="teacher_generate_predictions",
