@@ -240,20 +240,23 @@ def calculate_student_risk(student):
     }
 
 
-
 def generate_risk_prediction(student):
     """
     Calculate and save a student's rule-based risk prediction.
+    Update the existing prediction if one is available.
     """
 
     risk_result = calculate_student_risk(student)
 
-    prediction = RiskPrediction.objects.create(
+    prediction, created = RiskPrediction.objects.update_or_create(
         student=student,
-        risk_score=risk_result["risk_score"],
-        risk_level=risk_result["risk_level"],
-        model_version="Rule-Based-v1",
-        is_alert_generated=False,
+        defaults={
+            "risk_score": risk_result["risk_score"],
+            "risk_level": risk_result["risk_level"],
+            "model_version": "Rule-Based-v1",
+            "is_alert_generated": False,
+        },
     )
 
     return prediction
+

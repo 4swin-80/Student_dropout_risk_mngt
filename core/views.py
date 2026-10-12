@@ -1,4 +1,7 @@
-from .risk_utils import calculate_student_risk
+from .risk_utils import (
+    calculate_student_risk,
+    generate_risk_prediction,
+)
 from django.contrib import messages
 from decimal import Decimal
 from functools import wraps
@@ -470,6 +473,41 @@ def teacher_risk_scores(request):
         "teacher/risk_scores.html",
         context,
     )
+
+
+
+# ============================================================
+# TEACHER - GENERATE RISK PREDICTIONS
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_generate_predictions(request):
+
+    if request.method != "POST":
+        return redirect("teacher_risk_scores")
+
+    students = Student.objects.all().order_by("student_id")
+
+    if not students.exists():
+        messages.warning(
+            request,
+            "No students are available for risk prediction."
+        )
+        return redirect("teacher_risk_scores")
+
+    generated_count = 0
+
+    for student in students:
+        generate_risk_prediction(student)
+        generated_count += 1
+
+    messages.success(
+        request,
+        f"Risk predictions generated for {generated_count} students."
+    )
+
+    return redirect("teacher_risk_scores")
+
 
 
 

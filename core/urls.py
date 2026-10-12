@@ -171,6 +171,12 @@ path(
     name="teacher_risk_scores",
 ),
 
+path(
+    "teacher/generate-predictions/",
+    views.teacher_generate_predictions,
+    name="teacher_generate_predictions",
+),
+
 
 
 path("mentors/", views.mentor_list, name="mentor_list"),
