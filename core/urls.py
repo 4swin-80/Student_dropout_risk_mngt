@@ -178,6 +178,12 @@ path(
 ),
 
 path(
+    "admin/alerts/",
+    views.admin_alerts,
+    name="admin_alerts",
+),
+
+path(
     "teacher/generate-predictions/",
     views.teacher_generate_predictions,
     name="teacher_generate_predictions",
