@@ -475,6 +475,36 @@ def teacher_risk_scores(request):
     )
 
 
+
+# ============================================================
+# ADMIN - MONITOR STUDENT RISK SCORES
+# ============================================================
+
+@role_required("ADMIN")
+def admin_risk_scores(request):
+    """
+    Display saved dropout risk scores for all students.
+    """
+
+    risk_results = (
+        RiskPrediction.objects
+        .select_related("student")
+        .order_by("-prediction_date")
+    )
+
+    context = {
+        "risk_results": risk_results,
+        "total_students": risk_results.count(),
+    }
+
+    return render(
+        request,
+        "admin/risk_scores.html",
+        context,
+    )
+    
+
+
 # ============================================================
 # TEACHER - VIEW HIGH-RISK STUDENT ALERTS
 # ============================================================

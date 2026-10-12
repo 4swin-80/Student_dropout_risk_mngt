@@ -183,6 +183,14 @@ path(
     name="admin_alerts",
 ),
 
+
+path(
+    "admin/risk-scores/",
+    views.admin_risk_scores,
+    name="admin_risk_scores",
+),
+
+
 path(
     "teacher/generate-predictions/",
     views.teacher_generate_predictions,
