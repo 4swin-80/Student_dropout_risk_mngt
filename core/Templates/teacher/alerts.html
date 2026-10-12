@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Risk Alerts</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            min-height: 100vh;
+        }
+
+        .alert-card {
+            border: 0;
+            border-radius: 14px;
+        }
+
+        .alert-table th,
+        .alert-table td {
+            vertical-align: middle;
+            padding: 14px;
+        }
+
+        .risk-score {
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <!-- PAGE HEADER -->
+
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                Student Risk Alerts
+            </h2>
+
+            <p class="text-secondary mb-0">
+                Review students identified as having high or very high dropout risk.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'teacher_dashboard' %}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+    <!-- ALERT SUMMARY -->
+
+    <div class="card alert-card shadow-sm mb-4">
+
+        <div class="card-body p-4">
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="rounded-circle bg-danger-subtle
+                            text-danger p-3">
+                    <i class="bi bi-bell-fill fs-4"></i>
+                </div>
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        High-Risk Students
+                    </h5>
+
+                    <p class="text-secondary mb-0">
+                        Total students requiring attention:
+                        <strong>{{ total_alerts }}</strong>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- HIGH-RISK STUDENT TABLE -->
+
+    <div class="card alert-card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="p-4 border-bottom">
+                <h5 class="fw-bold mb-1">
+                    Risk Assessment Alerts
+                </h5>
+
+                <p class="text-secondary mb-0">
+                    Students with saved High or Very High risk predictions.
+                </p>
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover mb-0 alert-table">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Student ID</th>
+                            <th scope="col">Student</th>
+                            <th scope="col">Risk Score</th>
+                            <th scope="col">Risk Level</th>
+                            <th scope="col">Prediction Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for prediction in high_risk_predictions %}
+
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+
+                                <td>
+                                    {{ prediction.student.student_id }}
+                                </td>
+
+                                <td>
+                                    {{ prediction.student }}
+                                </td>
+
+                                <td class="risk-score text-danger">
+                                    {{ prediction.risk_score|floatformat:2 }}%
+                                </td>
+
+                                <td>
+                                    {% if prediction.risk_level == "Very High" %}
+                                        <span class="badge bg-dark">
+                                            Very High
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            High
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {{ prediction.prediction_date|date:"d M Y, h:i A" }}
+                                </td>
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+
+                                    <i class="bi bi-check-circle text-success fs-1"></i>
+
+                                    <h6 class="fw-bold mt-3">
+                                        No High-Risk Students
+                                    </h6>
+
+                                    <p class="text-secondary mb-0">
+                                        No students currently have a saved
+                                        High or Very High risk prediction.
+                                    </p>
+
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <p class="text-secondary small mt-3">
+        This page displays saved risk predictions. Generate or refresh
+        predictions from the Risk Scores page to update the results.
+    </p>
+
+</div>
+
+</body>
+</html>

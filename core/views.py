@@ -475,6 +475,36 @@ def teacher_risk_scores(request):
     )
 
 
+# ============================================================
+# TEACHER - VIEW HIGH-RISK STUDENT ALERTS
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_alerts(request):
+    """
+    Display students whose latest saved risk prediction
+    is High or Very High.
+    """
+
+    high_risk_predictions = (
+        RiskPrediction.objects
+        .filter(risk_level__in=["High", "Very High"])
+        .select_related("student")
+        .order_by("-prediction_date")
+    )
+
+    context = {
+        "high_risk_predictions": high_risk_predictions,
+        "total_alerts": high_risk_predictions.count(),
+    }
+
+    return render(
+        request,
+        "teacher/alerts.html",
+        context,
+    )
+
+
 
 # ============================================================
 # TEACHER - GENERATE RISK PREDICTIONS
