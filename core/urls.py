@@ -172,6 +172,13 @@ path(
 ),
 
 
+path(
+    "mentor/student-support/<int:support_id>/",
+    views.mentor_review_student_support,
+    name="mentor_review_student_support",
+),
+
+
 
 path(
     "teacher/risk-scores/",

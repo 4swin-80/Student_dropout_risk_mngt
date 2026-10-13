@@ -1312,6 +1312,51 @@ def mentor_student_support(request):
     )
 
 
+
+# ============================================================
+# MENTOR - REVIEW STUDENT SUPPORT REFERRAL
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_review_student_support(request, support_id):
+
+    try:
+        mentor = Mentor.objects.get(
+            user=request.user
+        )
+
+    except Mentor.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+
+        return redirect("mentor_dashboard")
+
+    support = get_object_or_404(
+        StudentSupport.objects.select_related(
+            "student",
+            "teacher",
+            "mentor",
+            "student__department",
+        ),
+        pk=support_id,
+        mentor=mentor,
+    )
+
+    context = {
+        "support": support,
+    }
+
+    return render(
+        request,
+        "mentor/review_student_support.html",
+        context
+    )
+
+
+
 # ============================================================
 # MENTOR - VIEW ASSIGNED STUDENT RISK SCORES
 # ============================================================
