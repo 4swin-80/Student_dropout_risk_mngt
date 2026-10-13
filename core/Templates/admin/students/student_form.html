@@ -293,76 +293,108 @@
 
 
                         <!-- ==========================
-                             ACADEMIC INFORMATION
-                        =========================== -->
+     ACADEMIC INFORMATION
+=========================== -->
 
-                        <h5 class="fw-bold mb-3">
-                            Academic Information
-                        </h5>
+<h5 class="fw-bold mb-3">
+    Academic Information
+</h5>
 
-                        <hr>
+<hr>
 
+<div class="row g-3 mb-4">
 
-                        <div class="row g-3 mb-4">
+    <!-- DEPARTMENT -->
+    <div class="col-md-6">
 
+        <label
+            for="{{ form.department.id_for_label }}"
+            class="form-label fw-semibold"
+        >
+            Department
+        </label>
 
-                            <div class="col-md-6">
+        {{ form.department }}
 
-                                <label
-                                    for="{{ form.department.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Department
-                                </label>
+        {% for error in form.department.errors %}
+            <div class="text-danger small mt-1">
+                {{ error }}
+            </div>
+        {% endfor %}
 
-                                {{ form.department }}
+    </div>
 
-                            </div>
+    <!-- COURSE -->
+    <div class="col-md-6">
 
+        <label
+            for="{{ form.course.id_for_label }}"
+            class="form-label fw-semibold"
+        >
+            Course
+        </label>
 
-                            <div class="col-md-6">
+        {{ form.course }}
 
-                                <label
-                                    for="{{ form.course.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Course
-                                </label>
+        {% for error in form.course.errors %}
+            <div class="text-danger small mt-1">
+                {{ error }}
+            </div>
+        {% endfor %}
 
-                                {{ form.course }}
+    </div>
 
-                            </div>
+    <!-- SEMESTER -->
+    <div class="col-md-6">
 
+        <label
+            for="{{ form.semester.id_for_label }}"
+            class="form-label fw-semibold"
+        >
+            Semester
+        </label>
 
-                            <div class="col-md-6">
+        {{ form.semester }}
 
-                                <label
-                                    for="{{ form.semester.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Semester
-                                </label>
+        {% for error in form.semester.errors %}
+            <div class="text-danger small mt-1">
+                {{ error }}
+            </div>
+        {% endfor %}
 
-                                {{ form.semester }}
+    </div>
 
-                            </div>
+    <!-- ASSIGNED MENTOR -->
+<div class="col-md-6">
 
+    <label
+        for="{{ form.mentor.id_for_label }}"
+        class="form-label fw-semibold"
+    >
+        Assigned Mentor
+    </label>
 
-                            <div class="col-md-6">
+    {{ form.mentor }}
 
-                                <label
-                                    for="{{ form.mentor.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Assigned Mentor
-                                </label>
+    <div id="mentor-help" class="form-text">
+        Select a department to check its assigned mentor.
+    </div>
 
-                                {{ form.mentor }}
+    <div
+        id="mentor-status"
+        class="small mt-1"
+        aria-live="polite"
+    ></div>
 
-                            </div>
+    {% for error in form.mentor.errors %}
+        <div class="text-danger small mt-1">
+            {{ error }}
+        </div>
+    {% endfor %}
 
+</div>
 
-                        </div>
+</div>
 
 
                         <!-- Buttons -->
@@ -405,6 +437,97 @@
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
+
+
+{{ mentor_options|json_script:"mentor-options-data" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const departmentField = document.getElementById(
+        "{{ form.department.id_for_label }}"
+    );
+
+    const mentorField = document.getElementById(
+        "{{ form.mentor.id_for_label }}"
+    );
+
+    const mentorHelp = document.getElementById("mentor-help");
+    const mentorStatus = document.getElementById("mentor-status");
+
+    const mentorOptions = JSON.parse(
+        document.getElementById("mentor-options-data").textContent
+    );
+
+    function updateMentor() {
+        const departmentId = departmentField.value;
+        const mentors = mentorOptions[departmentId] || [];
+
+        mentorField.innerHTML = "";
+
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+
+        if (!departmentId) {
+            placeholder.textContent = "Select a department first";
+        } else if (mentors.length === 0) {
+            placeholder.textContent = "No mentor available";
+        } else if (mentors.length > 1) {
+            placeholder.textContent = "Multiple mentors found";
+        } else {
+            placeholder.textContent = "Mentor assigned automatically";
+        }
+
+        mentorField.appendChild(placeholder);
+
+        if (mentors.length === 1) {
+            const option = document.createElement("option");
+
+            option.value = mentors[0].id;
+            option.textContent = mentors[0].label;
+            option.selected = true;
+
+            mentorField.appendChild(option);
+
+            mentorHelp.textContent =
+                "The mentor is assigned automatically based on the department.";
+
+            mentorStatus.textContent =
+                "Mentor assigned successfully.";
+
+            mentorStatus.className =
+                "text-success small mt-1";
+        } else if (mentors.length === 0 && departmentId) {
+            mentorHelp.textContent =
+                "Assign a mentor to this department before adding the student.";
+
+            mentorStatus.textContent =
+                "Cannot add a student without an assigned mentor.";
+
+            mentorStatus.className =
+                "text-danger small mt-1";
+        } else if (mentors.length > 1) {
+            mentorHelp.textContent =
+                "Only one mentor should be assigned to this department.";
+
+            mentorStatus.textContent =
+                "Multiple mentors found. Resolve the assignment before continuing.";
+
+            mentorStatus.className =
+                "text-danger small mt-1";
+        } else {
+            mentorHelp.textContent =
+                "Choose a department to find its assigned mentor.";
+
+            mentorStatus.textContent = "";
+        }
+    }
+
+    departmentField.addEventListener("change", updateMentor);
+
+    updateMentor();
+});
+</script>
+
 
 </body>
 

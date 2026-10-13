@@ -36,55 +36,47 @@ class StudentForm(forms.ModelForm):
         ]
 
         widgets = {
-
             "student_id": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter student ID",
                 }
             ),
-
             "first_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter first name",
                 }
             ),
-
             "last_name": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter last name",
                 }
             ),
-
             "date_of_birth": forms.DateInput(
                 attrs={
                     "class": "form-control",
                     "type": "date",
                 }
             ),
-
             "gender": forms.Select(
                 attrs={
                     "class": "form-select",
                 }
             ),
-
             "email": forms.EmailInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter email address",
                 }
             ),
-
             "phone": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter phone number",
                 }
             ),
-
             "address": forms.Textarea(
                 attrs={
                     "class": "form-control",
@@ -92,20 +84,17 @@ class StudentForm(forms.ModelForm):
                     "rows": 3,
                 }
             ),
-
             "department": forms.Select(
                 attrs={
                     "class": "form-select",
                 }
             ),
-
             "course": forms.TextInput(
                 attrs={
                     "class": "form-control",
                     "placeholder": "Enter course",
                 }
             ),
-
             "semester": forms.NumberInput(
                 attrs={
                     "class": "form-control",
@@ -113,13 +102,11 @@ class StudentForm(forms.ModelForm):
                     "min": "1",
                 }
             ),
-
             "mentor": forms.Select(
                 attrs={
                     "class": "form-select",
                 }
             ),
-
             "admission_date": forms.DateInput(
                 attrs={
                     "class": "form-control",
@@ -143,6 +130,85 @@ class StudentForm(forms.ModelForm):
             "mentor": "Assigned Mentor",
             "admission_date": "Admission Date",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        department_id = (
+            self.data.get(self.add_prefix("department"))
+            if self.is_bound
+            else self.instance.department_id
+        )
+
+        mentor_field = self.fields["mentor"]
+        mentor_field.queryset = Mentor.objects.none()
+        mentor_field.required = False
+        mentor_field.disabled = True
+
+        if department_id:
+            mentors = Mentor.objects.filter(
+                department_id=department_id
+            ).order_by("employee_id")
+
+            mentor_field.queryset = mentors
+
+            if mentors.count() == 1:
+                mentor_field.initial = mentors.first().pk
+
+    def clean(self):
+        cleaned_data = super().clean()
+        department = cleaned_data.get("department")
+
+        if not department:
+            cleaned_data["mentor"] = None
+            return cleaned_data
+
+        mentors = Mentor.objects.filter(
+            department=department
+        ).order_by("employee_id")
+
+        mentor_count = mentors.count()
+
+        if mentor_count == 0:
+            self.add_error(
+                "department",
+                "No mentor is assigned to this department. "
+                "Please assign a mentor before adding a student.",
+            )
+            cleaned_data["mentor"] = None
+
+        elif mentor_count > 1:
+            self.add_error(
+                "department",
+                "Multiple mentors are assigned to this department. "
+                "Please ensure exactly one mentor is assigned "
+                "before adding a student.",
+            )
+            cleaned_data["mentor"] = None
+
+        else:
+            cleaned_data["mentor"] = mentors.first()
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        student = super().save(commit=False)
+
+        department = self.cleaned_data.get("department")
+
+        if department:
+            mentor = Mentor.objects.filter(
+                department=department
+            ).first()
+
+            if mentor:
+                student.mentor = mentor
+
+        if commit:
+            student.save()
+            self.save_m2m()
+
+        return student
 
 
 class TeacherForm(forms.ModelForm):

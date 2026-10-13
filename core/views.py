@@ -1732,11 +1732,9 @@ def student_list(request):
 def student_create(request):
 
     if request.method == "POST":
-
         form = StudentForm(request.POST)
 
         if form.is_valid():
-
             form.save()
 
             messages.success(
@@ -1747,13 +1745,28 @@ def student_create(request):
             return redirect("student_list")
 
     else:
-
         form = StudentForm()
+
+    mentor_options = {}
+
+    for department in Department.objects.all():
+        mentors = Mentor.objects.filter(
+            department=department
+        ).order_by("employee_id")
+
+        mentor_options[str(department.pk)] = [
+            {
+                "id": mentor.pk,
+                "label": str(mentor),
+            }
+            for mentor in mentors
+        ]
 
     context = {
         "form": form,
         "page_title": "Add Student",
         "submit_text": "Add Student",
+        "mentor_options": mentor_options,
     }
 
     return render(
@@ -1794,14 +1807,12 @@ def student_update(request, student_id):
     )
 
     if request.method == "POST":
-
         form = StudentForm(
             request.POST,
             instance=student
         )
 
         if form.is_valid():
-
             form.save()
 
             messages.success(
@@ -1815,16 +1826,31 @@ def student_update(request, student_id):
             )
 
     else:
-
         form = StudentForm(
             instance=student
         )
+
+    mentor_options = {}
+
+    for department in Department.objects.all():
+        mentors = Mentor.objects.filter(
+            department=department
+        ).order_by("employee_id")
+
+        mentor_options[str(department.pk)] = [
+            {
+                "id": mentor.pk,
+                "label": str(mentor),
+            }
+            for mentor in mentors
+        ]
 
     context = {
         "form": form,
         "student": student,
         "page_title": "Edit Student",
         "submit_text": "Update Student",
+        "mentor_options": mentor_options,
     }
 
     return render(
