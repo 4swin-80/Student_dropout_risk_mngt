@@ -475,6 +475,7 @@ def teacher_risk_scores(request):
     )
 
 
+
 # ============================================================
 # TEACHER - STUDENT SUPPORT
 # ============================================================
@@ -483,7 +484,8 @@ def teacher_risk_scores(request):
 def teacher_student_support(request):
     """
     Display students with Medium, High, or Very High
-    current calculated dropout risk.
+    current calculated dropout risk, including their
+    latest mentor support referral status.
     """
 
     students = Student.objects.all().order_by("student_id")
@@ -494,10 +496,20 @@ def teacher_student_support(request):
         result = calculate_student_risk(student)
 
         if result["risk_level"] in ["Medium", "High", "Very High"]:
+
+            latest_referral = StudentSupport.objects.filter(
+                student=student
+            ).order_by("-created_at").first()
+
             risk_results.append({
                 "student": student,
                 "risk_score": result["risk_score"],
                 "risk_level": result["risk_level"],
+                "support_status": (
+                    latest_referral.status
+                    if latest_referral
+                    else None
+                ),
             })
 
     context = {
@@ -522,6 +534,7 @@ def teacher_student_support(request):
         "teacher/student_support.html",
         context,
     )
+
 
 # ============================================================
 # TEACHER - INDIVIDUAL STUDENT SUPPORT REPORT
@@ -572,6 +585,7 @@ def teacher_student_support_report(request, student_id):
         context,
     )
 
+
 # ============================================================
 # TEACHER - REFER STUDENT TO MENTOR
 # ============================================================
@@ -598,6 +612,27 @@ def teacher_refer_student_to_mentor(request, student_id):
             "This student does not currently qualify for a support referral.",
         )
         return redirect("teacher_student_support")
+
+    # Prevent a new referral while any previous referral
+    # for this student is not Completed.
+    active_referral_exists = StudentSupport.objects.filter(
+        student=student,
+    ).exclude(
+        status="Completed",
+    ).exists()
+
+    if active_referral_exists:
+        messages.warning(
+            request,
+            "This student already has an active support referral. "
+            "A new referral can be created only after the existing "
+            "referral is marked Completed by the mentor.",
+        )
+
+        return redirect(
+            "teacher_student_support_report",
+            student_id=student.pk,
+        )
 
     # Find the mentor assigned to the student's department.
     mentors = Mentor.objects.filter(
@@ -661,6 +696,7 @@ def teacher_refer_student_to_mentor(request, student_id):
         "teacher/refer_student_to_mentor.html",
         context,
     )
+
 
 
 # ============================================================
@@ -1355,6 +1391,63 @@ def mentor_review_student_support(request, support_id):
         context
     )
 
+
+
+# ============================================================
+# MENTOR - UPDATE STUDENT SUPPORT STATUS
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_update_student_support_status(request, support_id):
+
+    if request.method != "POST":
+        return redirect("mentor_student_support")
+
+    try:
+        mentor = Mentor.objects.get(
+            user=request.user
+        )
+
+    except Mentor.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+
+        return redirect("mentor_dashboard")
+
+    support = get_object_or_404(
+        StudentSupport,
+        pk=support_id,
+        mentor=mentor,
+    )
+
+    form = MentorStudentSupportStatusForm(
+        request.POST,
+        instance=support,
+    )
+
+    if form.is_valid():
+
+        form.save()
+
+        messages.success(
+            request,
+            "Student support referral status updated successfully."
+        )
+
+    else:
+
+        messages.error(
+            request,
+            "Unable to update the referral status. Please select a valid status."
+        )
+
+    return redirect(
+        "mentor_review_student_support",
+        support_id=support.pk,
+    )
 
 
 # ============================================================

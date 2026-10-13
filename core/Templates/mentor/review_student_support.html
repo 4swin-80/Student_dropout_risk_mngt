@@ -215,14 +215,22 @@
 
     </div>
 
-    <!-- CURRENT STATUS -->
-    <div class="card review-card mb-4">
+    
+<!-- CURRENT STATUS & STATUS MANAGEMENT -->
 
-        <div class="card-body p-4">
+<div class="card review-card mb-4">
 
-            <h5 class="section-title mb-3">
-                Current Referral Status
-            </h5>
+    <div class="card-body p-4">
+
+        <h5 class="section-title mb-3">
+            <i class="bi bi-arrow-repeat text-primary me-2"></i>
+            Referral Status Management
+        </h5>
+
+        <div class="mb-4">
+            <div class="detail-label mb-2">
+                Current Status
+            </div>
 
             {% if support.status == "Pending" %}
                 <span class="badge bg-warning text-dark fs-6">
@@ -249,15 +257,70 @@
                     {{ support.get_status_display }}
                 </span>
             {% endif %}
-
-            <p class="text-secondary mt-3 mb-0">
-                Referral status will be updated through the
-                mentor's status management action.
-            </p>
-
         </div>
 
+        <hr class="my-4">
+
+        <form
+            method="POST"
+            action="{% url 'mentor_update_student_support_status' support.pk %}"
+        >
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label
+                    for="id_status"
+                    class="form-label fw-semibold"
+                >
+                    Update Referral Status
+                </label>
+
+                <select
+                    name="status"
+                    id="id_status"
+                    class="form-select"
+                    required
+                >
+                    <option value="Pending" {% if support.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="Accepted" {% if support.status == "Accepted" %}selected{% endif %}>Accepted</option>
+                    <option value="In Progress" {% if support.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if support.status == "Completed" %}selected{% endif %}>Completed</option>
+                    <option value="Follow-up Required" {% if support.status == "Follow-up Required" %}selected{% endif %}>Follow-up Required</option>
+                </select>
+
+            </div>
+
+            <p class="text-secondary small">
+                Choose the appropriate status based on your review
+                and the progress of student support.
+            </p>
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    <i class="bi bi-check-circle me-1"></i>
+                    Update Status
+                </button>
+
+                <a
+                    href="{% url 'mentor_student_support' %}"
+                    class="btn btn-outline-secondary"
+                >
+                    Back to Referrals
+                </a>
+
+            </div>
+
+        </form>
+
     </div>
+
+</div>
 
     <div class="text-center text-secondary small mt-4">
         Student Dropout Risk Management System

@@ -725,4 +725,30 @@ class StudentSupportForm(forms.ModelForm):
                 "Please provide a reason for referring this student."
             )
 
-        return reason        
+        return reason   
+
+
+# ============================================================
+# MENTOR - UPDATE STUDENT SUPPORT STATUS
+# ============================================================
+
+class MentorStudentSupportStatusForm(forms.ModelForm):
+
+    class Meta:
+        model = StudentSupport
+
+        fields = [
+            "status",
+        ]
+
+        widgets = {
+            "status": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+        }
+
+        labels = {
+            "status": "Referral Status",
+        }
