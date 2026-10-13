@@ -572,6 +572,96 @@ def teacher_student_support_report(request, student_id):
         context,
     )
 
+# ============================================================
+# TEACHER - REFER STUDENT TO MENTOR
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_refer_student_to_mentor(request, student_id):
+
+    student = get_object_or_404(
+        Student,
+        pk=student_id,
+    )
+
+    # Only students with Medium, High, or Very High risk
+    # can be referred from the Student Support page.
+    risk_result = calculate_student_risk(student)
+
+    if risk_result["risk_level"] not in [
+        "Medium",
+        "High",
+        "Very High",
+    ]:
+        messages.error(
+            request,
+            "This student does not currently qualify for a support referral.",
+        )
+        return redirect("teacher_student_support")
+
+    # Find the mentor assigned to the student's department.
+    mentors = Mentor.objects.filter(
+        department=student.department,
+    ).order_by("employee_id")
+
+    if not student.department or mentors.count() != 1:
+        messages.error(
+            request,
+            "A referral cannot be created. Ensure exactly one mentor "
+            "is assigned to the student's department.",
+        )
+        return redirect(
+            "teacher_student_support_report",
+            student_id=student.pk,
+        )
+
+    mentor = mentors.first()
+
+    if request.method == "POST":
+
+        form = StudentSupportForm(request.POST)
+
+        if form.is_valid():
+
+            support = form.save(commit=False)
+
+            support.student = student
+            support.mentor = mentor
+            support.teacher = get_object_or_404(
+                Teacher,
+                user=request.user,
+            )
+            support.status = "Pending"
+
+            support.save()
+
+            messages.success(
+                request,
+                "Student support referral sent to the assigned mentor.",
+            )
+
+            return redirect(
+                "teacher_student_support_report",
+                student_id=student.pk,
+            )
+
+    else:
+        form = StudentSupportForm()
+
+    context = {
+        "form": form,
+        "student": student,
+        "mentor": mentor,
+        "risk_score": risk_result["risk_score"],
+        "risk_level": risk_result["risk_level"],
+    }
+
+    return render(
+        request,
+        "teacher/refer_student_to_mentor.html",
+        context,
+    )
+
 
 # ============================================================
 # ADMIN - MONITOR STUDENT RISK SCORES

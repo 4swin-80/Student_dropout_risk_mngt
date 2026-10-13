@@ -11,6 +11,7 @@ from .models import (
     AcademicPerformance,
     Assignment,
     ExamResult,
+    StudentSupport,
 )
 
 
@@ -668,3 +669,60 @@ class ExamResultForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+# ============================================================
+# TEACHER - REFER STUDENT TO MENTOR
+# ============================================================
+
+class StudentSupportForm(forms.ModelForm):
+
+    class Meta:
+        model = StudentSupport
+
+        fields = [
+            "support_type",
+            "reason",
+            "teacher_notes",
+        ]
+
+        widgets = {
+            "support_type": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+            "reason": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": (
+                        "Explain why this student needs support."
+                    ),
+                }
+            ),
+            "teacher_notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": (
+                        "Add any additional notes for the mentor (optional)."
+                    ),
+                }
+            ),
+        }
+
+        labels = {
+            "support_type": "Type of Support",
+            "reason": "Reason for Referral",
+            "teacher_notes": "Additional Notes for Mentor",
+        }
+
+    def clean_reason(self):
+        reason = self.cleaned_data.get("reason", "").strip()
+
+        if not reason:
+            raise forms.ValidationError(
+                "Please provide a reason for referring this student."
+            )
+
+        return reason        

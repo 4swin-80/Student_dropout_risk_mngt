@@ -211,6 +211,11 @@ path(
     name="teacher_student_support_report",
 ),
 
+path(
+    "teacher/student-support/refer/<int:student_id>/",
+    views.teacher_refer_student_to_mentor,
+    name="teacher_refer_student_to_mentor",
+),
 
 
 path(
