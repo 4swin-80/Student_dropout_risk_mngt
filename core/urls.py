@@ -199,6 +199,21 @@ path(
 
 
 path(
+    "teacher/student-support/",
+    views.teacher_student_support,
+    name="teacher_student_support",
+),
+
+
+path(
+    "teacher/student-support/report/<int:student_id>/",
+    views.teacher_student_support_report,
+    name="teacher_student_support_report",
+),
+
+
+
+path(
     "mentor/alerts/",
     views.mentor_risk_alerts,
     name="mentor_risk_alerts",

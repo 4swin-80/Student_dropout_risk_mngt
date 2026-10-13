@@ -390,3 +390,79 @@ class Intervention(models.Model):
 
     def __str__(self):
         return f"{self.student} - {self.intervention_type}"
+
+
+# ============================================================
+# TEACHER - STUDENT SUPPORT REFERRALS
+# ============================================================
+
+class StudentSupport(models.Model):
+
+    SUPPORT_TYPE_CHOICES = [
+        ("Remedial teaching", "Remedial Teaching"),
+        ("Doubt-clearing session", "Doubt-Clearing Session"),
+        ("Assignment assistance", "Assignment Assistance"),
+        ("Exam preparation", "Exam Preparation"),
+        ("Attendance counselling", "Attendance Counselling"),
+        ("Other academic support", "Other Academic Support"),
+    ]
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Accepted", "Accepted"),
+        ("In Progress", "In Progress"),
+        ("Completed", "Completed"),
+        ("Follow-up Required", "Follow-up Required"),
+    ]
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="support_referrals",
+    )
+
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="student_support_referrals",
+    )
+
+    mentor = models.ForeignKey(
+        Mentor,
+        on_delete=models.PROTECT,
+        related_name="student_support_referrals",
+    )
+
+    support_type = models.CharField(
+        max_length=50,
+        choices=SUPPORT_TYPE_CHOICES,
+    )
+
+    reason = models.TextField()
+
+    teacher_notes = models.TextField(
+        blank=True,
+    )
+
+    status = models.CharField(
+        max_length=30,
+        choices=STATUS_CHOICES,
+        default="Pending",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    def __str__(self):
+        return (
+            f"{self.student} - "
+            f"{self.support_type} - "
+            f"{self.status}"
+        )

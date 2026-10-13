@@ -15,6 +15,7 @@ from .models import (
     RiskPrediction,
     Alert,
     Intervention,
+    StudentSupport,
 )
 
 
@@ -313,3 +314,35 @@ class InterventionAdmin(admin.ModelAdmin):
     )
 
     ordering = ("-intervention_date",)
+
+
+@admin.register(StudentSupport)
+class StudentSupportAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "student",
+        "teacher",
+        "mentor",
+        "support_type",
+        "status",
+        "created_at",
+    )
+
+    list_filter = (
+        "support_type",
+        "status",
+        "created_at",
+    )
+
+    search_fields = (
+        "student__student_id",
+        "student__first_name",
+        "student__last_name",
+        "teacher__employee_id",
+        "mentor__employee_id",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )

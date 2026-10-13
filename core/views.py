@@ -475,6 +475,103 @@ def teacher_risk_scores(request):
     )
 
 
+# ============================================================
+# TEACHER - STUDENT SUPPORT
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_student_support(request):
+    """
+    Display students with Medium, High, or Very High
+    current calculated dropout risk.
+    """
+
+    students = Student.objects.all().order_by("student_id")
+
+    risk_results = []
+
+    for student in students:
+        result = calculate_student_risk(student)
+
+        if result["risk_level"] in ["Medium", "High", "Very High"]:
+            risk_results.append({
+                "student": student,
+                "risk_score": result["risk_score"],
+                "risk_level": result["risk_level"],
+            })
+
+    context = {
+        "risk_results": risk_results,
+        "total_students": len(risk_results),
+        "medium_count": sum(
+            1 for item in risk_results
+            if item["risk_level"] == "Medium"
+        ),
+        "high_count": sum(
+            1 for item in risk_results
+            if item["risk_level"] == "High"
+        ),
+        "very_high_count": sum(
+            1 for item in risk_results
+            if item["risk_level"] == "Very High"
+        ),
+    }
+
+    return render(
+        request,
+        "teacher/student_support.html",
+        context,
+    )
+
+# ============================================================
+# TEACHER - INDIVIDUAL STUDENT SUPPORT REPORT
+# ============================================================
+
+@role_required("TEACHER")
+def teacher_student_support_report(request, student_id):
+    """
+    Display a student's current risk score and academic records.
+    """
+
+    student = get_object_or_404(
+        Student,
+        pk=student_id,
+    )
+
+    risk_result = calculate_student_risk(student)
+
+    attendance_records = Attendance.objects.filter(
+        student=student
+    ).order_by("-date")
+
+    academic_records = AcademicPerformance.objects.filter(
+        student=student
+    ).order_by("subject")
+
+    assignment_records = Assignment.objects.filter(
+        student=student
+    ).order_by("-created_at")
+
+    exam_records = ExamResult.objects.filter(
+        student=student
+    ).order_by("-exam_date", "subject")
+
+    context = {
+        "student": student,
+        "risk_score": risk_result["risk_score"],
+        "risk_level": risk_result["risk_level"],
+        "attendance_records": attendance_records,
+        "academic_records": academic_records,
+        "assignment_records": assignment_records,
+        "exam_records": exam_records,
+    }
+
+    return render(
+        request,
+        "teacher/student_support_report.html",
+        context,
+    )
+
 
 # ============================================================
 # ADMIN - MONITOR STUDENT RISK SCORES

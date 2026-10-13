@@ -1,0 +1,392 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Support Report | {{ student.student_id }}</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .report-card {
+            border: 0;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: #263247;
+        }
+
+        .table th {
+            white-space: nowrap;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .report-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-4 py-lg-5">
+
+    <!-- HEADER -->
+    <div class="d-flex flex-wrap justify-content-between
+                align-items-center gap-3 mb-4 no-print">
+
+        <div>
+            <h2 class="fw-bold mb-1">Student Support Report</h2>
+            <p class="text-secondary mb-0">
+                Student academic and risk overview
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button
+                type="button"
+                class="btn btn-outline-primary"
+                onclick="window.print()"
+            >
+                <i class="bi bi-printer me-1"></i>
+                Print Report
+            </button>
+
+            <a
+                href="{% url 'teacher_student_support' %}"
+                class="btn btn-primary"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+                Back
+            </a>
+        </div>
+
+    </div>
+
+    <!-- STUDENT DETAILS -->
+    <div class="card report-card mb-4">
+        <div class="card-body p-4">
+
+            <div class="row g-4 align-items-center">
+
+                <div class="col-md-8">
+                    <p class="text-secondary mb-1">Student</p>
+
+                    <h3 class="fw-bold mb-2">
+                        {{ student.first_name }} {{ student.last_name }}
+                    </h3>
+
+                    <div class="row g-2">
+                        <div class="col-sm-6">
+                            <span class="text-secondary">Student ID:</span>
+                            <strong>{{ student.student_id }}</strong>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <span class="text-secondary">Department:</span>
+                            <strong>
+                                {{ student.department|default:"Not assigned" }}
+                            </strong>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <span class="text-secondary">Course:</span>
+                            <strong>
+                                {{ student.course|default:"Not specified" }}
+                            </strong>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <span class="text-secondary">Semester:</span>
+                            <strong>
+                                {{ student.semester|default:"Not specified" }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="bg-light rounded-3 p-3 text-center">
+
+                        <p class="text-secondary mb-1">
+                            Current Calculated Risk Score
+                        </p>
+
+                        <h2 class="fw-bold mb-2">
+                            {{ risk_score }}%
+                        </h2>
+
+                        {% if risk_level == "Very High" %}
+                            <span class="badge bg-dark fs-6">Very High Risk</span>
+                        {% elif risk_level == "High" %}
+                            <span class="badge bg-danger fs-6">High Risk</span>
+                        {% elif risk_level == "Medium" %}
+                            <span class="badge bg-warning text-dark fs-6">Medium Risk</span>
+                        {% elif risk_level == "Low" %}
+                            <span class="badge bg-info text-dark fs-6">Low Risk</span>
+                        {% else %}
+                            <span class="badge bg-success fs-6">Very Low Risk</span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div class="card report-card mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="section-title mb-3">
+                <i class="bi bi-calendar-check text-primary me-2"></i>
+                Attendance Records
+            </h5>
+
+            {% if attendance_records %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Classes Conducted</th>
+                                <th>Classes Attended</th>
+                                <th>Attendance Percentage</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in attendance_records %}
+                                <tr>
+                                    <td>{{ record.date|date:"d M Y" }}</td>
+                                    <td>{{ record.classes_conducted }}</td>
+                                    <td>{{ record.classes_attended }}</td>
+                                    <td>{{ record.attendance_percentage }}%</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">
+                    No attendance records available.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ACADEMIC PERFORMANCE -->
+    <div class="card report-card mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="section-title mb-3">
+                <i class="bi bi-journal-text text-primary me-2"></i>
+                Academic Performance
+            </h5>
+
+            {% if academic_records %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Subject</th>
+                                <th>Internal Marks</th>
+                                <th>Total Internal Marks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in academic_records %}
+                                <tr>
+                                    <td>{{ record.subject }}</td>
+                                    <td>{{ record.internal_marks }}</td>
+                                    <td>{{ record.total_internal_marks }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">
+                    No academic performance records available.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- ASSIGNMENTS -->
+    <div class="card report-card mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="section-title mb-3">
+                <i class="bi bi-clipboard-check text-primary me-2"></i>
+                Assignment Records
+            </h5>
+
+            {% if assignment_records %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Title</th>
+                                <th>Subject</th>
+                                <th>Submission Date</th>
+                                <th>Status</th>
+                                <th>Marks (Out of 20)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in assignment_records %}
+                                <tr>
+                                    <td>{{ record.title }}</td>
+                                    <td>{{ record.subject }}</td>
+
+                                    <td>
+                                        {% if record.submission_date %}
+                                            {{ record.submission_date|date:"d M Y" }}
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if record.status == "Submitted" %}
+                                            <span class="badge bg-success">
+                                                Submitted
+                                            </span>
+                                        {% elif record.status == "Late" %}
+                                            <span class="badge bg-warning text-dark">
+                                                Late
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if record.marks != None %}
+                                            {{ record.marks }} / 20
+                                        {% else %}
+                                            Not graded
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">
+                    No assignment records available.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- EXAMINATION RESULTS -->
+    <div class="card report-card mb-4">
+        <div class="card-body p-4">
+
+            <h5 class="section-title mb-3">
+                <i class="bi bi-mortarboard text-primary me-2"></i>
+                Examination Results
+            </h5>
+
+            {% if exam_records %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Exam Date</th>
+                                <th>Marks Obtained</th>
+                                <th>Total Marks</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for record in exam_records %}
+                                <tr>
+                                    <td>{{ record.exam_name }}</td>
+                                    <td>{{ record.subject }}</td>
+
+                                    <td>
+                                        {% if record.exam_date %}
+                                            {{ record.exam_date|date:"d M Y" }}
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ record.marks_obtained }}</td>
+                                    <td>{{ record.total_marks }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">
+                    No examination result records available.
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="text-center text-secondary small mt-4">
+        Risk score is calculated using the system's existing
+        rule-based risk calculation.
+    </div>
+
+</div>
+
+</body>
+</html>
