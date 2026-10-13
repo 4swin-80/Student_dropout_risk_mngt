@@ -1262,6 +1262,56 @@ def mentor_assigned_students(request):
 
 
 
+
+# ============================================================
+# MENTOR - STUDENT SUPPORT & INTERVENTIONS
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_student_support(request):
+
+    try:
+        mentor = Mentor.objects.get(
+            user=request.user
+        )
+
+    except Mentor.DoesNotExist:
+
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+
+        return redirect("mentor_dashboard")
+
+    support_referrals = (
+        StudentSupport.objects
+        .filter(mentor=mentor)
+        .select_related(
+            "student",
+            "teacher",
+            "mentor",
+            "student__department",
+        )
+        .order_by("-created_at")
+    )
+
+    pending_count = support_referrals.filter(
+        status="Pending"
+    ).count()
+
+    context = {
+        "support_referrals": support_referrals,
+        "pending_count": pending_count,
+    }
+
+    return render(
+        request,
+        "mentor/student_support.html",
+        context
+    )
+
+
 # ============================================================
 # MENTOR - VIEW ASSIGNED STUDENT RISK SCORES
 # ============================================================

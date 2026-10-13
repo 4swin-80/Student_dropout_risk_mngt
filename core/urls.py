@@ -166,6 +166,14 @@ path(
 
 
 path(
+    "mentor/student-support/",
+    views.mentor_student_support,
+    name="mentor_student_support",
+),
+
+
+
+path(
     "teacher/risk-scores/",
     views.teacher_risk_scores,
     name="teacher_risk_scores",
