@@ -245,7 +245,26 @@ path(
     name="mentor_risk_alerts",
 ),
 
-
+path(
+    "mentor/track-follow-ups/",
+    views.mentor_track_follow_ups,
+    name="mentor_track_follow_ups",
+),
+path(
+    "mentor/track-follow-ups/schedule/<int:support_id>/",
+    views.mentor_schedule_follow_up,
+    name="mentor_schedule_follow_up",
+),
+path(
+    "mentor/track-follow-ups/<int:follow_up_id>/",
+    views.mentor_follow_up_detail,
+    name="mentor_follow_up_detail",
+),
+path(
+    "mentor/track-follow-ups/<int:follow_up_id>/complete/",
+    views.mentor_complete_follow_up,
+    name="mentor_complete_follow_up",
+),
 
 
 path(

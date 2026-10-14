@@ -16,6 +16,7 @@ from .models import (
     Alert,
     Intervention,
     StudentSupport,
+    StudentSupportFollowUp,
 )
 
 
@@ -346,3 +347,35 @@ class StudentSupportAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     )
+
+@admin.register(StudentSupportFollowUp)
+class StudentSupportFollowUpAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "referral",
+        "scheduled_date",
+        "status",
+        "created_at",
+        "updated_at",
+    )
+
+    list_filter = (
+        "status",
+        "scheduled_date",
+        "created_at",
+    )
+
+    search_fields = (
+        "referral__student__student_id",
+        "referral__student__first_name",
+        "referral__student__last_name",
+        "notes",
+        "outcome",
+    )
+
+    readonly_fields = (
+        "created_at",
+        "updated_at",
+    )
+
+    date_hierarchy = "scheduled_date"    

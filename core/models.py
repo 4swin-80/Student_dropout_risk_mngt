@@ -466,3 +466,55 @@ class StudentSupport(models.Model):
             f"{self.support_type} - "
             f"{self.status}"
         )
+
+
+# ============================================================
+# MENTOR - STUDENT SUPPORT FOLLOW-UP TRACKING
+# ============================================================
+
+class StudentSupportFollowUp(models.Model):
+
+    STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Completed", "Completed"),
+    ]
+
+    referral = models.ForeignKey(
+        StudentSupport,
+        on_delete=models.CASCADE,
+        related_name="follow_ups",
+    )
+
+    scheduled_date = models.DateField()
+
+    notes = models.TextField(
+        blank=True,
+    )
+
+    outcome = models.TextField(
+        blank=True,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="Pending",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    class Meta:
+        ordering = ["scheduled_date", "-created_at"]
+
+    def __str__(self):
+        return (
+            f"{self.referral.student} - "
+            f"Follow-up on {self.scheduled_date} - "
+            f"{self.status}"
+        )

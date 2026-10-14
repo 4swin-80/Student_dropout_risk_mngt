@@ -2,6 +2,7 @@ from .risk_utils import (
     calculate_student_risk,
     generate_risk_prediction,
 )
+from datetime import date
 from django.contrib import messages
 from decimal import Decimal
 from functools import wraps
@@ -2165,4 +2166,256 @@ def student_delete(request, student_id):
         request,
         "admin/students/student_confirm_delete.html",
         context
+    )
+
+
+# ============================================================
+# MENTOR - TRACK STUDENT SUPPORT FOLLOW-UPS
+# ============================================================
+
+@role_required("MENTOR")
+def mentor_track_follow_ups(request):
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    today = date.today()
+
+    # Retrieve follow-ups assigned to the logged-in mentor.
+    follow_ups = (
+        StudentSupportFollowUp.objects.filter(
+            referral__mentor=mentor
+        )
+        .select_related(
+            "referral",
+            "referral__student",
+            "referral__teacher",
+            "referral__mentor",
+        )
+    )
+
+    # Read filter parameters.
+    selected_status = request.GET.get("status", "").strip()
+    selected_student = request.GET.get("student", "").strip()
+    selected_date = request.GET.get("date", "").strip()
+
+    # Apply status filter.
+    if selected_status == "Overdue":
+        follow_ups = follow_ups.filter(
+            status="Pending",
+            scheduled_date__lt=today,
+        )
+    elif selected_status in ["Pending", "Completed"]:
+        follow_ups = follow_ups.filter(
+            status=selected_status
+        )
+
+    # Apply student filter.
+    if selected_student.isdigit():
+        follow_ups = follow_ups.filter(
+            referral__student_id=int(selected_student)
+        )
+
+    # Apply scheduled-date filter.
+    if selected_date:
+        follow_ups = follow_ups.filter(
+            scheduled_date=selected_date
+        )
+
+    # Calculate summary counts for all follow-ups
+    # assigned to this mentor, independent of filters.
+    mentor_follow_ups = StudentSupportFollowUp.objects.filter(
+        referral__mentor=mentor
+    )
+
+    pending_count = mentor_follow_ups.filter(
+        status="Pending"
+    ).count()
+
+    completed_count = mentor_follow_ups.filter(
+        status="Completed"
+    ).count()
+
+    overdue_count = mentor_follow_ups.filter(
+        status="Pending",
+        scheduled_date__lt=today,
+    ).count()
+
+    upcoming_count = mentor_follow_ups.filter(
+        status="Pending",
+        scheduled_date__gte=today,
+    ).count()
+
+    # Retrieve students who have follow-up records
+    # under referrals assigned to this mentor.
+    students = (
+        Student.objects.filter(
+            support_referrals__mentor=mentor,
+            support_referrals__follow_ups__isnull=False,
+        )
+        .distinct()
+        .order_by("first_name", "last_name")
+    )
+
+    context = {
+        "follow_ups": follow_ups.order_by(
+            "scheduled_date",
+            "-created_at",
+        ),
+        "students": students,
+        "selected_status": selected_status,
+        "selected_student": selected_student,
+        "selected_date": selected_date,
+        "pending_count": pending_count,
+        "completed_count": completed_count,
+        "overdue_count": overdue_count,
+        "upcoming_count": upcoming_count,
+        "today": today,
+    }
+
+    return render(
+        request,
+        "mentor/track_follow_ups.html",
+        context,
+    )
+
+
+@role_required("MENTOR")
+def mentor_schedule_follow_up(request, support_id):
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    referral = get_object_or_404(
+        StudentSupport.objects.select_related("student", "mentor"),
+        pk=support_id,
+        mentor=mentor,
+    )
+
+    if request.method == "POST":
+        form = StudentSupportFollowUpForm(request.POST)
+
+        if form.is_valid():
+            follow_up = form.save(commit=False)
+            follow_up.referral = referral
+            follow_up.status = "Pending"
+            follow_up.save()
+
+            messages.success(
+                request,
+                "Follow-up scheduled successfully."
+            )
+            return redirect(
+                "mentor_track_follow_ups"
+            )
+    else:
+        form = StudentSupportFollowUpForm()
+
+    context = {
+        "form": form,
+        "referral": referral,
+    }
+
+    return render(
+        request,
+        "mentor/schedule_follow_up.html",
+        context,
+    )
+
+
+@role_required("MENTOR")
+def mentor_follow_up_detail(request, follow_up_id):
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    follow_up = get_object_or_404(
+        StudentSupportFollowUp.objects.select_related(
+            "referral",
+            "referral__student",
+            "referral__teacher",
+            "referral__mentor",
+        ),
+        pk=follow_up_id,
+        referral__mentor=mentor,
+    )
+
+    return render(
+    request,
+    "mentor/follow_up_detail.html",
+    {
+        "follow_up": follow_up,
+        "today": date.today(),
+    },
+)
+
+
+@role_required("MENTOR")
+def mentor_complete_follow_up(request, follow_up_id):
+    if request.method != "POST":
+        return redirect("mentor_track_follow_ups")
+
+    try:
+        mentor = Mentor.objects.get(user=request.user)
+    except Mentor.DoesNotExist:
+        messages.error(
+            request,
+            "Your mentor profile has not been created yet."
+        )
+        return redirect("mentor_dashboard")
+
+    follow_up = get_object_or_404(
+        StudentSupportFollowUp,
+        pk=follow_up_id,
+        referral__mentor=mentor,
+    )
+
+    if follow_up.status == "Completed":
+        messages.warning(
+            request,
+            "This follow-up has already been completed."
+        )
+        return redirect(
+            "mentor_follow_up_detail",
+            follow_up_id=follow_up.pk,
+        )
+
+    form = CompleteStudentSupportFollowUpForm(
+        request.POST,
+        instance=follow_up,
+    )
+
+    if form.is_valid():
+        completed_follow_up = form.save(commit=False)
+        completed_follow_up.status = "Completed"
+        completed_follow_up.save()
+
+        messages.success(
+            request,
+            "Follow-up notes and outcome saved successfully."
+        )
+    else:
+        messages.error(
+            request,
+            "Please provide both follow-up notes and an outcome."
+        )
+
+    return redirect(
+        "mentor_follow_up_detail",
+        follow_up_id=follow_up.pk,
     )

@@ -12,6 +12,7 @@ from .models import (
     Assignment,
     ExamResult,
     StudentSupport,
+    StudentSupportFollowUp,
 )
 
 
@@ -752,3 +753,86 @@ class MentorStudentSupportStatusForm(forms.ModelForm):
         labels = {
             "status": "Referral Status",
         }
+
+
+class StudentSupportFollowUpForm(forms.ModelForm):
+    class Meta:
+        model = StudentSupportFollowUp
+        fields = ["scheduled_date", "notes"]
+        widgets = {
+            "scheduled_date": forms.DateInput(
+                attrs={
+                    "type": "date",
+                    "class": "form-control",
+                }
+            ),
+            "notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "Enter follow-up notes (optional)",
+                }
+            ),
+        }
+        labels = {
+            "scheduled_date": "Scheduled Follow-up Date",
+            "notes": "Initial Notes",
+        }
+
+    def clean_scheduled_date(self):
+        from datetime import date
+
+        scheduled_date = self.cleaned_data["scheduled_date"]
+
+        if scheduled_date < date.today():
+            raise forms.ValidationError(
+                "The scheduled follow-up date cannot be in the past."
+            )
+
+        return scheduled_date
+
+
+class CompleteStudentSupportFollowUpForm(forms.ModelForm):
+    class Meta:
+        model = StudentSupportFollowUp
+        fields = ["notes", "outcome"]
+        widgets = {
+            "notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "Describe what was discussed or done",
+                }
+            ),
+            "outcome": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "Record the follow-up result or outcome",
+                }
+            ),
+        }
+        labels = {
+            "notes": "Follow-up Notes",
+            "outcome": "Outcome / Result",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        notes = cleaned_data.get("notes", "").strip()
+        outcome = cleaned_data.get("outcome", "").strip()
+
+        if not notes:
+            self.add_error(
+                "notes",
+                "Follow-up notes are required before completion.",
+            )
+
+        if not outcome:
+            self.add_error(
+                "outcome",
+                "The follow-up outcome is required before completion.",
+            )
+
+        return cleaned_data
