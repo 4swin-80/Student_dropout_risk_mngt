@@ -2285,6 +2285,7 @@ def mentor_track_follow_ups(request):
     )
 
 
+
 @role_required("MENTOR")
 def mentor_schedule_follow_up(request, support_id):
     try:
@@ -2311,13 +2312,16 @@ def mentor_schedule_follow_up(request, support_id):
             follow_up.status = "Pending"
             follow_up.save()
 
+            # Update the parent referral status automatically.
+            referral.status = "Follow-up Required"
+            referral.save()
+
             messages.success(
                 request,
-                "Follow-up scheduled successfully."
+                "Follow-up scheduled successfully. "
+                "Referral status updated to Follow-up Required."
             )
-            return redirect(
-                "mentor_track_follow_ups"
-            )
+            return redirect("mentor_track_follow_ups")
     else:
         form = StudentSupportFollowUpForm()
 
@@ -2365,6 +2369,7 @@ def mentor_follow_up_detail(request, follow_up_id):
 )
 
 
+
 @role_required("MENTOR")
 def mentor_complete_follow_up(request, follow_up_id):
     if request.method != "POST":
@@ -2380,7 +2385,7 @@ def mentor_complete_follow_up(request, follow_up_id):
         return redirect("mentor_dashboard")
 
     follow_up = get_object_or_404(
-        StudentSupportFollowUp,
+        StudentSupportFollowUp.objects.select_related("referral"),
         pk=follow_up_id,
         referral__mentor=mentor,
     )
@@ -2405,9 +2410,15 @@ def mentor_complete_follow_up(request, follow_up_id):
         completed_follow_up.status = "Completed"
         completed_follow_up.save()
 
+        # Automatically complete the associated referral.
+        referral = completed_follow_up.referral
+        referral.status = "Completed"
+        referral.save()
+
         messages.success(
             request,
-            "Follow-up notes and outcome saved successfully."
+            "Follow-up completed successfully. "
+            "The associated referral status is now Completed."
         )
     else:
         messages.error(
