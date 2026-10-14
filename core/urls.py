@@ -211,6 +211,30 @@ path(
     name="admin_risk_scores",
 ),
 
+path(
+    "admin/reports/",
+    views.admin_reports,
+    name="admin_reports",
+),
+
+path(
+    "admin/reports/data/",
+    views.admin_reports_data,
+    name="admin_reports_data",
+),
+
+path(
+    "admin/reports/export/csv/",
+    views.admin_reports_export_csv,
+    name="admin_reports_export_csv",
+),
+
+path(
+    "admin/reports/export/excel/",
+    views.admin_reports_export_excel,
+    name="admin_reports_export_excel",
+),
+
 
 path(
     "mentor/risk-scores/",

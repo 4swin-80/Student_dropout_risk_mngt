@@ -129,7 +129,7 @@
                 Alerts
             </a>
 
-            <a href="#reports"
+            <a href="{% url 'admin_reports' %}"
                class="nav-link">
                 Reports & Analytics
             </a>
@@ -579,9 +579,9 @@
 
                         <div class="card function-card h-100 border-dark">
 
-                            <div class="card-body">
+                            <div class="card-body d-flex flex-column">
 
-                                <span class="badge bg-dark mb-3">
+                                <span class="badge bg-dark mb-3 align-self-start">
                                     Analytics
                                 </span>
 
@@ -593,6 +593,18 @@
                                     Monitor student performance,
                                     dropout risk and intervention results.
                                 </p>
+
+                                <div class="mt-auto">
+
+                                    <a
+                                        href="{% url 'admin_reports' %}"
+                                        class="btn btn-dark"
+                                    >
+                                        <i class="bi bi-graph-up-arrow me-1"></i>
+                                        View Reports & Analytics
+                                    </a>
+
+                                </div>
 
                             </div>
 

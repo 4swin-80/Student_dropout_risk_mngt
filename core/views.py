@@ -15,8 +15,16 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
+from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
 from .forms import *
 from .models import *
+from .reports_utils import (
+    build_full_report_data,
+    get_filter_options,
+    generate_csv_report,
+    generate_excel_report,
+)
 
 
 # ============================================================
@@ -2430,3 +2438,103 @@ def mentor_complete_follow_up(request, follow_up_id):
         "mentor_follow_up_detail",
         follow_up_id=follow_up.pk,
     )
+
+
+# ============================================================
+# ADMINISTRATOR - REPORTS & ANALYTICS
+# ============================================================
+
+@role_required("ADMIN")
+def admin_reports(request):
+    """
+    Render dedicated Reports & Analytics dashboard page for administrators.
+    """
+    filter_options = get_filter_options()
+    context = {
+        "departments": filter_options["departments"],
+        "courses": filter_options["courses"],
+        "semesters": filter_options["semesters"],
+    }
+    return render(
+        request,
+        "admin/reports.html",
+        context,
+    )
+
+
+@role_required("ADMIN")
+def admin_reports_data(request):
+    """
+    Provide JSON analytics data for dynamic dashboard filtering and Chart.js.
+    """
+    department_id = request.GET.get("department")
+    course = request.GET.get("course")
+    semester = request.GET.get("semester")
+
+    report_data = build_full_report_data(
+        department_id=department_id,
+        course=course,
+        semester=semester,
+    )
+
+    return JsonResponse(report_data, safe=False)
+
+
+@role_required("ADMIN")
+def admin_reports_export_csv(request):
+    """
+    Export current aggregate report data as a downloadable CSV.
+    Enforces active filters and formula-injection sanitization.
+    """
+    department_id = request.GET.get("department")
+    course = request.GET.get("course")
+    semester = request.GET.get("semester")
+
+    report_data = build_full_report_data(
+        department_id=department_id,
+        course=course,
+        semester=semester,
+    )
+
+    csv_content = generate_csv_report(report_data)
+    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"student_dropout_risk_report_{timestamp}.csv"
+
+    response = HttpResponse(
+        csv_content,
+        content_type="text/csv; charset=utf-8",
+    )
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
+
+
+@role_required("ADMIN")
+def admin_reports_export_excel(request):
+    """
+    Export current aggregate report data as a multi-sheet Excel (.xlsx) workbook.
+    """
+    department_id = request.GET.get("department")
+    course = request.GET.get("course")
+    semester = request.GET.get("semester")
+
+    report_data = build_full_report_data(
+        department_id=department_id,
+        course=course,
+        semester=semester,
+    )
+
+    try:
+        excel_bytes = generate_excel_report(report_data)
+    except RuntimeError as e:
+        messages.error(request, str(e))
+        return redirect("admin_reports")
+
+    timestamp = timezone.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"student_dropout_risk_report_{timestamp}.xlsx"
+
+    response = HttpResponse(
+        excel_bytes,
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response

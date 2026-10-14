@@ -1,0 +1,1085 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics | Administrator Dashboard</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Chart.js 4.4.4 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .metric-card {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+        }
+        .chart-card {
+            border: 0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        .chart-container {
+            position: relative;
+            min-height: 260px;
+            width: 100%;
+        }
+        .empty-chart-placeholder {
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 0.95rem;
+            text-align: center;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .filter-panel {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .badge-kpi {
+            font-weight: 500;
+            font-size: 0.85rem;
+            padding: 0.4em 0.75em;
+        }
+        .table-responsive {
+            border-radius: 8px;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.65);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Spinner Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading analytics...</span>
+        </div>
+    </div>
+
+    <div class="container-fluid px-lg-5 py-4">
+
+        <!-- ================= SECTION A: PAGE HEADER ================= -->
+        <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+            <div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-1 small">
+                        <li class="breadcrumb-item"><a href="{% url 'admin_dashboard' %}" class="text-decoration-none text-muted">Admin Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Reports & Analytics</li>
+                    </ol>
+                </nav>
+                <h2 class="fw-bold mb-1">
+                    <i class="bi bi-graph-up-arrow text-primary me-2"></i>Reports & Analytics
+                </h2>
+                <p class="text-muted mb-0">
+                    Comprehensive dropout risk analytics, performance aggregates, trends, and exportable reports.
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-light text-secondary border px-3 py-2" id="lastRefreshedBadge">
+                    <i class="bi bi-clock me-1"></i>Last Refreshed: <span id="lastRefreshedTime">Just now</span>
+                </span>
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- ================= SECTION B: GLOBAL FILTERS ================= -->
+        <section class="filter-panel p-3 p-md-4 mb-4 border">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <h6 class="fw-bold mb-0"><i class="bi bi-funnel me-1 text-primary"></i>Global Cohort Filters</h6>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" id="activeFilterPill">
+                        All Students
+                    </span>
+                </div>
+                <!-- ================= SECTION J: EXPORT ACTIONS ================= -->
+                <div class="d-flex gap-2">
+                    <a href="{% url 'admin_reports_export_csv' %}" id="exportCsvBtn" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-file-earmark-spreadsheet me-1"></i>Export CSV
+                    </a>
+                    <a href="{% url 'admin_reports_export_excel' %}" id="exportExcelBtn" class="btn btn-sm btn-success">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+                    </a>
+                </div>
+            </div>
+
+            <form id="filterForm" class="row g-3">
+                <div class="col-md-4 col-sm-6">
+                    <label for="filterDepartment" class="form-label small text-muted fw-semibold mb-1">Department</label>
+                    <select id="filterDepartment" class="form-select form-select-sm">
+                        <option value="">All Departments</option>
+                        {% for dep in departments %}
+                            <option value="{{ dep.id }}">{{ dep.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 col-sm-6">
+                    <label for="filterCourse" class="form-label small text-muted fw-semibold mb-1">Course</label>
+                    <select id="filterCourse" class="form-select form-select-sm">
+                        <option value="">All Courses</option>
+                        {% for crs in courses %}
+                            <option value="{{ crs }}">{{ crs }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 col-sm-6">
+                    <label for="filterSemester" class="form-label small text-muted fw-semibold mb-1">Semester</label>
+                    <select id="filterSemester" class="form-select form-select-sm">
+                        <option value="">All Semesters</option>
+                        {% for sem in semesters %}
+                            <option value="{{ sem }}">Semester {{ sem }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 col-sm-6 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-sm btn-primary w-100">
+                        <i class="bi bi-check2-circle me-1"></i>Apply Filters
+                    </button>
+                    <button type="button" id="resetFiltersBtn" class="btn btn-sm btn-outline-secondary w-100">
+                        <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Empty State Alert (shown when 0 students match) -->
+        <div id="emptyCohortAlert" class="alert alert-warning d-none align-items-center gap-2 mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+            <div>
+                <strong>No student records match the selected filter criteria.</strong> Displaying aggregate empty states. Try broadening your filter selection.
+            </div>
+        </div>
+
+        <!-- ================= SECTION C: SUMMARY CARDS ================= -->
+        <section class="row g-3 mb-4">
+            <!-- Total Students -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">Total Students</span>
+                        <div class="metric-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0" id="cardTotalStudents">—</h3>
+                    <small class="text-muted mt-1">Filtered cohort</small>
+                </div>
+            </div>
+
+            <!-- High Risk Students -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">High Risk</span>
+                        <div class="metric-icon bg-warning-subtle text-warning">
+                            <i class="bi bi-exclamation-circle"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-warning" id="cardHighRisk">—</h3>
+                    <small class="text-muted mt-1">Score: 60.01 - 80.00</small>
+                </div>
+            </div>
+
+            <!-- Very High Risk Students -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">Very High Risk</span>
+                        <div class="metric-icon bg-danger-subtle text-danger">
+                            <i class="bi bi-shield-slash"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-danger" id="cardVeryHighRisk">—</h3>
+                    <small class="text-muted mt-1">Score: 80.01 - 100.00</small>
+                </div>
+            </div>
+
+            <!-- Average Risk Score -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">Avg Risk Score</span>
+                        <div class="metric-icon bg-info-subtle text-info">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0" id="cardAvgRiskScore">—</h3>
+                    <small class="text-muted mt-1">Latest predictions</small>
+                </div>
+            </div>
+
+            <!-- Average Attendance -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">Avg Attendance</span>
+                        <div class="metric-icon bg-success-subtle text-success">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0" id="cardAvgAttendance">—</h3>
+                    <small class="text-muted mt-1">Classes attended / conducted</small>
+                </div>
+            </div>
+
+            <!-- Average Academic Performance -->
+            <div class="col-xl-2 col-md-4 col-sm-6">
+                <div class="card metric-card h-100 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small text-muted fw-semibold">Avg Academics</span>
+                        <div class="metric-icon bg-secondary-subtle text-secondary">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-0" id="cardAvgAcademics">—</h3>
+                    <small class="text-muted mt-1">Internal & exam marks</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION D & E: RISK & ATTENDANCE ANALYTICS ================= -->
+        <section class="row g-4 mb-4">
+            <!-- Current Risk Distribution (Doughnut) -->
+            <div class="col-lg-5">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-pie-chart text-primary me-2"></i>Current Risk Distribution
+                        </h6>
+                        <span class="badge bg-light text-muted border">Distinct Cohort</span>
+                    </div>
+                    <div class="chart-container" id="riskDistContainer">
+                        <canvas id="riskDistChart"></canvas>
+                        <div id="riskDistEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-inbox fs-2"></i>
+                            <span>No risk prediction data available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Risk Trends (Line Chart) -->
+            <div class="col-lg-7">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-graph-up text-primary me-2"></i>Historical Risk Trends
+                        </h6>
+                        <span class="badge bg-light text-muted border">Monthly Predictions</span>
+                    </div>
+                    <div class="chart-container" id="riskTrendContainer">
+                        <canvas id="riskTrendChart"></canvas>
+                        <div id="riskTrendEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-calendar-x fs-2"></i>
+                            <span>No historical trend predictions recorded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION E & F: ATTENDANCE & ACADEMICS ================= -->
+        <section class="row g-4 mb-4">
+            <!-- Attendance Trends -->
+            <div class="col-lg-6">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-calendar3 text-success me-2"></i>Attendance Timeline & Rate
+                            </h6>
+                            <small class="text-muted" id="attSubtitle">Aggregated class records</small>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle" id="attOverallBadge">
+                            Overall: —
+                        </span>
+                    </div>
+                    <div class="chart-container" id="attendanceTrendContainer">
+                        <canvas id="attendanceTrendChart"></canvas>
+                        <div id="attendanceTrendEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-clipboard-x fs-2"></i>
+                            <span>No attendance records found for this cohort</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Academic Performance & Assignment Distribution -->
+            <div class="col-lg-6">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="fw-bold mb-0">
+                                <i class="bi bi-mortarboard text-secondary me-2"></i>Academic & Exam Performance
+                            </h6>
+                            <small class="text-muted">Internal assessments vs. examinations</small>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <span class="badge bg-info-subtle text-info border border-info-subtle" id="assignAvgBadge">
+                                Avg Assignment: — / 20
+                            </span>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="academicCompContainer">
+                        <canvas id="academicCompChart"></canvas>
+                        <div id="academicCompEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-journal-x fs-2"></i>
+                            <span>No academic or exam records available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION F, G & H: ASSIGNMENTS, INTERVENTIONS & REFERRALS ================= -->
+        <section class="row g-4 mb-4">
+            <!-- Assignment Status Distribution -->
+            <div class="col-lg-4">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-journal-check text-info me-2"></i>Assignment Submissions
+                        </h6>
+                        <span class="badge bg-light text-muted border" id="assignTotalBadge">Total: —</span>
+                    </div>
+                    <div class="chart-container" id="assignmentStatusContainer">
+                        <canvas id="assignmentStatusChart"></canvas>
+                        <div id="assignmentStatusEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-file-earmark-x fs-2"></i>
+                            <span>No assignment submissions recorded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intervention Outcomes / Statuses -->
+            <div class="col-lg-4">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-heart-pulse text-danger me-2"></i>Interventions Status
+                        </h6>
+                        <span class="badge bg-light text-muted border" id="intervTotalBadge">Total: —</span>
+                    </div>
+                    <div class="chart-container" id="interventionStatusContainer">
+                        <canvas id="interventionStatusChart"></canvas>
+                        <div id="interventionStatusEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-activity fs-2"></i>
+                            <span>No intervention records found</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Support Referrals & Follow-ups -->
+            <div class="col-lg-4">
+                <div class="card chart-card bg-white p-3 p-md-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold mb-0">
+                            <i class="bi bi-person-check text-primary me-2"></i>Referrals & Follow-ups
+                        </h6>
+                    </div>
+                    <!-- Follow-up Mini KPI row -->
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center bg-light">
+                                <small class="text-muted d-block">Completed</small>
+                                <strong class="text-success" id="kpiFollowUpCompleted">—</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center bg-light">
+                                <small class="text-muted d-block">Pending</small>
+                                <strong class="text-primary" id="kpiFollowUpPending">—</strong>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center bg-light">
+                                <small class="text-muted d-block">Overdue</small>
+                                <strong class="text-danger" id="kpiFollowUpOverdue">—</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container" id="referralStatusContainer">
+                        <canvas id="referralStatusChart"></canvas>
+                        <div id="referralStatusEmpty" class="empty-chart-placeholder d-none">
+                            <i class="bi bi-chat-left-dots fs-2"></i>
+                            <span>No support referrals recorded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION I: DEPARTMENT COMPARISONS ================= -->
+        <section class="card chart-card bg-white p-3 p-md-4 mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-bar-chart-steps text-primary me-2"></i>Department Comparative Analytics
+                    </h5>
+                    <small class="text-muted">Aggregate cohort metrics compared across institutional departments.</small>
+                </div>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary active" id="btnToggleDepTable">Table View</button>
+                    <button type="button" class="btn btn-outline-primary" id="btnToggleDepChart">Chart View</button>
+                </div>
+            </div>
+
+            <!-- Table View -->
+            <div id="depTableView" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-3">Department</th>
+                            <th class="text-center">Total Students</th>
+                            <th class="text-center">High / Very High Risk</th>
+                            <th class="text-center">Avg Risk Score</th>
+                            <th class="text-center">Avg Attendance</th>
+                            <th class="text-center">Avg Academics</th>
+                            <th class="text-center">Referrals</th>
+                            <th class="text-center">Interventions</th>
+                            <th class="text-center">Completed Follow-ups</th>
+                        </tr>
+                    </thead>
+                    <tbody id="depTableBody">
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">
+                                <span class="spinner-border spinner-border-sm me-2"></span>Loading department comparisons...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chart View -->
+            <div id="depChartView" class="chart-container d-none" style="min-height: 350px;">
+                <canvas id="deptCompChart"></canvas>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JavaScript Analytics Logic -->
+    <script>
+        (function() {
+            "use strict";
+
+            // Chart instances for proper lifecycle destruction
+            let charts = {
+                riskDist: null,
+                riskTrend: null,
+                attendanceTrend: null,
+                academicComp: null,
+                assignmentStatus: null,
+                interventionStatus: null,
+                referralStatus: null,
+                deptComp: null,
+            };
+
+            function destroyChart(name) {
+                if (charts[name]) {
+                    charts[name].destroy();
+                    charts[name] = null;
+                }
+            }
+
+            // UI Elements
+            const overlay = document.getElementById("loadingOverlay");
+            const filterForm = document.getElementById("filterForm");
+            const filterDepartment = document.getElementById("filterDepartment");
+            const filterCourse = document.getElementById("filterCourse");
+            const filterSemester = document.getElementById("filterSemester");
+            const resetFiltersBtn = document.getElementById("resetFiltersBtn");
+            const activeFilterPill = document.getElementById("activeFilterPill");
+            const lastRefreshedTime = document.getElementById("lastRefreshedTime");
+            const exportCsvBtn = document.getElementById("exportCsvBtn");
+            const exportExcelBtn = document.getElementById("exportExcelBtn");
+            const emptyCohortAlert = document.getElementById("emptyCohortAlert");
+
+            // Build query params string from active filter controls
+            function getQueryParams() {
+                const params = new URLSearchParams();
+                if (filterDepartment.value) params.set("department", filterDepartment.value);
+                if (filterCourse.value) params.set("course", filterCourse.value);
+                if (filterSemester.value) params.set("semester", filterSemester.value);
+                return params;
+            }
+
+            // Sync Export Links with active query params
+            function updateExportLinks(params) {
+                const qs = params.toString();
+                exportCsvBtn.href = "{% url 'admin_reports_export_csv' %}" + (qs ? "?" + qs : "");
+                exportExcelBtn.href = "{% url 'admin_reports_export_excel' %}" + (qs ? "?" + qs : "");
+            }
+
+            // Helper to format percentage and numbers safely
+            function formatPct(val) {
+                return val !== null && val !== undefined ? val.toFixed(2) + "%" : "N/A";
+            }
+            function formatScore(val) {
+                return val !== null && val !== undefined ? val.toFixed(2) : "N/A";
+            }
+
+            // Fetch report data asynchronously
+            async function loadAnalytics() {
+                overlay.style.display = "flex";
+                const params = getQueryParams();
+                updateExportLinks(params);
+
+                try {
+                    const response = await fetch("{% url 'admin_reports_data' %}?" + params.toString());
+                    if (!response.ok) throw new Error("HTTP error " + response.status);
+                    const data = await response.json();
+                    renderDashboard(data);
+                } catch (err) {
+                    console.error("Failed to load analytics:", err);
+                    alert("Unable to refresh analytics. Please check your network connection.");
+                } finally {
+                    overlay.style.display = "none";
+                }
+            }
+
+            // Render all sections
+            function renderDashboard(data) {
+                lastRefreshedTime.textContent = new Date().toLocaleTimeString();
+
+                // Section B: Active Filter Pill
+                const f = data.filters.active;
+                let filterLabel = f.department_name;
+                if (f.course) filterLabel += " • " + f.course;
+                if (f.semester) filterLabel += " • Sem " + f.semester;
+                activeFilterPill.textContent = filterLabel;
+
+                // Section C: Summary Cards
+                const s = data.summary;
+                document.getElementById("cardTotalStudents").textContent = s.total_students;
+                document.getElementById("cardHighRisk").textContent = s.high_risk_count;
+                document.getElementById("cardVeryHighRisk").textContent = s.very_high_risk_count;
+                document.getElementById("cardAvgRiskScore").textContent = formatScore(s.average_risk_score);
+                document.getElementById("cardAvgAttendance").textContent = formatPct(s.average_attendance_percentage);
+                document.getElementById("cardAvgAcademics").textContent = formatPct(s.average_academic_performance);
+
+                // Empty state notification
+                if (s.total_students === 0) {
+                    emptyCohortAlert.classList.remove("d-none");
+                    emptyCohortAlert.classList.add("d-flex");
+                } else {
+                    emptyCohortAlert.classList.add("d-none");
+                    emptyCohortAlert.classList.remove("d-flex");
+                }
+
+                // Render Section Visualizations
+                renderRiskDistChart(data.risk_distribution);
+                renderRiskTrendChart(data.risk_trends);
+                renderAttendanceChart(data.attendance);
+                renderAcademicChart(data.academics);
+                renderAssignmentChart(data.academics);
+                renderInterventionChart(data.interventions);
+                renderSupportChart(data.support_and_follow_ups);
+                renderDepartmentComparisons(data.department_comparisons);
+            }
+
+            // 1. Current Risk Distribution (Doughnut)
+            function renderRiskDistChart(dist) {
+                destroyChart("riskDist");
+                const canvas = document.getElementById("riskDistChart");
+                const emptyMsg = document.getElementById("riskDistEmpty");
+
+                const labels = ["Very Low", "Low", "Medium", "High", "Very High", "No Prediction"];
+                const values = labels.map(l => dist[l] || 0);
+                const total = values.reduce((a, b) => a + b, 0);
+
+                if (total === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.riskDist = new Chart(canvas, {
+                    type: "doughnut",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: [
+                                "#10b981", // Very Low - Green
+                                "#3b82f6", // Low - Blue
+                                "#f59e0b", // Medium - Amber
+                                "#f97316", // High - Orange
+                                "#ef4444", // Very High - Red
+                                "#94a3b8"  // No Prediction - Gray
+                            ],
+                            borderWidth: 2,
+                            borderColor: "#ffffff"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: "bottom" },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(ctx) {
+                                        const count = ctx.raw;
+                                        const pct = ((count / total) * 100).toFixed(1);
+                                        return ` ${ctx.label}: ${count} (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Historical Risk Trends (Line Chart)
+            function renderRiskTrendChart(trends) {
+                destroyChart("riskTrend");
+                const canvas = document.getElementById("riskTrendChart");
+                const emptyMsg = document.getElementById("riskTrendEmpty");
+
+                if (!trends || trends.length === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                const labels = trends.map(t => t.period);
+                charts.riskTrend = new Chart(canvas, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "High Risk",
+                                data: trends.map(t => t["High"]),
+                                borderColor: "#f97316",
+                                backgroundColor: "rgba(249, 115, 22, 0.1)",
+                                tension: 0.3,
+                                fill: false,
+                            },
+                            {
+                                label: "Very High Risk",
+                                data: trends.map(t => t["Very High"]),
+                                borderColor: "#ef4444",
+                                backgroundColor: "rgba(239, 68, 68, 0.1)",
+                                tension: 0.3,
+                                fill: false,
+                            },
+                            {
+                                label: "Total Predictions",
+                                data: trends.map(t => t["total"]),
+                                borderColor: "#64748b",
+                                borderDash: [5, 5],
+                                tension: 0.3,
+                                fill: false,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: "bottom" }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 3. Attendance Analytics & Trend (Line Chart)
+            function renderAttendanceChart(att) {
+                destroyChart("attendanceTrend");
+                const canvas = document.getElementById("attendanceTrendChart");
+                const emptyMsg = document.getElementById("attendanceTrendEmpty");
+                const badge = document.getElementById("attOverallBadge");
+                const subtitle = document.getElementById("attSubtitle");
+
+                badge.textContent = `Overall: ${formatPct(att.overall_percentage)}`;
+                subtitle.textContent = `Conducted: ${att.total_conducted} classes | Attended: ${att.total_attended}`;
+
+                if (!att.trends || att.trends.length === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.attendanceTrend = new Chart(canvas, {
+                    type: "line",
+                    data: {
+                        labels: att.trends.map(t => t.period),
+                        datasets: [{
+                            label: "Attendance Rate (%)",
+                            data: att.trends.map(t => t.percentage),
+                            borderColor: "#10b981",
+                            backgroundColor: "rgba(16, 185, 129, 0.15)",
+                            fill: true,
+                            tension: 0.25,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: { callback: v => v + "%" }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 4. Academic Performance (Bar Chart)
+            function renderAcademicChart(acad) {
+                destroyChart("academicComp");
+                const canvas = document.getElementById("academicCompChart");
+                const emptyMsg = document.getElementById("academicCompEmpty");
+
+                document.getElementById("assignAvgBadge").textContent =
+                    acad.assignment_average_marks_20 !== null
+                        ? `Avg Assignment: ${acad.assignment_average_marks_20.toFixed(2)} / 20`
+                        : "Avg Assignment: N/A";
+
+                const hasData = acad.internal_percentage !== null || acad.exam_percentage !== null;
+                if (!hasData) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.academicComp = new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: ["Internal Assessments", "Final Examinations"],
+                        datasets: [{
+                            label: "Average Performance (%)",
+                            data: [
+                                acad.internal_percentage || 0,
+                                acad.exam_percentage || 0
+                            ],
+                            backgroundColor: ["#6366f1", "#0ea5e9"],
+                            borderRadius: 6,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                min: 0,
+                                max: 100,
+                                ticks: { callback: v => v + "%" }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 5. Assignment Status Distribution (Doughnut)
+            function renderAssignmentChart(acad) {
+                destroyChart("assignmentStatus");
+                const canvas = document.getElementById("assignmentStatusChart");
+                const emptyMsg = document.getElementById("assignmentStatusEmpty");
+                const totalBadge = document.getElementById("assignTotalBadge");
+
+                totalBadge.textContent = `Total: ${acad.assignment_total_count}`;
+                const st = acad.assignment_status;
+                const total = (st.Submitted || 0) + (st.Pending || 0) + (st.Late || 0);
+
+                if (total === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.assignmentStatus = new Chart(canvas, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Submitted", "Pending", "Late"],
+                        datasets: [{
+                            data: [st.Submitted || 0, st.Pending || 0, st.Late || 0],
+                            backgroundColor: ["#10b981", "#f59e0b", "#ef4444"],
+                            borderWidth: 2,
+                            borderColor: "#ffffff"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: "bottom" } }
+                    }
+                });
+            }
+
+            // 6. Intervention Status Distribution (Bar Chart)
+            function renderInterventionChart(interv) {
+                destroyChart("interventionStatus");
+                const canvas = document.getElementById("interventionStatusChart");
+                const emptyMsg = document.getElementById("interventionStatusEmpty");
+                const totalBadge = document.getElementById("intervTotalBadge");
+
+                totalBadge.textContent = `Total: ${interv.total_interventions}`;
+                const st = interv.status_distribution;
+                const labels = ["Planned", "In Progress", "Completed", "Follow-up Required"];
+                const values = labels.map(l => st[l] || 0);
+                const sum = values.reduce((a, b) => a + b, 0);
+
+                if (sum === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.interventionStatus = new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Interventions",
+                            data: values,
+                            backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#8b5cf6"],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 7. Referral & Follow-up Analytics (Bar Chart + KPIs)
+            function renderSupportChart(supp) {
+                destroyChart("referralStatus");
+                const canvas = document.getElementById("referralStatusChart");
+                const emptyMsg = document.getElementById("referralStatusEmpty");
+
+                document.getElementById("kpiFollowUpCompleted").textContent = supp.completed_follow_ups;
+                document.getElementById("kpiFollowUpPending").textContent = supp.pending_follow_ups;
+                document.getElementById("kpiFollowUpOverdue").textContent = supp.overdue_follow_ups;
+
+                const refSt = supp.referral_status_distribution;
+                const labels = ["Pending", "Accepted", "In Progress", "Completed", "Follow-up Required"];
+                const values = labels.map(l => refSt[l] || 0);
+                const sum = values.reduce((a, b) => a + b, 0);
+
+                if (sum === 0) {
+                    canvas.classList.add("d-none");
+                    emptyMsg.classList.remove("d-none");
+                    return;
+                }
+                canvas.classList.remove("d-none");
+                emptyMsg.classList.add("d-none");
+
+                charts.referralStatus = new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Referrals",
+                            data: values,
+                            backgroundColor: ["#f59e0b", "#06b6d4", "#3b82f6", "#10b981", "#8b5cf6"],
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 8. Department Comparisons (Table & Chart)
+            function renderDepartmentComparisons(deps) {
+                destroyChart("deptComp");
+                const tbody = document.getElementById("depTableBody");
+                tbody.innerHTML = "";
+
+                if (!deps || deps.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">No departments registered.</td></tr>`;
+                    return;
+                }
+
+                deps.forEach(dep => {
+                    const tr = document.createElement("tr");
+                    if (dep.is_selected) {
+                        tr.classList.add("table-primary");
+                    }
+                    tr.innerHTML = `
+                        <td class="px-3 fw-semibold">
+                            ${dep.department_name}
+                            ${dep.is_selected ? '<span class="badge bg-primary ms-1">Active Filter</span>' : ''}
+                        </td>
+                        <td class="text-center">${dep.total_students}</td>
+                        <td class="text-center">
+                            <span class="badge ${dep.high_or_very_high_count > 0 ? 'bg-danger' : 'bg-light text-muted border'}">
+                                ${dep.high_or_very_high_count}
+                            </span>
+                        </td>
+                        <td class="text-center">${formatScore(dep.average_risk_score)}</td>
+                        <td class="text-center">${formatPct(dep.average_attendance_percentage)}</td>
+                        <td class="text-center">${formatPct(dep.average_academic_percentage)}</td>
+                        <td class="text-center">${dep.total_referrals}</td>
+                        <td class="text-center">${dep.total_interventions}</td>
+                        <td class="text-center">${dep.completed_follow_ups}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Department Comparison Bar Chart
+                const canvas = document.getElementById("deptCompChart");
+                charts.deptComp = new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: deps.map(d => d.department_name),
+                        datasets: [
+                            {
+                                label: "Total Students",
+                                data: deps.map(d => d.total_students),
+                                backgroundColor: "#94a3b8"
+                            },
+                            {
+                                label: "High / Very High Risk",
+                                data: deps.map(d => d.high_or_very_high_count),
+                                backgroundColor: "#ef4444"
+                            },
+                            {
+                                label: "Referrals",
+                                data: deps.map(d => d.total_referrals),
+                                backgroundColor: "#3b82f6"
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: "bottom" } },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { precision: 0 } }
+                        }
+                    }
+                });
+            }
+
+            // Toggle Department Table vs Chart
+            const btnTable = document.getElementById("btnToggleDepTable");
+            const btnChart = document.getElementById("btnToggleDepChart");
+            const tableView = document.getElementById("depTableView");
+            const chartView = document.getElementById("depChartView");
+
+            btnTable.addEventListener("click", () => {
+                btnTable.classList.add("active");
+                btnChart.classList.remove("active");
+                tableView.classList.remove("d-none");
+                chartView.classList.add("d-none");
+            });
+
+            btnChart.addEventListener("click", () => {
+                btnChart.classList.add("active");
+                btnTable.classList.remove("active");
+                chartView.classList.remove("d-none");
+                tableView.classList.add("d-none");
+            });
+
+            // Form Submit / Apply Filters
+            filterForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                loadAnalytics();
+            });
+
+            // Reset Filters
+            resetFiltersBtn.addEventListener("click", function() {
+                filterDepartment.value = "";
+                filterCourse.value = "";
+                filterSemester.value = "";
+                loadAnalytics();
+            });
+
+            // Initial Load on Page Ready
+            document.addEventListener("DOMContentLoaded", function() {
+                loadAnalytics();
+            });
+        })();
+    </script>
+</body>
+</html>
