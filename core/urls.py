@@ -303,6 +303,12 @@ path(
     name="student_dashboard",
 ),
 
+path(
+    "student-profile/",
+    views.student_profile,
+    name="student_profile",
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),

@@ -694,6 +694,56 @@ class StudentDashboardAccessTests(TestCase):
             self.student,
         )
 
+    def test_linked_student_can_access_profile_page(self):
+        self.client.force_login(self.student_user)
+
+        response = self.client.get(reverse("student_profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["student"], self.student)
+        self.assertContains(response, self.student.student_id)
+        self.assertContains(response, self.student.first_name)
+        self.assertContains(response, "My Profile")
+        self.assertEqual(reverse("student_profile"), "/student-profile/")
+
+    def test_profile_query_parameter_cannot_switch_student(self):
+        self.client.force_login(self.student_user)
+
+        response = self.client.get(
+            reverse("student_profile"),
+            {"student_id": self.other_student.student_id},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["student"], self.student)
+        self.assertNotContains(response, self.other_student.first_name)
+
+    def test_unauthenticated_user_is_redirected_from_profile(self):
+        response = self.client.get(reverse("student_profile"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+    def test_incompatible_role_cannot_access_profile(self):
+        self.client.force_login(self.teacher_user)
+
+        response = self.client.get(reverse("student_profile"))
+
+        self.assertIn(response.status_code, [302, 403])
+
+    def test_unlinked_student_profile_is_forbidden_gracefully(self):
+        unlinked_user = User.objects.create_user(
+            username="PROFILE-UNLINKED",
+            password="UnlinkedPass!123",
+        )
+        UserProfile.objects.create(user=unlinked_user, role="STUDENT")
+        self.client.force_login(unlinked_user)
+
+        response = self.client.get(reverse("student_profile"))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "not linked to this account", status_code=403)
+
     def test_student_cannot_view_another_students_profile(self):
         self.client.force_login(self.student_user)
 

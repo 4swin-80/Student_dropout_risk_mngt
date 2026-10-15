@@ -1392,6 +1392,32 @@ def student_dashboard(request):
     )
 
 
+@role_required("STUDENT")
+def student_profile(request):
+    """Show only the student record linked to the authenticated account."""
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_profile.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    return render(
+        request,
+        "student/student_profile.html",
+        {"student": student},
+    )
+
+
 
 # ============================================================
 # MENTOR DASHBOARD
