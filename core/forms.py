@@ -16,6 +16,7 @@ from .models import (
     ExamResult,
     StudentSupport,
     StudentSupportFollowUp,
+    StudentNotification,
 )
 
 
@@ -882,6 +883,30 @@ class StudentSupportFollowUpForm(forms.ModelForm):
             )
 
         return scheduled_date
+
+
+class StudentNotificationForm(forms.ModelForm):
+    class Meta:
+        model = StudentNotification
+        fields = ["student", "title", "message", "category"]
+        widgets = {
+            "student": forms.Select(attrs={"class": "form-select"}),
+            "title": forms.TextInput(attrs={"class": "form-control", "maxlength": 160}),
+            "message": forms.Textarea(attrs={"class": "form-control", "rows": 5, "maxlength": 2000}),
+            "category": forms.Select(attrs={"class": "form-select"}),
+        }
+
+    def clean_title(self):
+        title = self.cleaned_data["title"].strip()
+        if not title:
+            raise forms.ValidationError("Enter a notification title.")
+        return title
+
+    def clean_message(self):
+        message = self.cleaned_data["message"].strip()
+        if not message:
+            raise forms.ValidationError("Enter a notification message.")
+        return message
 
 
 class CompleteStudentSupportFollowUpForm(forms.ModelForm):

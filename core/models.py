@@ -532,3 +532,34 @@ class StudentSupportFollowUp(models.Model):
             f"Follow-up on {self.scheduled_date} - "
             f"{self.status}"
         )
+
+
+class StudentNotification(models.Model):
+    CATEGORY_CHOICES = [
+        ("General", "General"),
+        ("Academic", "Academic"),
+        ("Meeting", "Meeting"),
+        ("Support", "Support"),
+    ]
+
+    student = models.ForeignKey(
+        Student, on_delete=models.CASCADE, related_name="notifications"
+    )
+    title = models.CharField(max_length=160)
+    message = models.TextField(max_length=2000)
+    category = models.CharField(
+        max_length=20, choices=CATEGORY_CHOICES, default="Support"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="created_student_notifications",
+    )
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def __str__(self):
+        return f"{self.student} - {self.title}"

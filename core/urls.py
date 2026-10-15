@@ -302,6 +302,17 @@ path(
     views.student_dashboard,
     name="student_dashboard",
 ),
+path("student-notifications/", views.student_notifications, name="student_notifications"),
+path(
+    "student-notifications/<int:notification_id>/read/",
+    views.student_notification_mark_read,
+    name="student_notification_mark_read",
+),
+path(
+    "admin/student-notifications/create/",
+    views.admin_student_notification_create,
+    name="admin_student_notification_create",
+),
 
 path(
     "student-assignments/",

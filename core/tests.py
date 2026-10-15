@@ -31,11 +31,111 @@ from .models import (
     RiskPrediction,
     Intervention,
     StudentSupportFollowUp,
+    StudentNotification,
 )
 from .reports_utils import (
     build_full_report_data,
     sanitize_csv_cell,
 )
+
+
+class StudentNotificationTests(TestCase):
+    def setUp(self):
+        self.student_user = User.objects.create_user(
+            username="notification-student", password="test-pass"
+        )
+        UserProfile.objects.create(user=self.student_user, role="STUDENT")
+        self.student = Student.objects.create(
+            student_id="NOTICE-1", user=self.student_user,
+            first_name="Test", last_name="Student",
+        )
+        self.other_user = User.objects.create_user(
+            username="notification-other", password="test-pass"
+        )
+        UserProfile.objects.create(user=self.other_user, role="STUDENT")
+        self.other_student = Student.objects.create(
+            student_id="NOTICE-2", user=self.other_user,
+            first_name="Other", last_name="Student",
+        )
+        self.notification = StudentNotification.objects.create(
+            student=self.student, title="Follow-up", message="Please meet your mentor.",
+            category="Meeting",
+        )
+        self.private_notification = StudentNotification.objects.create(
+            student=self.other_student, title="Private message", message="Secret content",
+        )
+        self.url = reverse("student_notifications")
+
+    def test_student_sees_only_own_notifications_and_correct_counts(self):
+        self.client.force_login(self.student_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please meet your mentor.")
+        self.assertNotContains(response, "Secret content")
+        self.assertEqual(response.context["total_count"], 1)
+        self.assertEqual(response.context["unread_count"], 1)
+        self.assertEqual(response.context["read_count"], 0)
+
+    def test_read_action_is_post_only_scoped_idempotent_and_updates_timestamp(self):
+        self.client.force_login(self.student_user)
+        action_url = reverse(
+            "student_notification_mark_read", args=[self.notification.pk]
+        )
+        self.assertEqual(self.client.get(action_url).status_code, 405)
+        self.notification.refresh_from_db()
+        self.assertFalse(self.notification.is_read)
+        self.assertEqual(self.client.post(action_url).status_code, 302)
+        self.notification.refresh_from_db()
+        self.assertTrue(self.notification.is_read)
+        self.assertIsNotNone(self.notification.read_at)
+        self.assertEqual(self.client.post(action_url).status_code, 302)
+        foreign_url = reverse(
+            "student_notification_mark_read", args=[self.private_notification.pk]
+        )
+        self.assertEqual(self.client.post(foreign_url).status_code, 404)
+        self.private_notification.refresh_from_db()
+        self.assertFalse(self.private_notification.is_read)
+
+    def test_access_control_and_unlinked_student(self):
+        self.assertEqual(self.client.get(self.url).status_code, 302)
+        teacher = User.objects.create_user(username="notice-teacher", password="x")
+        UserProfile.objects.create(user=teacher, role="TEACHER")
+        self.client.force_login(teacher)
+        self.assertEqual(self.client.get(self.url).status_code, 302)
+        unlinked = User.objects.create_user(username="notice-unlinked", password="x")
+        UserProfile.objects.create(user=unlinked, role="STUDENT")
+        self.client.force_login(unlinked)
+        self.assertEqual(self.client.get(self.url).status_code, 403)
+
+    def test_empty_and_all_read_states_and_safe_escaping(self):
+        StudentNotification.objects.filter(student=self.student).delete()
+        self.client.force_login(self.student_user)
+        response = self.client.get(self.url)
+        self.assertContains(response, "No support notifications yet")
+        self.assertEqual(response.context["total_count"], 0)
+        read_notice = StudentNotification.objects.create(
+            student=self.student, title="<b>Safe</b>", message="<script>unsafe()</script>",
+            is_read=True,
+        )
+        response = self.client.get(self.url)
+        self.assertEqual(response.context["total_count"], 1)
+        self.assertEqual(response.context["unread_count"], 0)
+        self.assertEqual(response.context["read_count"], 1)
+        self.assertContains(response, "&lt;b&gt;Safe&lt;/b&gt;")
+        self.assertNotContains(response, "<script>unsafe()</script>")
+
+    def test_admin_can_create_explicit_student_safe_notification(self):
+        admin = User.objects.create_user(username="notice-admin", password="x")
+        UserProfile.objects.create(user=admin, role="ADMIN")
+        self.client.force_login(admin)
+        response = self.client.post(
+            reverse("admin_student_notification_create"),
+            {"student": self.student.pk, "title": "Meeting", "message": "Please meet us.", "category": "Meeting"},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(StudentNotification.objects.filter(
+            student=self.student, title="Meeting", created_by=admin
+        ).exists())
 
 
 class StudentAccountProvisioningTests(TestCase):

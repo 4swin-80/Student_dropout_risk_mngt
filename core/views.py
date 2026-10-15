@@ -13,6 +13,7 @@ import mimetypes
 from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.models import User
 from django.shortcuts import (
     redirect,
@@ -1415,6 +1416,72 @@ def student_dashboard(request):
         request,
         "student/student_dashboard.html",
         context,
+    )
+
+
+@role_required("STUDENT")
+def student_notifications(request):
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_dashboard.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    notifications = StudentNotification.objects.filter(student=student)
+    unread_count = notifications.filter(is_read=False).count()
+    total_count = notifications.count()
+    return render(
+        request,
+        "student/student_notifications.html",
+        {
+            "notifications": notifications,
+            "total_count": total_count,
+            "unread_count": unread_count,
+            "read_count": total_count - unread_count,
+        },
+    )
+
+
+@role_required("STUDENT")
+@require_POST
+def student_notification_mark_read(request, notification_id):
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return HttpResponse("Student profile is not linked to this account.", status=403)
+
+    notification = get_object_or_404(
+        StudentNotification, pk=notification_id, student=student
+    )
+    if not notification.is_read:
+        notification.is_read = True
+        notification.read_at = timezone.now()
+        notification.save(update_fields=["is_read", "read_at"])
+        messages.success(request, "Notification marked as read.")
+    return redirect("student_notifications")
+
+
+@role_required("ADMIN")
+def admin_student_notification_create(request):
+    form = StudentNotificationForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        notification = form.save(commit=False)
+        notification.created_by = request.user
+        notification.save()
+        messages.success(request, "Student notification created.")
+        return redirect("admin_student_notification_create")
+    return render(
+        request, "admin/student_notification_form.html", {"form": form}
     )
 
 
