@@ -1,10 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Student Dashboard</title>
 
     <link
@@ -13,24 +11,112 @@
     >
 
     <style>
+        :root {
+            --page-bg: #f5f7fb;
+            --surface: #ffffff;
+            --text-main: #202938;
+            --text-muted: #687386;
+            --border: #e5eaf2;
+            --primary: #2563eb;
+            --primary-soft: #eff6ff;
+        }
+
         body {
-            background: #f5f7fb;
-            color: #202938;
+            background: var(--page-bg);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        .student-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+        }
+
+        .student-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            color: #fff;
+            background: var(--primary);
+            border-radius: 12px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .student-nav-link {
+            color: #526075;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.65rem 0.9rem;
+            border-radius: 10px;
+        }
+
+        .student-nav-link:hover,
+        .student-nav-link:focus-visible {
+            color: #1d4ed8;
+            background: var(--primary-soft);
+        }
+
+        .profile-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            border: 1px solid #dbe5f1;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #1d4ed8;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .profile-icon-btn:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
+        }
+
+        .logout-btn {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.6rem 0.9rem;
         }
 
         .dashboard-header {
-            background: #ffffff;
-            border: 1px solid #e8edf4;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 18px;
         }
 
         .summary-card {
             height: 100%;
-            background: #ffffff;
-            border: 1px solid #e8edf4;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            transition: transform 0.2s ease,
-                        box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .summary-card:hover {
@@ -39,7 +125,7 @@
         }
 
         .summary-label {
-            color: #687386;
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
@@ -50,7 +136,7 @@
         }
 
         .profile-detail {
-            color: #687386;
+            color: var(--text-muted);
             font-size: 0.95rem;
         }
 
@@ -58,53 +144,10 @@
             font-weight: 700;
         }
 
-        
-        .student-navbar {
-            background: rgba(255, 255, 255, 0.96);
-            border-bottom: 1px solid #e8edf4;
-            position: sticky;
-            top: 0;
-            z-index: 1030;
-            backdrop-filter: blur(12px);
-        }
-
-        .student-brand {
-            color: #1d4ed8;
-            font-weight: 800;
-            letter-spacing: -0.4px;
-            text-decoration: none;
-        }
-
-        .student-nav-link {
-            color: #526075;
-            font-weight: 600;
-            text-decoration: none;
-            padding: 0.65rem 0.9rem;
-            border-radius: 10px;
-        }
-
-        .student-nav-link:hover {
-            background: #eff6ff;
-            color: #1d4ed8;
-        }
-
-        .profile-icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 42px;
-            height: 42px;
-            border: 1px solid #dbe5f1;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #1d4ed8;
-            transition: background 0.2s ease,
-                        transform 0.2s ease;
-        }
-
-        .profile-icon-btn:hover {
-            background: #dbeafe;
-            transform: translateY(-1px);
+        .content-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
         }
 
         .profile-modal-content {
@@ -115,7 +158,7 @@
 
         .profile-modal-content .modal-header {
             background: #f8fafc;
-            border-bottom: 1px solid #e8edf4;
+            border-bottom: 1px solid var(--border);
             padding: 1.25rem 1.5rem;
         }
 
@@ -124,659 +167,855 @@
             overflow-y: auto;
         }
 
-        .logout-btn {
-            border-radius: 10px;
-            font-weight: 600;
-            padding: 0.6rem 1rem;
+        .profile-field {
+            height: 100%;
+            padding: 0.9rem 1rem;
+            background: #f8fafc;
+            border: 1px solid #edf1f6;
+            border-radius: 12px;
+            overflow-wrap: anywhere;
         }
 
+        .profile-field-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-field-value {
+            font-weight: 600;
+        }
+
+        .table thead th {
+            color: #526075;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 575.98px) {
+            .dashboard-header {
+                border-radius: 14px;
+            }
+
+            .summary-value {
+                font-size: 1.55rem;
+            }
+
+            .student-navbar .container {
+                padding-left: 0.85rem;
+                padding-right: 0.85rem;
+            }
+        }
     </style>
 </head>
 
-
 <body>
 
-<nav class="student-navbar">
-    <div class="container py-2">
-        <div class="d-flex align-items-center justify-content-between gap-3">
+    <!-- Top Navigation Bar -->
+    <nav class="student-navbar">
+        <div class="container py-2">
+            <div class="d-flex align-items-center justify-content-between gap-3">
 
-            <!-- Portal branding -->
-            <a href="#dashboardTop"
-               class="student-brand d-flex align-items-center gap-2">
-                <span class="d-inline-flex align-items-center justify-content-center
-                             bg-primary text-white rounded-3"
-                      style="width: 38px; height: 38px;">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="22" height="22"
-                         viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round"
-                         aria-hidden="true">
-                        <path d="m2 10 10-5 10 5-10 5-10-5Z"/>
-                        <path d="M6 12v5c3 2 9 2 12 0v-5"/>
-                        <path d="M22 10v6"/>
-                    </svg>
-                </span>
+                <!-- Portal Branding -->
+                <a href="#dashboardTop" class="student-brand">
+                    <span class="brand-mark" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="22" height="22"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="2"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <path d="m2 10 10-5 10 5-10 5-10-5Z"/>
+                            <path d="M6 12v5c3 2 9 2 12 0v-5"/>
+                            <path d="M22 10v6"/>
+                        </svg>
+                    </span>
 
-                <span>
-                    Student Portal
-                    <small class="d-block text-secondary fw-normal"
-                           style="font-size: 0.72rem;">
-                        Academic Dashboard
-                    </small>
-                </span>
-            </a>
-
-            <!-- Navigation actions -->
-            <div class="d-flex align-items-center gap-2 gap-md-3">
-
-                <a href="#dashboardTop"
-                   class="student-nav-link d-none d-sm-inline-flex">
-                    Dashboard
+                    <span>
+                        Student Portal
+                        <span class="brand-subtitle">
+                            Academic Dashboard
+                        </span>
+                    </span>
                 </a>
 
-                <!-- My Profile icon -->
-                <button type="button"
+                <!-- Navigation Actions -->
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+
+                    <a href="#dashboardTop"
+                       class="student-nav-link d-none d-sm-inline-flex">
+                        Dashboard
+                    </a>
+
+                    <!-- My Profile Icon -->
+                    <button
+                        type="button"
                         class="profile-icon-btn"
                         data-bs-toggle="modal"
                         data-bs-target="#profileModal"
                         aria-label="Open My Profile"
-                        title="My Profile">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="21" height="21"
-                         viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round"
-                         aria-hidden="true">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
-                    </svg>
-                </button>
-
-                <!-- Logout -->
-                <form method="post" action="{% url 'logout' %}" class="m-0">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="btn btn-outline-danger logout-btn">
+                        title="My Profile"
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg"
-                             width="17" height="17"
+                             width="21" height="21"
                              viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor"
+                             fill="none"
+                             stroke="currentColor"
                              stroke-width="2"
                              stroke-linecap="round"
                              stroke-linejoin="round"
-                             class="me-1"
                              aria-hidden="true">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5
-                                     a2 2 0 0 1 2-2h4"/>
-                            <path d="M16 17l5-5-5-5"/>
-                            <path d="M21 12H9"/>
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
                         </svg>
-                        <span class="d-none d-sm-inline">Logout</span>
-                        <span class="d-sm-none">Exit</span>
                     </button>
-                </form>
 
+                    <!-- Logout -->
+                    <form method="post"
+                          action="{% url 'logout' %}"
+                          class="m-0">
+                        {% csrf_token %}
+
+                        <button type="submit"
+                                class="btn btn-outline-danger logout-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="17" height="17"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="me-1"
+                                 aria-hidden="true">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5
+                                         a2 2 0 0 1 2-2h4"/>
+                                <path d="M16 17l5-5-5-5"/>
+                                <path d="M21 12H9"/>
+                            </svg>
+
+                            <span class="d-none d-sm-inline">Logout</span>
+                            <span class="d-sm-none">Exit</span>
+                        </button>
+                    </form>
+
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<main id="dashboardTop" class="container py-4 py-md-5">
+    <main id="dashboardTop" class="container py-4 py-md-5">
 
+        {% if student_profile_error %}
 
-    {% if student_profile_error %}
-
-        <div class="alert alert-warning" role="alert">
-            <h1 class="h4">Student Dashboard</h1>
-            {{ student_profile_error }}
-        </div>
-
-    {% else %}
-
-        <!-- Student profile header -->
-        <section class="dashboard-header shadow-sm p-4 p-md-5 mb-4">
-            <div class="d-flex flex-column flex-md-row
-                        justify-content-between gap-3">
-
-                <div>
-                    <p class="text-primary fw-semibold mb-2">
-                        STUDENT PORTAL
-                    </p>
-
-                    <h1 class="h3 mb-2">
-                        Welcome,
-                        {{ student.first_name }}
-                        {{ student.last_name }}
-                    </h1>
-
-                    <p class="profile-detail mb-0">
-                        Student ID: {{ student.student_id }}
-                    </p>
-                </div>
-
-                <div class="text-md-end">
-                    {% if student.course %}
-                        <div class="fw-semibold">
-                            {{ student.course }}
-                        </div>
-                    {% endif %}
-
-                    {% if student.department %}
-                        <div class="profile-detail">
-                            {{ student.department }}
-                        </div>
-                    {% endif %}
-
-                    {% if student.semester %}
-                        <div class="profile-detail">
-                            Semester {{ student.semester }}
-                        </div>
-                    {% endif %}
-                </div>
-
+            <div class="alert alert-warning" role="alert">
+                <h1 class="h4">Student Dashboard</h1>
+                {{ student_profile_error }}
             </div>
-        </section>
 
-        <!-- Summary cards -->
-        <section class="mb-4">
-            <h2 class="h5 section-heading mb-3">
-                Academic Overview
-            </h2>
+        {% else %}
 
-            <div class="row g-3">
+            <!-- Welcome Header -->
+            <section class="dashboard-header shadow-sm p-4 p-md-5 mb-4">
+                <div class="d-flex flex-column flex-md-row
+                            justify-content-between align-items-md-center gap-3">
 
-                <!-- Attendance -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="summary-card p-4">
-                        <div class="summary-label mb-2">
-                            Overall Attendance
-                        </div>
+                    <div>
+                        <p class="text-primary fw-semibold mb-2">
+                            STUDENT PORTAL
+                        </p>
 
-                        {% if attendance_percentage != None %}
-                            <div class="summary-value text-primary">
-                                {{ attendance_percentage }}%
-                            </div>
+                        <h1 class="h3 mb-2">
+                            Welcome, {{ student.first_name }} {{ student.last_name }}
+                        </h1>
 
-                            <p class="small text-secondary mb-0 mt-2">
-                                {{ total_classes_attended }}
-                                of
-                                {{ total_classes_conducted }}
-                                classes attended
-                            </p>
-                        {% else %}
-                            <div class="fw-semibold">
-                                No data available
-                            </div>
-                            <p class="small text-secondary mb-0 mt-2">
-                                Attendance has not been recorded.
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Academic average -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="summary-card p-4">
-                        <div class="summary-label mb-2">
-                            Internal Marks Average
-                        </div>
-
-                        {% if academic_average != None %}
-                            <div class="summary-value text-success">
-                                {{ academic_average }}%
-                            </div>
-                            <p class="small text-secondary mb-0 mt-2">
-                                Based on valid internal-mark records
-                            </p>
-                        {% else %}
-                            <div class="fw-semibold">
-                                No data available
-                            </div>
-                            <p class="small text-secondary mb-0 mt-2">
-                                No valid internal marks recorded.
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Assignments -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="summary-card p-4">
-                        <div class="summary-label mb-2">
-                            Total Assignments
-                        </div>
-
-                        <div class="summary-value">
-                            {{ assignment_count }}
-                        </div>
-
-                        <p class="small text-secondary mb-0 mt-2">
-                            {{ pending_assignment_count }}
-                            pending
+                        <p class="profile-detail mb-0">
+                            Student ID: {{ student.student_id }}
                         </p>
                     </div>
-                </div>
 
-                <!-- Examinations -->
-                <div class="col-12 col-sm-6 col-xl-3">
-                    <div class="summary-card p-4">
-                        <div class="summary-label mb-2">
-                            Examination Average
-                        </div>
-
-                        {% if exam_average != None %}
-                            <div class="summary-value text-info">
-                                {{ exam_average }}%
-                            </div>
-                            <p class="small text-secondary mb-0 mt-2">
-                                {{ exam_count }} recorded result(s)
-                            </p>
-                        {% else %}
+                    <div class="text-md-end">
+                        {% if student.course %}
                             <div class="fw-semibold">
-                                No data available
+                                {{ student.course }}
                             </div>
-                            <p class="small text-secondary mb-0 mt-2">
-                                No valid examination marks recorded.
-                            </p>
+                        {% endif %}
+
+                        {% if student.department %}
+                            <div class="profile-detail">
+                                {{ student.department }}
+                            </div>
+                        {% endif %}
+
+                        {% if student.semester %}
+                            <div class="profile-detail">
+                                Semester {{ student.semester }}
+                            </div>
                         {% endif %}
                     </div>
+
                 </div>
+            </section>
 
-            </div>
-        </section>
+            <!-- Academic Overview -->
+            <section class="mb-4">
+                <h2 class="h5 section-heading mb-3">
+                    Academic Overview
+                </h2>
 
-        
-<!-- Student Attendance Summary and History -->
-<section class="bg-white border rounded-4 p-4 p-md-5 mb-4">
+                <div class="row g-3">
 
-    <div class="mb-4">
-        <h2 class="h5 fw-bold mb-1">My Attendance</h2>
-        <p class="text-secondary small mb-0">
-            Your recorded attendance and class participation history.
-        </p>
-    </div>
+                    <!-- Attendance Summary Card -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="summary-card p-4">
+                            <div class="summary-label mb-2">
+                                Overall Attendance
+                            </div>
 
-    <!-- Attendance summary -->
-    <div class="row g-3 mb-4">
+                            {% if attendance_percentage != None %}
+                                <div class="summary-value text-primary">
+                                    {{ attendance_percentage }}%
+                                </div>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="border rounded-3 p-3 h-100">
-                <div class="small text-secondary mb-2">
-                    Overall Attendance
-                </div>
+                                <p class="small text-secondary mb-0 mt-2">
+                                    {{ total_classes_attended }} of
+                                    {{ total_classes_conducted }}
+                                    classes attended
+                                </p>
+                            {% else %}
+                                <div class="fw-semibold">
+                                    No data available
+                                </div>
 
-                {% if attendance_percentage != None %}
-                    <div class="h3 fw-bold text-primary mb-0">
-                        {{ attendance_percentage }}%
+                                <p class="small text-secondary mb-0 mt-2">
+                                    Attendance has not been recorded.
+                                </p>
+                            {% endif %}
+                        </div>
                     </div>
+
+                    <!-- Academic Average Card -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="summary-card p-4">
+                            <div class="summary-label mb-2">
+                                Internal Marks Average
+                            </div>
+
+                            {% if academic_average != None %}
+                                <div class="summary-value text-success">
+                                    {{ academic_average }}%
+                                </div>
+
+                                <p class="small text-secondary mb-0 mt-2">
+                                    Based on valid internal-mark records
+                                </p>
+                            {% else %}
+                                <div class="fw-semibold">
+                                    No data available
+                                </div>
+
+                                <p class="small text-secondary mb-0 mt-2">
+                                    No valid internal marks recorded.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Assignment Summary Card -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="summary-card p-4">
+                            <div class="summary-label mb-2">
+                                Total Assignments
+                            </div>
+
+                            <div class="summary-value">
+                                {{ assignment_count }}
+                            </div>
+
+                            <p class="small text-secondary mb-0 mt-2">
+                                {{ pending_assignment_count }} pending
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Examination Summary Card -->
+                    <div class="col-12 col-sm-6 col-xl-3">
+                        <div class="summary-card p-4">
+                            <div class="summary-label mb-2">
+                                Examination Average
+                            </div>
+
+                            {% if exam_average != None %}
+                                <div class="summary-value text-info">
+                                    {{ exam_average }}%
+                                </div>
+
+                                <p class="small text-secondary mb-0 mt-2">
+                                    {{ exam_count }} recorded result(s)
+                                </p>
+                            {% else %}
+                                <div class="fw-semibold">
+                                    No data available
+                                </div>
+
+                                <p class="small text-secondary mb-0 mt-2">
+                                    No valid examination marks recorded.
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Attendance Summary and History -->
+            <section class="content-panel p-4 p-md-5 mb-4">
+
+                <div class="mb-4">
+                    <h2 class="h5 fw-bold mb-1">My Attendance</h2>
+
+                    <p class="text-secondary small mb-0">
+                        Your recorded attendance and class participation history.
+                    </p>
+                </div>
+
+                <!-- Attendance Summary Cards -->
+                <div class="row g-3 mb-4">
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-secondary mb-2">
+                                Overall Attendance
+                            </div>
+
+                            {% if attendance_percentage != None %}
+                                <div class="h3 fw-bold text-primary mb-0">
+                                    {{ attendance_percentage }}%
+                                </div>
+                            {% else %}
+                                <div class="fw-semibold">
+                                    No data available
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-secondary mb-2">
+                                Classes Conducted
+                            </div>
+
+                            <div class="h3 fw-bold mb-0">
+                                {{ total_classes_conducted }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-secondary mb-2">
+                                Classes Attended
+                            </div>
+
+                            <div class="h3 fw-bold text-success mb-0">
+                                {{ total_classes_attended }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="small text-secondary mb-2">
+                                Classes Missed
+                            </div>
+
+                            {% if total_classes_missed != None %}
+                                <div class="h3 fw-bold text-danger mb-0">
+                                    {{ total_classes_missed }}
+                                </div>
+                            {% else %}
+                                <div class="fw-semibold">
+                                    No data available
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Attendance History Table -->
+                <h3 class="h6 fw-bold mb-3">Attendance History</h3>
+
+                {% if attendance_history %}
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Classes Conducted</th>
+                                    <th scope="col">Classes Attended</th>
+                                    <th scope="col">Classes Missed</th>
+                                    <th scope="col">Attendance</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for record in attendance_history %}
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            {{ record.date|date:"d M Y" }}
+                                        </td>
+
+                                        <td>
+                                            {{ record.classes_conducted }}
+                                        </td>
+
+                                        <td>
+                                            {{ record.classes_attended }}
+                                        </td>
+
+                                        <td>
+                                            {% if record.is_valid %}
+                                                {{ record.classes_missed }}
+                                            {% else %}
+                                                <span class="text-secondary">—</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if record.is_valid %}
+                                                <span class="badge text-bg-success">
+                                                    {{ record.attendance_percentage }}%
+                                                </span>
+                                            {% else %}
+                                                <span
+                                                    class="badge text-bg-secondary"
+                                                    title="The recorded class counts do not support a valid percentage."
+                                                >
+                                                    Unavailable
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <p class="small text-secondary mt-3 mb-0">
+                        Records are displayed from newest to oldest.
+                        Attendance percentages are calculated from classes
+                        attended and classes conducted.
+                    </p>
+
                 {% else %}
-                    <div class="fw-semibold">
-                        No data available
+
+                    <div class="alert alert-light border mb-0" role="status">
+                        No attendance records are available yet.
+                        Please check again after your attendance has been
+                        recorded by an authorized staff member.
                     </div>
+
                 {% endif %}
-            </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="border rounded-3 p-3 h-100">
-                <div class="small text-secondary mb-2">
-                    Classes Conducted
+            </section>
+
+            <!-- Academic Performance -->
+            <section class="content-panel p-4 p-md-5 mb-4">
+
+                <div class="mb-4">
+                    <h2 class="h5 fw-bold mb-1">
+                        Academic Performance
+                    </h2>
+
+                    <p class="text-secondary small mb-0">
+                        Your recorded internal marks by subject.
+                    </p>
                 </div>
 
-                <div class="h3 fw-bold mb-0">
-                    {{ total_classes_conducted }}
-                </div>
-            </div>
-        </div>
+                {% if academic_history %}
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="border rounded-3 p-3 h-100">
-                <div class="small text-secondary mb-2">
-                    Classes Attended
-                </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
 
-                <div class="h3 fw-bold text-success mb-0">
-                    {{ total_classes_attended }}
-                </div>
-            </div>
-        </div>
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Subject</th>
+                                    <th scope="col">Marks Obtained</th>
+                                    <th scope="col">Maximum Marks</th>
+                                    <th scope="col">Percentage</th>
+                                </tr>
+                            </thead>
 
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="border rounded-3 p-3 h-100">
-                <div class="small text-secondary mb-2">
-                    Classes Missed
-                </div>
+                            <tbody>
+                                {% for record in academic_history %}
+                                    <tr>
+                                        <td>
+                                            {{ record.subject }}
+                                        </td>
 
-                {% if total_classes_missed != None %}
-                    <div class="h3 fw-bold text-danger mb-0">
-                        {{ total_classes_missed }}
+                                        <td>
+                                            {% if record.marks_obtained != None %}
+                                                {{ record.marks_obtained }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if record.total_marks != None %}
+                                                {{ record.total_marks }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            {% if record.is_valid %}
+                                                <span class="badge text-bg-success">
+                                                    {{ record.percentage }}%
+                                                </span>
+                                            {% else %}
+                                                <span class="text-secondary">—</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
                     </div>
+
                 {% else %}
-                    <div class="fw-semibold">
-                        No data available
+
+                    <div class="alert alert-light border mb-0" role="status">
+                        No academic performance records are available yet.
                     </div>
+
                 {% endif %}
+
+            </section>
+
+            <!-- Upcoming Student Dashboard Modules -->
+            <section class="content-panel p-4 p-md-5">
+                <h2 class="h5 fw-bold mb-2">
+                    More Student Features
+                </h2>
+
+                <p class="text-secondary mb-0">
+                    Detailed assignment views, examination results,
+                    performance charts, and support notifications
+                    can be added in subsequent steps.
+                </p>
+            </section>
+
+            <!-- My Profile Modal -->
+            <div
+                class="modal fade"
+                id="profileModal"
+                tabindex="-1"
+                aria-labelledby="profileModalLabel"
+                aria-hidden="true"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+
+                    <div class="modal-content profile-modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <div>
+                                <h2
+                                    class="modal-title h5 fw-bold mb-1"
+                                    id="profileModalLabel"
+                                >
+                                    My Profile
+                                </h2>
+
+                                <p class="small text-secondary mb-0">
+                                    Your personal and academic information
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close profile"
+                            ></button>
+                        </div>
+
+                        <!-- Modal Body -->
+                        <div class="modal-body p-4 p-md-5">
+
+                            <!-- Student Identity -->
+                            <div class="d-flex align-items-center gap-3 mb-4">
+
+                                <div class="brand-mark rounded-circle">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="25" height="25"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         aria-hidden="true">
+                                        <circle cx="12" cy="8" r="4"/>
+                                        <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+                                    </svg>
+                                </div>
+
+                                <div>
+                                    <div class="fw-bold">
+                                        {{ student.first_name }} {{ student.last_name }}
+                                    </div>
+
+                                    <div class="small text-secondary">
+                                        Student ID: {{ student.student_id }}
+                                    </div>
+                                </div>
+
+                                <span class="badge text-bg-light border ms-auto">
+                                    Read only
+                                </span>
+
+                            </div>
+
+                            <!-- Personal Information -->
+                            <h3 class="h6 fw-bold mb-3">
+                                Personal Information
+                            </h3>
+
+                            <div class="row g-3 mb-4">
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Full Name
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {{ student.first_name }} {{ student.last_name }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Student ID
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {{ student.student_id }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Date of Birth
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.date_of_birth %}
+                                                {{ student.date_of_birth|date:"d M Y" }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Gender
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.gender %}
+                                                {{ student.get_gender_display }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Email Address
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.email %}
+                                                {{ student.email }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Phone Number
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.phone %}
+                                                {{ student.phone }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Address
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.address %}
+                                                {{ student.address }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Academic Information -->
+                            <h3 class="h6 fw-bold mb-3">
+                                Academic Information
+                            </h3>
+
+                            <div class="row g-3">
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Department
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.department %}
+                                                {{ student.department }}
+                                            {% else %}
+                                                Not assigned
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Course
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.course %}
+                                                {{ student.course }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Semester
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.semester %}
+                                                {{ student.semester }}
+                                            {% else %}
+                                                Not assigned
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Admission Date
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.admission_date %}
+                                                {{ student.admission_date|date:"d M Y" }}
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <div class="profile-field">
+                                        <div class="profile-field-label">
+                                            Assigned Mentor
+                                        </div>
+
+                                        <div class="profile-field-value">
+                                            {% if student.mentor %}
+                                                {{ student.mentor }}
+                                            {% else %}
+                                                Not assigned
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="modal-footer bg-light">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </div>
+            <!-- End My Profile Modal -->
 
-    </div>
-
-    <!-- Attendance history -->
-    <h3 class="h6 fw-bold mb-3">Attendance History</h3>
-
-    {% if attendance_history %}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Classes Conducted</th>
-                        <th scope="col">Classes Attended</th>
-                        <th scope="col">Classes Missed</th>
-                        <th scope="col">Attendance</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {% for record in attendance_history %}
-                        <tr>
-                            <td class="text-nowrap">
-                                {{ record.date|date:"d M Y" }}
-                            </td>
-
-                            <td>{{ record.classes_conducted }}</td>
-                            <td>{{ record.classes_attended }}</td>
-
-                            <td>
-                                {% if record.is_valid %}
-                                    {{ record.classes_missed }}
-                                {% else %}
-                                    <span class="text-secondary">—</span>
-                                {% endif %}
-                            </td>
-
-                            <td>
-                                {% if record.is_valid %}
-                                    <span class="badge text-bg-success">
-                                        {{ record.attendance_percentage }}%
-                                    </span>
-                                {% else %}
-                                    <span
-                                        class="badge text-bg-secondary"
-                                        title="The recorded class counts do not support a valid percentage."
-                                    >
-                                        Unavailable
-                                    </span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <p class="small text-secondary mt-3 mb-0">
-            Records are displayed from newest to oldest. Attendance
-            percentages are calculated from classes attended and
-            classes conducted.
-        </p>
-
-    {% else %}
-        <div class="alert alert-light border mb-0" role="status">
-            No attendance records are available yet.
-            Please check again after your attendance has been recorded
-            by an authorized staff member.
-        </div>
-    {% endif %}
-
-</section>
-
-
-<!-- Academic Performance -->
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
-        <h5 class="card-title mb-3">
-            Academic Performance
-        </h5>
-
-        {% if academic_history %}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Marks Obtained</th>
-                            <th>Maximum Marks</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for record in academic_history %}
-                            <tr>
-                                <td>
-                                    {{ record.subject }}
-                                </td>
-
-                                <td>
-                                    {% if record.marks_obtained is not None %}
-                                        {{ record.marks_obtained }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
-
-                                <td>
-                                    {% if record.total_marks is not None %}
-                                        {{ record.total_marks }}
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
-
-                                <td>
-                                    {% if record.is_valid %}
-                                        {{ record.percentage }}%
-                                    {% else %}
-                                        —
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p class="text-muted mb-0">
-                No academic performance records are available yet.
-            </p>
         {% endif %}
-    </div>
-</div>
 
-        
-<!-- Student Profile Details -->
-<section class="bg-white border rounded-4 p-4 p-md-5 mb-4">
+    </main>
 
-    <div class="d-flex flex-column flex-sm-row
-                justify-content-between align-items-sm-center gap-2 mb-4">
-
-        <div>
-            <h2 class="h5 fw-bold mb-1">My Profile</h2>
-            <p class="text-secondary small mb-0">
-                Your personal and academic information
-            </p>
-        </div>
-
-        <span class="badge text-bg-light border align-self-start">
-            Read only
-        </span>
-
-    </div>
-
-    <!-- Personal Information -->
-    <h3 class="h6 fw-semibold mb-3">Personal Information</h3>
-
-    <div class="row g-4 mb-4">
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Full Name</div>
-            <div class="fw-semibold">
-                {{ student.first_name }} {{ student.last_name }}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Student ID</div>
-            <div class="fw-semibold">{{ student.student_id }}</div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Date of Birth</div>
-            <div class="fw-semibold">
-                {% if student.date_of_birth %}
-                    {{ student.date_of_birth|date:"d M Y" }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Gender</div>
-            <div class="fw-semibold">
-                {% if student.gender %}
-                    {{ student.get_gender_display }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Email Address</div>
-            <div class="fw-semibold text-break">
-                {% if student.email %}
-                    {{ student.email }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Phone Number</div>
-            <div class="fw-semibold">
-                {% if student.phone %}
-                    {{ student.phone }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12">
-            <div class="small text-secondary mb-1">Address</div>
-            <div class="fw-semibold">
-                {% if student.address %}
-                    {{ student.address }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-    </div>
-
-    <hr class="my-4">
-
-    <!-- Academic Information -->
-    <h3 class="h6 fw-semibold mb-3">Academic Information</h3>
-
-    <div class="row g-4">
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Department</div>
-            <div class="fw-semibold">
-                {% if student.department %}
-                    {{ student.department }}
-                {% else %}
-                    Not assigned
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Course</div>
-            <div class="fw-semibold">
-                {% if student.course %}
-                    {{ student.course }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Semester</div>
-            <div class="fw-semibold">
-                {% if student.semester %}
-                    {{ student.semester }}
-                {% else %}
-                    Not assigned
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Admission Date</div>
-            <div class="fw-semibold">
-                {% if student.admission_date %}
-                    {{ student.admission_date|date:"d M Y" }}
-                {% else %}
-                    Not provided
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="small text-secondary mb-1">Assigned Mentor</div>
-            <div class="fw-semibold">
-                {% if student.mentor %}
-                    {{ student.mentor }}
-                {% else %}
-                    Not assigned
-                {% endif %}
-            </div>
-        </div>
-
-    </div>
-
-</section>
-
-<!-- Upcoming Dashboard Modules -->
-<section class="bg-white border rounded-4 p-4">
-    <h2 class="h5 fw-bold mb-2">Your Academic Information</h2>
-
-    <p class="text-secondary mb-0">
-        Detailed attendance records, marks, assignments,
-        examination results, performance charts, and support
-        notifications will be added in subsequent steps.
-    </p>
-</section>
-
-
-    {% endif %}
-
-</main>
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
 </body>
 </html>
