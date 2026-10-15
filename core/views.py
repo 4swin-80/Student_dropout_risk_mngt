@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from functools import wraps
+from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -1244,6 +1245,7 @@ def student_dashboard(request):
             total_classes_conducted - total_classes_attended
         )
 
+    
     # --------------------------------------------------
     # ACADEMIC PERFORMANCE SUMMARY
     # --------------------------------------------------
@@ -1257,10 +1259,20 @@ def student_dashboard(request):
     academic_percentages = []
 
     for marks, maximum_marks in academic_records:
-        if maximum_marks is not None and maximum_marks > 0:
-            academic_percentages.append(
-                marks * Decimal("100") / maximum_marks
+        valid_record = (
+            marks is not None
+            and maximum_marks is not None
+            and maximum_marks > 0
+            and marks >= 0
+            and marks <= maximum_marks
+        )
+
+        if valid_record:
+            percentage = (
+                Decimal(marks) * Decimal("100")
+                / Decimal(maximum_marks)
             )
+            academic_percentages.append(percentage)
 
     academic_average = None
 
@@ -1269,6 +1281,43 @@ def student_dashboard(request):
             sum(academic_percentages, Decimal("0"))
             / Decimal(len(academic_percentages))
         ).quantize(Decimal("0.01"))
+
+
+    # Academic performance history for this authenticated student's record only.
+    academic_records = AcademicPerformance.objects.filter(
+        student=student
+    ).order_by("-created_at", "-id")
+
+    academic_history = []
+
+    for record in academic_records:
+        marks = record.internal_marks
+        total_marks = record.total_internal_marks
+
+        valid_record = (
+            total_marks is not None
+            and total_marks > 0
+            and marks is not None
+            and marks >= 0
+            and marks <= total_marks
+        )
+
+        if valid_record:
+            percentage = (
+                Decimal(marks) * Decimal("100")
+                / Decimal(total_marks)
+            ).quantize(Decimal("0.01"))
+        else:
+            percentage = None
+
+        academic_history.append({
+            "subject": record.subject,
+            "marks_obtained": marks,
+            "total_marks": total_marks,
+            "percentage": percentage,
+            "is_valid": valid_record,
+            "created_at": record.created_at,
+        })
 
     # --------------------------------------------------
     # ASSIGNMENT SUMMARY
@@ -1325,6 +1374,7 @@ def student_dashboard(request):
 
         # Academic summary
         "academic_average": academic_average,
+        "academic_history": academic_history,
 
         # Assignment summary
         "assignment_count": assignment_count,
