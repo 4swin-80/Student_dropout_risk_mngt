@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 
 from .models import (
     Student,
@@ -16,7 +19,24 @@ from .models import (
 )
 
 
+
 class StudentForm(forms.ModelForm):
+    student_password = forms.CharField(
+        label="Student Login Password",
+        required=False,
+        strip=False,
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter initial login password",
+                "autocomplete": "new-password",
+            }
+        ),
+        help_text=(
+            "Required when creating a student account. "
+            "Leave blank when editing an existing student."
+        ),
+    )
 
     class Meta:
         model = Student
@@ -136,6 +156,11 @@ class StudentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Password is required only when creating a new student.
+        self.fields["student_password"].required = (
+            not self.instance.pk
+        )
+
         department_id = (
             self.data.get(self.add_prefix("department"))
             if self.is_bound
@@ -156,6 +181,26 @@ class StudentForm(forms.ModelForm):
 
             if mentors.count() == 1:
                 mentor_field.initial = mentors.first().pk
+
+    def clean_student_password(self):
+        password = self.cleaned_data.get("student_password")
+
+        if not self.instance.pk and not password:
+            raise ValidationError(
+                "Student login password is required."
+            )
+
+        if password:
+            user = User(
+                username=self.cleaned_data.get("student_id", ""),
+                first_name=self.cleaned_data.get("first_name", ""),
+                last_name=self.cleaned_data.get("last_name", ""),
+                email=self.cleaned_data.get("email", ""),
+            )
+
+            validate_password(password, user=user)
+
+        return password
 
     def clean(self):
         cleaned_data = super().clean()
@@ -211,6 +256,7 @@ class StudentForm(forms.ModelForm):
             self.save_m2m()
 
         return student
+
 
 
 class TeacherForm(forms.ModelForm):

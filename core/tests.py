@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import check_password
 from django.test import TestCase
 from django.urls import reverse
 
@@ -10,6 +11,87 @@ from .models import (
     Teacher,
     UserProfile,
 )
+
+
+class StudentAccountProvisioningTests(TestCase):
+    def setUp(self):
+        self.department = Department.objects.create(name="Computing")
+        self.admin = User.objects.create_user(username="admin", password="admin-pass")
+        UserProfile.objects.create(user=self.admin, role="ADMIN")
+        mentor_user = User.objects.create_user(username="mentor", password="mentor-pass")
+        UserProfile.objects.create(user=mentor_user, role="MENTOR")
+        self.mentor = Mentor.objects.create(
+            user=mentor_user, employee_id="M-TEST", department=self.department
+        )
+
+    def payload(self, student_id="STU-TEST", password=""):
+        return {
+            "student_id": student_id, "first_name": "Test", "last_name": "Student",
+            "date_of_birth": "2005-01-01", "gender": "Other",
+            "email": "test.student@example.com", "phone": "1234567890", "address": "",
+            "department": str(self.department.pk), "course": "Computing", "semester": "1",
+            "mentor": str(self.mentor.pk), "admission_date": "2024-01-01",
+            "student_password": password,
+        }
+
+    def login_admin(self):
+        self.client.force_login(self.admin)
+
+    def test_password_field_is_rendered_for_add_and_unlinked_edit(self):
+        self.login_admin()
+        self.assertContains(self.client.get(reverse("student_create")), 'name="student_password"')
+        student = Student.objects.create(student_id="STU-EDIT", first_name="Test")
+        self.assertContains(
+            self.client.get(reverse("student_update", args=[student.pk])),
+            'name="student_password"',
+        )
+
+    def test_create_provisions_hashed_student_account(self):
+        self.login_admin()
+        response = self.client.post(reverse("student_create"), self.payload(password="ValidStrongPass!234"))
+        self.assertEqual(response.status_code, 302)
+        student = Student.objects.get(student_id="STU-TEST")
+        self.assertEqual(student.user.username, student.student_id)
+        self.assertEqual(student.user.profile.role, "STUDENT")
+        self.assertTrue(student.user.check_password("ValidStrongPass!234"))
+
+    def test_unlinked_blank_password_does_not_provision(self):
+        self.login_admin()
+        student = Student.objects.create(student_id="STU-EDIT", first_name="Old")
+        response = self.client.post(reverse("student_update", args=[student.pk]), self.payload("STU-EDIT"))
+        self.assertEqual(response.status_code, 302)
+        student.refresh_from_db()
+        self.assertIsNone(student.user_id)
+
+    def test_safe_matching_account_is_reused_without_password_reset(self):
+        self.login_admin()
+        user = User.objects.create_user(
+            username="STU-EDIT", password="OriginalPassword!234", first_name="Test",
+            last_name="Student", email="test.student@example.com",
+        )
+        UserProfile.objects.create(user=user, role="STUDENT")
+        student = Student.objects.create(student_id="STU-EDIT", first_name="Old")
+        response = self.client.post(reverse("student_update", args=[student.pk]), self.payload("STU-EDIT"))
+        self.assertEqual(response.status_code, 302)
+        student.refresh_from_db()
+        self.assertEqual(student.user_id, user.pk)
+        self.assertTrue(user.check_password("OriginalPassword!234"))
+        self.assertEqual(User.objects.filter(username="STU-EDIT").count(), 1)
+
+    def test_incompatible_role_is_rejected_without_conversion(self):
+        self.login_admin()
+        user = User.objects.create_user(
+            username="STU-EDIT", password="OriginalPassword!234", first_name="Test",
+            last_name="Student", email="test.student@example.com",
+        )
+        UserProfile.objects.create(user=user, role="ADMIN")
+        student = Student.objects.create(student_id="STU-EDIT", first_name="Old")
+        response = self.client.post(reverse("student_update", args=[student.pk]), self.payload("STU-EDIT"))
+        self.assertEqual(response.status_code, 200)
+        student.refresh_from_db()
+        user.profile.refresh_from_db()
+        self.assertIsNone(student.user_id)
+        self.assertEqual(user.profile.role, "ADMIN")
 
 
 class TeacherStudentSupportReferralTests(TestCase):

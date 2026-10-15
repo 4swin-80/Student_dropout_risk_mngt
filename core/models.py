@@ -9,6 +9,7 @@ class UserProfile(models.Model):
         ("ADMIN", "Administrator"),
         ("TEACHER", "Teacher"),
         ("MENTOR", "Mentor"),
+        ("STUDENT", "Student"),
     ]
 
     user = models.OneToOneField(
@@ -71,6 +72,15 @@ class Student(models.Model):
     ]
 
     student_id = models.CharField(max_length=50, unique=True)
+    
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="student_record",
+    )
+
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, blank=True)

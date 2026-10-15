@@ -5,6 +5,8 @@ from .risk_utils import (
 from datetime import date
 from django.contrib import messages
 from decimal import Decimal
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, transaction
 from functools import wraps
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -109,10 +111,9 @@ def home(request):
 # LOGIN
 # ============================================================
 
+
 def login_view(request):
-
     if request.method == "POST":
-
         username = request.POST.get("username", "").strip()
         password = request.POST.get("password", "")
 
@@ -121,75 +122,48 @@ def login_view(request):
         except User.DoesNotExist:
             messages.error(
                 request,
-                "Invalid username or password."
+                "Invalid username or password.",
             )
-            return render(
-                request,
-                "accounts/login.html"
-            )
+            return render(request, "accounts/login.html")
 
-        # Check username + password only
         if not user.check_password(password):
             messages.error(
                 request,
-                "Invalid username or password."
+                "Invalid username or password.",
             )
-            return render(
-                request,
-                "accounts/login.html"
-            )
+            return render(request, "accounts/login.html")
 
-        # Check UserProfile role only
         try:
             role = user.profile.role
         except UserProfile.DoesNotExist:
             messages.error(
                 request,
-                "Invalid username or password."
+                "Invalid username or password.",
             )
-            return render(
-                request,
-                "accounts/login.html"
-            )
+            return render(request, "accounts/login.html")
 
-        # NONE = invalid login
-        if role == "NONE":
+        if role not in ["ADMIN", "TEACHER", "MENTOR", "STUDENT"]:
             messages.error(
                 request,
-                "Invalid username or password."
+                "Invalid username or password.",
             )
-            return render(
+            return render(request, "accounts/login.html")
+
+        # Application role is checked before login.
+        # Superusers must not enter application dashboards.
+        if user.is_superuser:
+            messages.error(
                 request,
-                "accounts/login.html"
+                "Invalid username or password.",
             )
+            return render(request, "accounts/login.html")
 
-        # Only these three roles can enter
-        if role == "ADMIN":
-            login(request, user)
-            return redirect("admin_dashboard")
+        login(request, user)
 
-        elif role == "TEACHER":
-            login(request, user)
-            return redirect("teacher_dashboard")
+        return redirect("dashboard_redirect")
 
-        elif role == "MENTOR":
-            login(request, user)
-            return redirect("mentor_dashboard")
+    return render(request, "accounts/login.html")
 
-        # Any unexpected role
-        messages.error(
-            request,
-            "Invalid username or password."
-        )
-        return render(
-            request,
-            "accounts/login.html"
-        )
-
-    return render(
-        request,
-        "accounts/login.html"
-    )
 
 
 # ============================================================
@@ -335,6 +309,9 @@ def dashboard_redirect(request):
 
     elif role == "MENTOR":
         return redirect("mentor_dashboard")
+
+    elif role == "STUDENT":
+        return redirect("student_dashboard")
 
     elif role == "NONE":
         messages.error(
@@ -1184,6 +1161,15 @@ def exam_result_list(request):
     )
 
 
+@role_required("STUDENT")
+def student_dashboard(request):
+    return render(
+        request,
+        "student/student_dashboard.html",
+    )
+
+
+
 # ============================================================
 # MENTOR DASHBOARD
 # ============================================================
@@ -2015,21 +2001,69 @@ def student_list(request):
     )
 
 
+
 @role_required("ADMIN")
 def student_create(request):
-
     if request.method == "POST":
         form = StudentForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            student_id = form.cleaned_data["student_id"]
 
-            messages.success(
-                request,
-                "Student added successfully."
-            )
+            # Do not reuse an unrelated existing account.
+            if User.objects.filter(username=student_id).exists():
+                form.add_error(
+                    "student_id",
+                    "An account with this Student ID already exists. "
+                    "Please resolve the username conflict.",
+                )
+            else:
+                try:
+                    with transaction.atomic():
+                        student = form.save(commit=False)
 
-            return redirect("student_list")
+                        user = User.objects.create_user(
+                            username=student_id,
+                            password=form.cleaned_data[
+                                "student_password"
+                            ],
+                            first_name=student.first_name,
+                            last_name=student.last_name,
+                            email=student.email,
+                        )
+
+                        profile, created = (
+                            UserProfile.objects.get_or_create(
+                                user=user,
+                                defaults={"role": "STUDENT"},
+                            )
+                        )
+
+                        if profile.role != "STUDENT":
+                            raise ValidationError(
+                                "The new account has an "
+                                "unexpected application role."
+                            )
+
+                        student.user = user
+                        student.save()
+                        form.save_m2m()
+
+                    messages.success(
+                        request,
+                        "Student and login account created successfully.",
+                    )
+
+                    return redirect("student_list")
+
+                except ValidationError as exc:
+                    form.add_error(None, exc)
+                except IntegrityError:
+                    form.add_error(
+                        "student_id",
+                        "This Student ID conflicts with an existing record or "
+                        "login account. No changes were saved.",
+                    )
 
     else:
         form = StudentForm()
@@ -2059,8 +2093,9 @@ def student_create(request):
     return render(
         request,
         "admin/students/student_form.html",
-        context
+        context,
     )
+
 
 
 @role_required("ADMIN")
@@ -2085,43 +2120,159 @@ def student_detail(request, student_id):
     )
 
 
+
 @role_required("ADMIN")
 def student_update(request, student_id):
-
     student = get_object_or_404(
         Student,
-        id=student_id
+        id=student_id,
     )
 
     if request.method == "POST":
         form = StudentForm(
             request.POST,
-            instance=student
+            instance=student,
         )
 
         if form.is_valid():
-            form.save()
+            new_student_id = form.cleaned_data["student_id"]
 
-            messages.success(
-                request,
-                "Student information updated successfully."
+            conflicting_users = User.objects.filter(
+                username=new_student_id,
             )
 
-            return redirect(
-                "student_detail",
-                student_id=student.id
-            )
+            if student.user_id:
+                conflicting_users = conflicting_users.exclude(
+                    pk=student.user_id,
+                )
+
+            candidate_user = None
+            unsafe_collision = False
+            if not student.user_id:
+                candidate_user = conflicting_users.first()
+
+            if candidate_user:
+                try:
+                    candidate_profile = candidate_user.profile
+                except UserProfile.DoesNotExist:
+                    candidate_profile = None
+
+                identity_matches = (
+                    candidate_user.first_name.strip().casefold()
+                    == form.cleaned_data["first_name"].strip().casefold()
+                    and candidate_user.last_name.strip().casefold()
+                    == form.cleaned_data["last_name"].strip().casefold()
+                    and bool(candidate_user.email.strip())
+                    and candidate_user.email.strip().casefold()
+                    == form.cleaned_data["email"].strip().casefold()
+                )
+                if (
+                    not candidate_profile
+                    or candidate_profile.role != "STUDENT"
+                    or hasattr(candidate_user, "student_record")
+                    or not identity_matches
+                ):
+                    form.add_error(
+                        "student_id",
+                        "A login account already uses this Student ID, but its "
+                        "Student role or identity cannot be safely verified. "
+                        "Have an administrator resolve the account and profile "
+                        "before linking it.",
+                    )
+                    candidate_user = None
+                    unsafe_collision = True
+
+            if unsafe_collision:
+                pass
+            elif conflicting_users.exists() and student.user_id and conflicting_users.first().pk != student.user_id:
+                form.add_error("student_id", "This Student ID is already used by another login account.")
+            else:
+                try:
+                    with transaction.atomic():
+                        updated_student = form.save(commit=False)
+
+                        linked_user = updated_student.user or candidate_user
+                        new_password = form.cleaned_data.get("student_password")
+
+                        if linked_user is None and new_password:
+                            linked_user = User.objects.create_user(
+                                username=new_student_id,
+                                password=new_password,
+                                first_name=updated_student.first_name,
+                                last_name=updated_student.last_name,
+                                email=updated_student.email,
+                            )
+
+                            profile, created = UserProfile.objects.get_or_create(
+                                user=linked_user,
+                                defaults={"role": "STUDENT"},
+                            )
+
+                            if profile.role != "STUDENT":
+                                raise ValidationError(
+                                    "The account has an unexpected application role."
+                                )
+
+                        if linked_user is not None:
+                            try:
+                                profile = linked_user.profile
+                            except UserProfile.DoesNotExist:
+                                profile = None
+                            if not profile or profile.role != "STUDENT":
+                                raise ValidationError(
+                                    "This account does not have the STUDENT application role. "
+                                    "An administrator must resolve its role before linking."
+                                )
+                            linked_user.username = new_student_id
+                            linked_user.first_name = updated_student.first_name
+                            linked_user.last_name = updated_student.last_name
+                            linked_user.email = updated_student.email
+
+                            update_fields = [
+                                "username",
+                                "first_name",
+                                "last_name",
+                                "email",
+                            ]
+
+                            if new_password:
+                                linked_user.set_password(new_password)
+                                update_fields.append("password")
+
+                            linked_user.save(update_fields=update_fields)
+                            updated_student.user = linked_user
+
+
+                        updated_student.save()
+                        form.save_m2m()
+
+                    messages.success(
+                        request,
+                        "Student information updated successfully.",
+                    )
+
+                    return redirect(
+                        "student_detail",
+                        student_id=student.id,
+                    )
+
+                except ValidationError as exc:
+                    form.add_error(None, exc)
+                except IntegrityError:
+                    form.add_error(
+                        "student_id",
+                        "This Student ID conflicts with an existing "
+                        "record or login account. No changes were saved.",
+                    )
 
     else:
-        form = StudentForm(
-            instance=student
-        )
+        form = StudentForm(instance=student)
 
     mentor_options = {}
 
     for department in Department.objects.all():
         mentors = Mentor.objects.filter(
-            department=department
+            department=department,
         ).order_by("employee_id")
 
         mentor_options[str(department.pk)] = [
@@ -2143,7 +2294,7 @@ def student_update(request, student_id):
     return render(
         request,
         "admin/students/student_form.html",
-        context
+        context,
     )
 
 
@@ -2537,4 +2688,4 @@ def admin_reports_export_excel(request):
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
-    return response
+    return response

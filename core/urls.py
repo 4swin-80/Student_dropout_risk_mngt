@@ -297,6 +297,11 @@ path(
     name="teacher_generate_predictions",
 ),
 
+path(
+    "student-dashboard/",
+    views.student_dashboard,
+    name="student_dashboard",
+),
 
 
 path("mentors/", views.mentor_list, name="mentor_list"),

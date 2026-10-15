@@ -135,6 +135,32 @@
 
                             </div>
 
+                            
+<div class="col-md-6">
+    <label
+        for="{{ form.student_password.id_for_label }}"
+        class="form-label fw-semibold"
+    >
+        Student Login Password
+    </label>
+
+    {{ form.student_password }}
+
+    {% if form.student_password.help_text %}
+        <div class="form-text">
+            {{ form.student_password.help_text }}
+        </div>
+    {% endif %}
+
+    {% for error in form.student_password.errors %}
+        <div class="text-danger small mt-1">
+            {{ error }}
+        </div>
+    {% endfor %}
+</div>
+
+
+
 
                             <div class="col-md-6">
 
