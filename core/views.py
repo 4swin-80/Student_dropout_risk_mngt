@@ -92,6 +92,19 @@ def role_required(required_role):
     return decorator
 
 
+def _valid_exam_percentage(marks, maximum_marks):
+    """Return an examination percentage only when both marks are valid."""
+    if marks is None or maximum_marks is None:
+        return None
+    try:
+        if (not marks.is_finite() or not maximum_marks.is_finite()
+                or maximum_marks <= 0 or marks < 0 or marks > maximum_marks):
+            return None
+        return marks * Decimal("100") / maximum_marks
+    except (AttributeError, TypeError, ValueError, ArithmeticError):
+        return None
+
+
 # ============================================================
 # HOME
 # ============================================================
@@ -1347,10 +1360,9 @@ def student_dashboard(request):
         "marks_obtained",
         "total_marks",
     ):
-        if maximum_marks is not None and maximum_marks > 0:
-            valid_exam_percentages.append(
-                marks * Decimal("100") / maximum_marks
-            )
+        percentage = _valid_exam_percentage(marks, maximum_marks)
+        if percentage is not None:
+            valid_exam_percentages.append(percentage)
 
     exam_average = None
 
@@ -1391,6 +1403,114 @@ def student_dashboard(request):
         "student/student_dashboard.html",
         context,
     )
+
+
+@role_required("STUDENT")
+def student_examination_results(request):
+    """Show examination results belonging only to the signed-in student."""
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_dashboard.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    exam_results = ExamResult.objects.filter(student=student).order_by(
+        "-exam_date", "-created_at", "-id"
+    )
+    exam_rows = []
+    valid_percentages = []
+    valid_result_count = 0
+    awaiting_marks_count = 0
+
+    for result in exam_results:
+        percentage = _valid_exam_percentage(
+            result.marks_obtained, result.total_marks
+        )
+        awaiting_marks = (
+            result.marks_obtained is None or result.total_marks is None
+        )
+        if percentage is not None:
+            valid_result_count += 1
+            valid_percentages.append(percentage)
+        if awaiting_marks:
+            awaiting_marks_count += 1
+        exam_rows.append({
+            "result": result,
+            "percentage": percentage.quantize(Decimal("0.01"))
+            if percentage is not None else None,
+            "awaiting_marks": awaiting_marks,
+        })
+
+    exam_average = None
+    if valid_percentages:
+        exam_average = (
+            sum(valid_percentages, Decimal("0"))
+            / Decimal(len(valid_percentages))
+        ).quantize(Decimal("0.01"))
+
+    return render(
+        request,
+        "student/student_examination_results.html",
+        {
+            "student": student,
+            "exam_rows": exam_rows,
+            "exam_record_count": len(exam_rows),
+            "valid_result_count": valid_result_count,
+            "awaiting_marks_count": awaiting_marks_count,
+            "exam_average": exam_average,
+        },
+    )
+
+
+@role_required("STUDENT")
+def student_assignments(request):
+    """Show assignment records belonging only to the signed-in student."""
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_dashboard.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    assignments = Assignment.objects.filter(student=student).order_by(
+        "-created_at", "-id"
+    )
+    assignment_rows = []
+    for assignment in assignments:
+        marks = assignment.marks
+        assignment_rows.append({
+            "assignment": assignment,
+            "valid_marks": marks is not None and Decimal("0") <= marks <= Decimal("20"),
+        })
+
+    context = {
+        "student": student,
+        "assignment_rows": assignment_rows,
+        "assignment_count": assignments.count(),
+        "pending_assignment_count": assignments.filter(status="Pending").count(),
+        "submitted_assignment_count": assignments.filter(status="Submitted").count(),
+        "late_assignment_count": assignments.filter(status="Late").count(),
+    }
+    return render(request, "student/student_assignments.html", context)
 
 
 @role_required("STUDENT")

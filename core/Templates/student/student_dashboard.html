@@ -436,6 +436,10 @@
                             <p class="small text-secondary mb-0 mt-2">
                                 {{ pending_assignment_count }} pending
                             </p>
+                            <a href="{% url 'student_assignments' %}"
+                               class="btn btn-sm btn-outline-primary mt-3">
+                                View My Assignments
+                            </a>
                         </div>
                     </div>
 
@@ -463,6 +467,10 @@
                                     No valid examination marks recorded.
                                 </p>
                             {% endif %}
+                            <a href="{% url 'student_examination_results' %}"
+                               class="btn btn-sm btn-outline-primary mt-3">
+                                View Examination Results
+                            </a>
                         </div>
                     </div>
 
@@ -708,9 +716,8 @@
                 </h2>
 
                 <p class="text-secondary mb-0">
-                    Detailed assignment views, examination results,
-                    performance charts, and support notifications
-                    can be added in subsequent steps.
+                    Performance charts and support notifications may be added
+                    in future updates.
                 </p>
             </section>
 

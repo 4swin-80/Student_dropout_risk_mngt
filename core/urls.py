@@ -304,6 +304,18 @@ path(
 ),
 
 path(
+    "student-assignments/",
+    views.student_assignments,
+    name="student_assignments",
+),
+
+path(
+    "student-examination-results/",
+    views.student_examination_results,
+    name="student_examination_results",
+),
+
+path(
     "student-profile/",
     views.student_profile,
     name="student_profile",

@@ -914,3 +914,204 @@ class StudentDashboardAccessTests(TestCase):
 
         self.assertIn(response.status_code, [302, 403])
 
+
+class StudentAssignmentsTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="assign-student", password="pass")
+        UserProfile.objects.create(user=self.user, role="STUDENT")
+        self.student = Student.objects.create(
+            student_id="ASSIGN-001", user=self.user, first_name="Asha"
+        )
+        self.other_user = User.objects.create_user(username="assign-other", password="pass")
+        UserProfile.objects.create(user=self.other_user, role="STUDENT")
+        self.other_student = Student.objects.create(
+            student_id="ASSIGN-002", user=self.other_user, first_name="Other"
+        )
+        self.client.force_login(self.user)
+
+    def test_student_assignments_url_and_authenticated_page(self):
+        self.assertEqual(reverse("student_assignments"), "/student-assignments/")
+        response = self.client.get(reverse("student_assignments"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "My Assignments")
+        self.assertContains(response, "Back to Dashboard")
+
+    def test_assignment_data_and_summary_are_isolated(self):
+        Assignment.objects.create(
+            student=self.student,
+            title="My Project", subject="Science",
+            submission_date=date(2026, 5, 2), status="Submitted",
+            marks=Decimal("16.00"),
+        )
+        Assignment.objects.create(
+            student=self.student, title="Draft", subject="Math",
+            status="Pending", marks=None,
+        )
+        Assignment.objects.create(
+            student=self.student, title="Old Work", subject="History",
+            status="Late", marks=Decimal("21.00"),
+        )
+        Assignment.objects.create(
+            student=self.other_student, title="Private Assignment",
+            subject="Secret", status="Late",
+        )
+
+        response = self.client.get(
+            reverse("student_assignments"),
+            {"student_id": self.other_student.student_id},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["assignment_count"], 3)
+        self.assertEqual(response.context["pending_assignment_count"], 1)
+        self.assertEqual(response.context["submitted_assignment_count"], 1)
+        self.assertEqual(response.context["late_assignment_count"], 1)
+        self.assertContains(response, "My Project")
+        self.assertContains(response, "Science")
+        self.assertContains(response, "02 May 2026")
+        self.assertContains(response, "16.00 / 20")
+        self.assertContains(response, "Not specified")
+        self.assertContains(response, "Not graded")
+        self.assertNotContains(response, "Private Assignment")
+        self.assertNotContains(response, "Secret")
+
+    def test_empty_state_and_zero_counts(self):
+        response = self.client.get(reverse("student_assignments"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You don't have any assignments recorded yet.")
+        self.assertEqual(response.context["assignment_count"], 0)
+        self.assertEqual(response.context["pending_assignment_count"], 0)
+        self.assertEqual(response.context["submitted_assignment_count"], 0)
+        self.assertEqual(response.context["late_assignment_count"], 0)
+
+    def test_unauthenticated_and_incompatible_roles_are_rejected(self):
+        self.client.logout()
+        response = self.client.get(reverse("student_assignments"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+        for role in ("TEACHER", "MENTOR", "ADMIN"):
+            user = User.objects.create_user(username=f"assign-{role.lower()}", password="pass")
+            UserProfile.objects.create(user=user, role=role)
+            self.client.force_login(user)
+            denied = self.client.get(reverse("student_assignments"))
+            self.assertIn(denied.status_code, [302, 403])
+
+        superuser = User.objects.create_superuser(
+            username="assign-super", email="assign-super@example.com", password="pass"
+        )
+        self.client.force_login(superuser)
+        self.assertIn(self.client.get(reverse("student_assignments")).status_code, [302, 403])
+
+    def test_student_without_linked_record_is_forbidden(self):
+        unlinked = User.objects.create_user(username="assign-unlinked", password="pass")
+        UserProfile.objects.create(user=unlinked, role="STUDENT")
+        self.client.force_login(unlinked)
+        response = self.client.get(reverse("student_assignments"))
+        self.assertEqual(response.status_code, 403)
+
+
+class StudentExaminationResultsTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="exam-student", password="pass")
+        UserProfile.objects.create(user=self.user, role="STUDENT")
+        self.student = Student.objects.create(
+            student_id="EXAM-001", user=self.user, first_name="Asha"
+        )
+        self.other_user = User.objects.create_user(username="exam-other", password="pass")
+        UserProfile.objects.create(user=self.other_user, role="STUDENT")
+        self.other_student = Student.objects.create(
+            student_id="EXAM-002", user=self.other_user, first_name="Other"
+        )
+        self.client.force_login(self.user)
+
+    def create_result(self, student, exam_name, subject, marks, total, **kwargs):
+        return ExamResult.objects.create(
+            student=student, exam_name=exam_name, subject=subject,
+            marks_obtained=Decimal(marks), total_marks=Decimal(total), **kwargs,
+        )
+
+    def test_url_and_page_summary_are_student_scoped(self):
+        self.assertEqual(
+            reverse("student_examination_results"), "/student-examination-results/"
+        )
+        self.create_result(self.student, "Midterm", "Mathematics", "40", "50")
+        self.create_result(self.student, "Final", "Science", "90", "100")
+        self.create_result(self.other_student, "Private Exam", "Secret", "100", "100")
+
+        response = self.client.get(
+            reverse("student_examination_results"),
+            {"student_id": self.other_student.student_id},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["exam_record_count"], 2)
+        self.assertEqual(response.context["valid_result_count"], 2)
+        self.assertEqual(response.context["awaiting_marks_count"], 0)
+        self.assertEqual(response.context["exam_average"], Decimal("85.00"))
+        self.assertContains(response, "Mathematics")
+        self.assertContains(response, "40.00")
+        self.assertContains(response, "80.00%")
+        self.assertNotContains(response, "Private Exam")
+        self.assertNotContains(response, "Secret")
+
+    def test_invalid_results_are_excluded_and_never_show_percentages(self):
+        self.create_result(self.student, "Good", "History", "75", "100")
+        self.create_result(self.student, "Zero total", "Physics", "0", "0")
+        self.create_result(self.student, "Too high", "Chemistry", "101", "100")
+        self.create_result(self.student, "Negative", "Biology", "-1", "100")
+
+        response = self.client.get(reverse("student_examination_results"))
+        self.assertEqual(response.context["exam_record_count"], 4)
+        self.assertEqual(response.context["valid_result_count"], 1)
+        self.assertEqual(response.context["exam_average"], Decimal("75.00"))
+        self.assertContains(response, "Zero total")
+        self.assertContains(response, "Unavailable")
+        self.assertNotContains(response, "101.00%")
+        self.assertNotContains(response, "-1.00%")
+
+    def test_empty_state_and_dashboard_link_and_average(self):
+        response = self.client.get(reverse("student_examination_results"))
+        self.assertContains(response, "No examination results have been recorded yet.")
+        self.assertEqual(response.context["exam_record_count"], 0)
+        self.assertEqual(response.context["valid_result_count"], 0)
+        self.assertEqual(response.context["awaiting_marks_count"], 0)
+        self.assertIsNone(response.context["exam_average"])
+
+        dashboard = self.client.get(reverse("student_dashboard"))
+        self.assertContains(dashboard, "View Examination Results")
+        self.create_result(self.student, "Dashboard check", "Math", "-1", "100")
+        self.create_result(self.student, "Dashboard valid", "Math", "50", "100")
+        dashboard = self.client.get(reverse("student_dashboard"))
+        self.assertEqual(dashboard.context["exam_count"], 2)
+        self.assertEqual(dashboard.context["exam_average"], Decimal("50.00"))
+
+    def test_missing_student_record_and_role_access(self):
+        self.client.logout()
+        response = self.client.get(reverse("student_examination_results"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn(reverse("login"), response.url)
+
+        for role in ("TEACHER", "MENTOR", "ADMIN"):
+            user = User.objects.create_user(username=f"exam-{role.lower()}", password="pass")
+            UserProfile.objects.create(user=user, role=role)
+            self.client.force_login(user)
+            self.assertIn(
+                self.client.get(reverse("student_examination_results")).status_code,
+                [302, 403],
+            )
+
+        superuser = User.objects.create_superuser(
+            username="exam-super", email="exam-super@example.com", password="pass"
+        )
+        self.client.force_login(superuser)
+        self.assertIn(
+            self.client.get(reverse("student_examination_results")).status_code,
+            [302, 403],
+        )
+
+        unlinked = User.objects.create_user(username="exam-unlinked", password="pass")
+        UserProfile.objects.create(user=unlinked, role="STUDENT")
+        self.client.force_login(unlinked)
+        self.assertEqual(
+            self.client.get(reverse("student_examination_results")).status_code, 403
+        )
+
