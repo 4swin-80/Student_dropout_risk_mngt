@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
-from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase, override_settings
 from django.urls import reverse
+from tempfile import TemporaryDirectory
 
 
 from .models import (
@@ -716,7 +718,7 @@ class StudentDashboardAccessTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["student"], self.student)
-        self.assertNotContains(response, self.other_student.first_name)
+        self.assertNotContains(response, self.other_student.student_id)
 
     def test_unauthenticated_user_is_redirected_from_profile(self):
         response = self.client.get(reverse("student_profile"))
@@ -743,6 +745,97 @@ class StudentDashboardAccessTests(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertContains(response, "not linked to this account", status_code=403)
+
+    def test_student_can_update_personal_profile_fields(self):
+        self.client.force_login(self.student_user)
+
+        response = self.client.post(
+            reverse("student_profile"),
+            {
+                "first_name": "Anushka",
+                "last_name": "Student",
+                "email": "anushka@example.com",
+                "phone": "9876543210",
+                "date_of_birth": "2004-05-06",
+                "gender": "Female",
+                "address": "12 College Road",
+            },
+        )
+
+        self.assertRedirects(response, reverse("student_profile"))
+        self.student.refresh_from_db()
+        self.assertEqual(self.student.first_name, "Anushka")
+        self.assertEqual(self.student.last_name, "Student")
+        self.assertEqual(self.student.email, "anushka@example.com")
+        self.assertEqual(self.student.phone, "9876543210")
+        self.assertEqual(self.student.date_of_birth, date(2004, 5, 6))
+        self.assertEqual(self.student.gender, "Female")
+        self.assertEqual(self.student.address, "12 College Road")
+
+    def test_student_can_upload_and_retrieve_own_profile_photo(self):
+        # A valid 1x1 PNG image.
+        import base64
+
+        png_bytes = base64.b64decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/"
+            "pS8AAAAASUVORK5CYII="
+        )
+        self.client.force_login(self.student_user)
+
+        with TemporaryDirectory() as media_root, override_settings(MEDIA_ROOT=media_root):
+            response = self.client.post(
+                reverse("student_profile"),
+                {
+                    "first_name": self.student.first_name,
+                    "last_name": self.student.last_name,
+                    "email": self.student.email,
+                    "phone": self.student.phone,
+                    "date_of_birth": "",
+                    "gender": "",
+                    "address": "",
+                    "profile_photo": SimpleUploadedFile(
+                        "profile.png", png_bytes, content_type="image/png"
+                    ),
+                },
+            )
+            self.assertRedirects(response, reverse("student_profile"))
+            self.student.refresh_from_db()
+
+            photo_response = self.client.get(reverse("student_profile_photo"))
+            self.assertEqual(photo_response.status_code, 200)
+            self.assertEqual(photo_response["Content-Type"], "image/png")
+            photo_response.close()
+
+    def test_invalid_profile_photo_is_rejected(self):
+        self.client.force_login(self.student_user)
+
+        response = self.client.post(
+            reverse("student_profile"),
+            {
+                "first_name": self.student.first_name,
+                "last_name": self.student.last_name,
+                "email": self.student.email,
+                "phone": self.student.phone,
+                "date_of_birth": "",
+                "gender": "",
+                "address": "",
+                "profile_photo": SimpleUploadedFile(
+                    "not-an-image.png", b"not an image", content_type="image/png"
+                ),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Upload a valid JPEG, PNG, GIF, or WebP image.")
+        self.student.refresh_from_db()
+        self.assertFalse(self.student.profile_photo)
+
+    def test_non_student_cannot_retrieve_student_profile_photo(self):
+        self.client.force_login(self.teacher_user)
+
+        response = self.client.get(reverse("student_profile_photo"))
+
+        self.assertIn(response.status_code, [302, 403])
 
     def test_student_cannot_view_another_students_profile(self):
         self.client.force_login(self.student_user)

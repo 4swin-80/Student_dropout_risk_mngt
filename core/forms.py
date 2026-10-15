@@ -20,6 +20,52 @@ from .models import (
 
 
 
+class StudentProfileForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "date_of_birth",
+            "gender",
+            "address",
+            "profile_photo",
+        ]
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "form-control", "autocomplete": "given-name"}),
+            "last_name": forms.TextInput(attrs={"class": "form-control", "autocomplete": "family-name"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "autocomplete": "email"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "autocomplete": "tel"}),
+            "date_of_birth": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "gender": forms.Select(attrs={"class": "form-select"}),
+            "address": forms.Textarea(attrs={"class": "form-control", "rows": 3, "autocomplete": "street-address"}),
+            "profile_photo": forms.FileInput(attrs={"class": "photo-picker-input", "accept": "image/jpeg,image/png,image/gif,image/webp", "aria-label": "Choose a profile photo"}),
+        }
+
+    def clean_profile_photo(self):
+        photo = self.cleaned_data.get("profile_photo")
+        uploaded_photo = self.files.get(self.add_prefix("profile_photo"))
+        if not uploaded_photo:
+            return photo
+
+        if uploaded_photo.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("Choose an image smaller than 5 MB.")
+
+        header = uploaded_photo.read(12)
+        uploaded_photo.seek(0)
+        valid_image = (
+            header.startswith(b"\xff\xd8\xff")
+            or header.startswith(b"\x89PNG\r\n\x1a\n")
+            or header.startswith((b"GIF87a", b"GIF89a"))
+            or (header.startswith(b"RIFF") and header[8:12] == b"WEBP")
+        )
+        if not valid_image:
+            raise forms.ValidationError("Upload a valid JPEG, PNG, GIF, or WebP image.")
+        return photo
+
+
 class StudentForm(forms.ModelForm):
     student_password = forms.CharField(
         label="Student Login Password",

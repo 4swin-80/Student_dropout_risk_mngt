@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from functools import wraps
+import mimetypes
 from decimal import Decimal
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -19,7 +20,7 @@ from django.shortcuts import (
     get_object_or_404,
 )
 
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.utils import timezone
 from .forms import *
 from .models import *
@@ -1411,11 +1412,48 @@ def student_profile(request):
             status=403,
         )
 
+    if request.method == "POST":
+        form = StudentProfileForm(
+            request.POST,
+            request.FILES,
+            instance=student,
+        )
+        if form.is_valid():
+            previous_photo_name = student.profile_photo.name
+            photo_changed = bool(request.FILES.get("profile_photo"))
+            form.save()
+            if photo_changed and previous_photo_name:
+                student.profile_photo.storage.delete(previous_photo_name)
+            messages.success(request, "Your profile has been updated.")
+            return redirect("student_profile")
+    else:
+        form = StudentProfileForm(instance=student)
+
     return render(
         request,
         "student/student_profile.html",
-        {"student": student},
+        {"student": student, "form": form},
     )
+
+
+@role_required("STUDENT")
+def student_profile_photo(request):
+    """Serve the authenticated student's own profile photo."""
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return HttpResponse(status=403)
+
+    if not student.profile_photo:
+        return HttpResponse(status=404)
+
+    content_type = mimetypes.guess_type(student.profile_photo.name)[0]
+    response = FileResponse(
+        student.profile_photo.open("rb"),
+        content_type=content_type or "application/octet-stream",
+    )
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
 
 
 

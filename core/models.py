@@ -94,6 +94,10 @@ class Student(models.Model):
 
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=15, blank=True)
+    profile_photo = models.FileField(
+        upload_to="student_profile_photos/",
+        blank=True,
+    )
 
     address = models.TextField(blank=True)
 

@@ -309,6 +309,12 @@ path(
     name="student_profile",
 ),
 
+path(
+    "student-profile/photo/",
+    views.student_profile_photo,
+    name="student_profile_photo",
+),
+
 
 path("mentors/", views.mentor_list, name="mentor_list"),
 path("mentors/add/", views.mentor_create, name="mentor_create"),

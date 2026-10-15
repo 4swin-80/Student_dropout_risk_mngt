@@ -11,10 +11,15 @@
         .topbar { background: #172554; }
         .profile-shell { max-width: 960px; }
         .profile-card { border: 1px solid var(--border); border-radius: 1rem; box-shadow: 0 8px 28px rgba(31, 45, 70, .06); }
-        .identity-mark { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: #eff6ff; color: var(--primary); font-size: 1.5rem; font-weight: 700; }
-        .field { height: 100%; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: .75rem; background: #fff; }
+        .identity-mark, .profile-photo { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; background: #eff6ff; color: var(--primary); font-size: 1.5rem; font-weight: 700; object-fit: cover; }
+        .photo-picker { position: relative; width: 76px; height: 76px; flex: 0 0 76px; }
+        .photo-picker .profile-photo, .photo-picker .identity-mark { width: 100%; height: 100%; }
+        .photo-picker-label { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; background: rgba(15, 23, 42, .62); color: #fff; font-size: .72rem; font-weight: 700; text-align: center; cursor: pointer; opacity: 0; transition: opacity .15s ease; }
+        .photo-picker:hover .photo-picker-label, .photo-picker:focus-within .photo-picker-label { opacity: 1; }
+        .photo-picker-input { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
         .field-label { color: var(--text-muted); font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
-        .field-value { margin-top: .35rem; overflow-wrap: anywhere; }
+        .academic-field { height: 100%; padding: .9rem 1rem; border: 1px solid var(--border); border-radius: .75rem; background: #fff; }
+        .academic-value { margin-top: .35rem; overflow-wrap: anywhere; }
     </style>
 </head>
 <body>
@@ -37,44 +42,105 @@
             <a class="btn btn-outline-primary" href="{% url 'student_dashboard' %}">&larr; Back to Dashboard</a>
         </div>
 
+        {% if messages %}
+            {% for message in messages %}<div class="alert alert-success" role="status">{{ message }}</div>{% endfor %}
+        {% endif %}
+
         {% if student_profile_error %}
             <div class="alert alert-warning" role="alert">{{ student_profile_error }}</div>
         {% elif student %}
             <section class="card profile-card mb-4">
                 <div class="card-body p-4 p-md-5">
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
                     <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="identity-mark" aria-hidden="true">{{ student.first_name|first|upper }}</div>
+                        <div class="photo-picker">
+                            {% if student.profile_photo %}
+                                <img id="profilePhotoPreview" class="profile-photo" src="{% url 'student_profile_photo' %}" alt="Profile photo of {{ student.first_name }}">
+                            {% else %}
+                                <div id="profilePhotoPreview" class="identity-mark" aria-hidden="true">{{ student.first_name|first|upper }}</div>
+                            {% endif %}
+                            {{ form.profile_photo }}
+                            <label class="photo-picker-label" for="{{ form.profile_photo.id_for_label }}" title="Change profile photo">Change photo</label>
+                            {{ form.profile_photo.errors }}
+                        </div>
                         <div>
                             <h2 class="h4 fw-bold mb-1">{{ student.first_name }} {{ student.last_name }}</h2>
                             <p class="text-secondary mb-0">Student ID: {{ student.student_id }}</p>
                         </div>
                     </div>
 
-                    <h3 class="h6 fw-bold mb-3">Personal Information</h3>
-                    <div class="row g-3">
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Student ID</div><div class="field-value">{{ student.student_id|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">First name</div><div class="field-value">{{ student.first_name|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Last name</div><div class="field-value">{{ student.last_name|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Full name</div><div class="field-value">{{ student.first_name }} {{ student.last_name }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Email address</div><div class="field-value">{{ student.email|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Phone number</div><div class="field-value">{{ student.phone|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Date of birth</div><div class="field-value">{% if student.date_of_birth %}{{ student.date_of_birth|date:"d M Y" }}{% else %}Not provided{% endif %}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Gender</div><div class="field-value">{{ student.get_gender_display|default:"Not provided" }}</div></div></div>
-                        <div class="col-12"><div class="field"><div class="field-label">Address</div><div class="field-value">{{ student.address|default:"Not provided"|linebreaksbr }}</div></div></div>
-                    </div>
+                    <h3 class="h5 fw-bold mb-1">Edit personal information</h3>
+                    <p class="text-secondary small mb-4">Click your photo to choose a JPEG, PNG, GIF, or WebP image up to 5 MB. Your full name is shown using the first and last names below.</p>
+                        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.first_name.id_for_label }}">First name</label>
+                                {{ form.first_name }}{{ form.first_name.errors }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.last_name.id_for_label }}">Last name</label>
+                                {{ form.last_name }}{{ form.last_name.errors }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.email.id_for_label }}">Email address</label>
+                                {{ form.email }}{{ form.email.errors }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.phone.id_for_label }}">Phone number</label>
+                                {{ form.phone }}{{ form.phone.errors }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.date_of_birth.id_for_label }}">Date of birth</label>
+                                {{ form.date_of_birth }}{{ form.date_of_birth.errors }}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold" for="{{ form.gender.id_for_label }}">Gender</label>
+                                {{ form.gender }}{{ form.gender.errors }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold" for="{{ form.address.id_for_label }}">Address</label>
+                                {{ form.address }}{{ form.address.errors }}
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                            <a class="btn btn-outline-secondary" href="{% url 'student_dashboard' %}">Cancel</a>
+                        </div>
+                    </form>
 
                     <hr class="my-4">
                     <h3 class="h6 fw-bold mb-3">Academic Information</h3>
                     <div class="row g-3">
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Department</div><div class="field-value">{% if student.department %}{{ student.department }}{% else %}Not assigned{% endif %}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Course</div><div class="field-value">{{ student.course|default:"Not provided" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Current semester</div><div class="field-value">{{ student.semester|default:"Not assigned" }}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Assigned mentor</div><div class="field-value">{% if student.mentor %}{{ student.mentor }}{% else %}Not assigned{% endif %}</div></div></div>
-                        <div class="col-12 col-md-6"><div class="field"><div class="field-label">Admission date</div><div class="field-value">{% if student.admission_date %}{{ student.admission_date|date:"d M Y" }}{% else %}Not provided{% endif %}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Student ID</div><div class="academic-value">{{ student.student_id }}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Department</div><div class="academic-value">{% if student.department %}{{ student.department }}{% else %}Not assigned{% endif %}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Course</div><div class="academic-value">{{ student.course|default:"Not provided" }}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Current semester</div><div class="academic-value">{{ student.semester|default:"Not assigned" }}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Assigned mentor</div><div class="academic-value">{% if student.mentor %}{{ student.mentor }}{% else %}Not assigned{% endif %}</div></div></div>
+                        <div class="col-12 col-md-6"><div class="academic-field"><div class="field-label">Admission date</div><div class="academic-value">{% if student.admission_date %}{{ student.admission_date|date:"d M Y" }}{% else %}Not provided{% endif %}</div></div></div>
                     </div>
                 </div>
             </section>
         {% endif %}
     </main>
+    <script>
+        const photoInput = document.getElementById("id_profile_photo");
+        if (photoInput) {
+            photoInput.addEventListener("change", () => {
+                const file = photoInput.files && photoInput.files[0];
+                if (!file) return;
+                const preview = document.getElementById("profilePhotoPreview");
+                const imageUrl = URL.createObjectURL(file);
+                if (preview.tagName !== "IMG") {
+                    const image = document.createElement("img");
+                    image.id = "profilePhotoPreview";
+                    image.className = "profile-photo";
+                    image.alt = "Selected profile photo preview";
+                    preview.replaceWith(image);
+                }
+                document.getElementById("profilePhotoPreview").src = imageUrl;
+            });
+        }
+    </script>
 </body>
 </html>
