@@ -105,6 +105,19 @@ def _valid_exam_percentage(marks, maximum_marks):
         return None
 
 
+def _valid_academic_percentage(marks, maximum_marks):
+    """Return an academic percentage only when both marks are valid."""
+    if marks is None or maximum_marks is None:
+        return None
+    try:
+        if (not marks.is_finite() or not maximum_marks.is_finite()
+                or maximum_marks <= 0 or marks < 0 or marks > maximum_marks):
+            return None
+        return marks * Decimal("100") / maximum_marks
+    except (AttributeError, TypeError, ValueError, ArithmeticError):
+        return None
+
+
 # ============================================================
 # HOME
 # ============================================================
@@ -1470,6 +1483,89 @@ def student_examination_results(request):
             "exam_average": exam_average,
         },
     )
+
+
+@role_required("STUDENT")
+def student_performance(request):
+    """Show read-only performance charts for the signed-in student."""
+    try:
+        student = request.user.student_record
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_dashboard.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    academic_records = AcademicPerformance.objects.filter(
+        student=student
+    ).order_by("created_at", "id")
+    exam_results = ExamResult.objects.filter(
+        student=student
+    ).order_by("exam_date", "created_at", "id")
+
+    academic_points = []
+    academic_percentages = []
+    for record in academic_records:
+        percentage = _valid_academic_percentage(
+            record.internal_marks, record.total_internal_marks
+        )
+        if percentage is None:
+            continue
+        percentage = percentage.quantize(Decimal("0.01"))
+        academic_percentages.append(percentage)
+        academic_points.append({
+            "label": record.subject,
+            "percentage": float(percentage),
+        })
+
+    exam_points = []
+    exam_percentages = []
+    dated_exam_points = []
+    for result in exam_results:
+        percentage = _valid_exam_percentage(result.marks_obtained, result.total_marks)
+        if percentage is None:
+            continue
+        percentage = percentage.quantize(Decimal("0.01"))
+        exam_percentages.append(percentage)
+        label = f"{result.exam_name} — {result.subject} (#{result.pk})"
+        point = {"label": label, "percentage": float(percentage)}
+        exam_points.append(point)
+        if result.exam_date:
+            dated_exam_points.append({
+                "label": f"{result.exam_date.isoformat()} — {label}",
+                "date": result.exam_date.isoformat(),
+                "percentage": float(percentage),
+            })
+
+    academic_average = (
+        (sum(academic_percentages, Decimal("0")) / len(academic_percentages))
+        .quantize(Decimal("0.01")) if academic_percentages else None
+    )
+    exam_average = (
+        (sum(exam_percentages, Decimal("0")) / len(exam_percentages))
+        .quantize(Decimal("0.01")) if exam_percentages else None
+    )
+    has_trend = len(dated_exam_points) >= 2
+
+    return render(request, "student/student_performance.html", {
+        "student": student,
+        "academic_average": academic_average,
+        "exam_average": exam_average,
+        "valid_academic_record_count": len(academic_points),
+        "valid_exam_record_count": len(exam_points),
+        "academic_chart_data": academic_points,
+        "exam_chart_data": exam_points,
+        "performance_trend_data": dated_exam_points if has_trend else [],
+        "has_performance_trend": has_trend,
+    })
 
 
 @role_required("STUDENT")

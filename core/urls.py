@@ -316,6 +316,12 @@ path(
 ),
 
 path(
+    "student-performance/",
+    views.student_performance,
+    name="student_performance",
+),
+
+path(
     "student-profile/",
     views.student_profile,
     name="student_profile",

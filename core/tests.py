@@ -1115,3 +1115,86 @@ class StudentExaminationResultsTests(TestCase):
             self.client.get(reverse("student_examination_results")).status_code, 403
         )
 
+
+class StudentPerformanceTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="performance-student", password="pass")
+        UserProfile.objects.create(user=self.user, role="STUDENT")
+        self.student = Student.objects.create(
+            student_id="PERF-001", user=self.user, first_name="Asha"
+        )
+        other_user = User.objects.create_user(username="performance-other", password="pass")
+        UserProfile.objects.create(user=other_user, role="STUDENT")
+        self.other_student = Student.objects.create(
+            student_id="PERF-002", user=other_user, first_name="Other"
+        )
+        self.client.force_login(self.user)
+
+    def test_student_performance_page_has_private_chart_data_and_safe_serialization(self):
+        self.assertEqual(reverse("student_performance"), "/student-performance/")
+        AcademicPerformance.objects.create(
+            student=self.student, subject="Math <script>", internal_marks=0,
+            total_internal_marks=50,
+        )
+        AcademicPerformance.objects.create(
+            student=self.student, subject="Math <script>", internal_marks=30,
+            total_internal_marks=50,
+        )
+        AcademicPerformance.objects.create(
+            student=self.student, subject="Invalid", internal_marks=80,
+            total_internal_marks=0,
+        )
+        AcademicPerformance.objects.create(
+            student=self.other_student, subject="Secret academic", internal_marks=100,
+            total_internal_marks=100,
+        )
+        ExamResult.objects.create(
+            student=self.student, exam_name="Midterm", subject="Science",
+            marks_obtained=Decimal("40"), total_marks=Decimal("50"),
+            exam_date=date(2025, 1, 10),
+        )
+        ExamResult.objects.create(
+            student=self.student, exam_name="Midterm", subject="Science",
+            marks_obtained=Decimal("45"), total_marks=Decimal("50"),
+            exam_date=date(2025, 2, 10),
+        )
+        ExamResult.objects.create(
+            student=self.other_student, exam_name="Secret Exam", subject="Secret",
+            marks_obtained=Decimal("100"), total_marks=Decimal("100"),
+        )
+
+        response = self.client.get(reverse("student_performance"), {"student_id": self.other_student.pk})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["academic_average"], Decimal("30.00"))
+        self.assertEqual(response.context["exam_average"], Decimal("85.00"))
+        self.assertEqual(response.context["valid_academic_record_count"], 2)
+        self.assertEqual(response.context["valid_exam_record_count"], 2)
+        self.assertEqual([p["percentage"] for p in response.context["academic_chart_data"]], [0.0, 60.0])
+        self.assertEqual([p["date"] for p in response.context["performance_trend_data"]], ["2025-01-10", "2025-02-10"])
+        self.assertNotContains(response, "Secret academic")
+        self.assertNotContains(response, "Secret Exam")
+        self.assertContains(response, "academic-chart-data")
+        self.assertContains(response, "\\u003Cscript\\u003E")
+        self.assertContains(response, "Back to Dashboard")
+        self.assertContains(self.client.get(reverse("student_dashboard")), "View My Performance")
+
+    def test_empty_state_and_unavailable_trend(self):
+        response = self.client.get(reverse("student_performance"))
+        self.assertEqual(response.context["academic_chart_data"], [])
+        self.assertEqual(response.context["exam_chart_data"], [])
+        self.assertIsNone(response.context["academic_average"])
+        self.assertIsNone(response.context["exam_average"])
+        self.assertFalse(response.context["has_performance_trend"])
+        self.assertContains(response, "No data available")
+
+    def test_student_role_and_linked_student_required(self):
+        unlinked = User.objects.create_user(username="performance-unlinked", password="pass")
+        UserProfile.objects.create(user=unlinked, role="STUDENT")
+        self.client.force_login(unlinked)
+        self.assertEqual(self.client.get(reverse("student_performance")).status_code, 403)
+
+        teacher = User.objects.create_user(username="performance-teacher", password="pass")
+        UserProfile.objects.create(user=teacher, role="TEACHER")
+        self.client.force_login(teacher)
+        self.assertIn(self.client.get(reverse("student_performance")).status_code, [302, 403])
+
