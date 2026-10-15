@@ -4,29 +4,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Student Dashboard</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-</head>
-<body>
-    <main class="container py-5">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4 p-md-5">
-                <h1 class="h3 mb-3">Student Dashboard</h1>
 
-                <p class="text-secondary mb-0">
-                    Student login is working.
-                    Dashboard features will be added in the next step.
-                </p>
+    <style>
+        body {
+            background: #f5f7fb;
+            color: #202938;
+        }
+
+        .dashboard-header {
+            background: #ffffff;
+            border: 1px solid #e8edf4;
+            border-radius: 18px;
+        }
+
+        .summary-card {
+            height: 100%;
+            background: #ffffff;
+            border: 1px solid #e8edf4;
+            border-radius: 16px;
+            transition: transform 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(25, 42, 70, 0.07);
+        }
+
+        .summary-label {
+            color: #687386;
+            font-size: 0.9rem;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-detail {
+            color: #687386;
+            font-size: 0.95rem;
+        }
+
+        .section-heading {
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+<main class="container py-4 py-md-5">
+
+    {% if student_profile_error %}
+
+        <div class="alert alert-warning" role="alert">
+            <h1 class="h4">Student Dashboard</h1>
+            {{ student_profile_error }}
+        </div>
+
+    {% else %}
+
+        <!-- Student profile header -->
+        <section class="dashboard-header shadow-sm p-4 p-md-5 mb-4">
+            <div class="d-flex flex-column flex-md-row
+                        justify-content-between gap-3">
+
+                <div>
+                    <p class="text-primary fw-semibold mb-2">
+                        STUDENT PORTAL
+                    </p>
+
+                    <h1 class="h3 mb-2">
+                        Welcome,
+                        {{ student.first_name }}
+                        {{ student.last_name }}
+                    </h1>
+
+                    <p class="profile-detail mb-0">
+                        Student ID: {{ student.student_id }}
+                    </p>
+                </div>
+
+                <div class="text-md-end">
+                    {% if student.course %}
+                        <div class="fw-semibold">
+                            {{ student.course }}
+                        </div>
+                    {% endif %}
+
+                    {% if student.department %}
+                        <div class="profile-detail">
+                            {{ student.department }}
+                        </div>
+                    {% endif %}
+
+                    {% if student.semester %}
+                        <div class="profile-detail">
+                            Semester {{ student.semester }}
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="mb-4">
+            <h2 class="h5 section-heading mb-3">
+                Academic Overview
+            </h2>
+
+            <div class="row g-3">
+
+                <!-- Attendance -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="summary-card p-4">
+                        <div class="summary-label mb-2">
+                            Overall Attendance
+                        </div>
+
+                        {% if attendance_percentage != None %}
+                            <div class="summary-value text-primary">
+                                {{ attendance_percentage }}%
+                            </div>
+
+                            <p class="small text-secondary mb-0 mt-2">
+                                {{ total_classes_attended }}
+                                of
+                                {{ total_classes_conducted }}
+                                classes attended
+                            </p>
+                        {% else %}
+                            <div class="fw-semibold">
+                                No data available
+                            </div>
+                            <p class="small text-secondary mb-0 mt-2">
+                                Attendance has not been recorded.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Academic average -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="summary-card p-4">
+                        <div class="summary-label mb-2">
+                            Internal Marks Average
+                        </div>
+
+                        {% if academic_average != None %}
+                            <div class="summary-value text-success">
+                                {{ academic_average }}%
+                            </div>
+                            <p class="small text-secondary mb-0 mt-2">
+                                Based on valid internal-mark records
+                            </p>
+                        {% else %}
+                            <div class="fw-semibold">
+                                No data available
+                            </div>
+                            <p class="small text-secondary mb-0 mt-2">
+                                No valid internal marks recorded.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Assignments -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="summary-card p-4">
+                        <div class="summary-label mb-2">
+                            Total Assignments
+                        </div>
+
+                        <div class="summary-value">
+                            {{ assignment_count }}
+                        </div>
+
+                        <p class="small text-secondary mb-0 mt-2">
+                            {{ pending_assignment_count }}
+                            pending
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Examinations -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="summary-card p-4">
+                        <div class="summary-label mb-2">
+                            Examination Average
+                        </div>
+
+                        {% if exam_average != None %}
+                            <div class="summary-value text-info">
+                                {{ exam_average }}%
+                            </div>
+                            <p class="small text-secondary mb-0 mt-2">
+                                {{ exam_count }} recorded result(s)
+                            </p>
+                        {% else %}
+                            <div class="fw-semibold">
+                                No data available
+                            </div>
+                            <p class="small text-secondary mb-0 mt-2">
+                                No valid examination marks recorded.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        
+<!-- Student Profile Details -->
+<section class="bg-white border rounded-4 p-4 p-md-5 mb-4">
+
+    <div class="d-flex flex-column flex-sm-row
+                justify-content-between align-items-sm-center gap-2 mb-4">
+
+        <div>
+            <h2 class="h5 fw-bold mb-1">My Profile</h2>
+            <p class="text-secondary small mb-0">
+                Your personal and academic information
+            </p>
+        </div>
+
+        <span class="badge text-bg-light border align-self-start">
+            Read only
+        </span>
+
+    </div>
+
+    <!-- Personal Information -->
+    <h3 class="h6 fw-semibold mb-3">Personal Information</h3>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Full Name</div>
+            <div class="fw-semibold">
+                {{ student.first_name }} {{ student.last_name }}
             </div>
         </div>
-    </main>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Student ID</div>
+            <div class="fw-semibold">{{ student.student_id }}</div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Date of Birth</div>
+            <div class="fw-semibold">
+                {% if student.date_of_birth %}
+                    {{ student.date_of_birth|date:"d M Y" }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Gender</div>
+            <div class="fw-semibold">
+                {% if student.gender %}
+                    {{ student.get_gender_display }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Email Address</div>
+            <div class="fw-semibold text-break">
+                {% if student.email %}
+                    {{ student.email }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Phone Number</div>
+            <div class="fw-semibold">
+                {% if student.phone %}
+                    {{ student.phone }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="small text-secondary mb-1">Address</div>
+            <div class="fw-semibold">
+                {% if student.address %}
+                    {{ student.address }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Academic Information -->
+    <h3 class="h6 fw-semibold mb-3">Academic Information</h3>
+
+    <div class="row g-4">
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Department</div>
+            <div class="fw-semibold">
+                {% if student.department %}
+                    {{ student.department }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Course</div>
+            <div class="fw-semibold">
+                {% if student.course %}
+                    {{ student.course }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Semester</div>
+            <div class="fw-semibold">
+                {% if student.semester %}
+                    {{ student.semester }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Admission Date</div>
+            <div class="fw-semibold">
+                {% if student.admission_date %}
+                    {{ student.admission_date|date:"d M Y" }}
+                {% else %}
+                    Not provided
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="small text-secondary mb-1">Assigned Mentor</div>
+            <div class="fw-semibold">
+                {% if student.mentor %}
+                    {{ student.mentor }}
+                {% else %}
+                    Not assigned
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Upcoming Dashboard Modules -->
+<section class="bg-white border rounded-4 p-4">
+    <h2 class="h5 fw-bold mb-2">Your Academic Information</h2>
+
+    <p class="text-secondary mb-0">
+        Detailed attendance records, marks, assignments,
+        examination results, performance charts, and support
+        notifications will be added in subsequent steps.
+    </p>
+</section>
+
+
+    {% endif %}
+
+</main>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
 </body>
 </html>

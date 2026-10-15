@@ -587,3 +587,197 @@ class AdminReportsExportTests(TestCase):
                     self.assertNotIn("ConfidentialFirst", val_str)
                     self.assertNotIn("ConfidentialLast", val_str)
 
+
+
+# ============================================================
+# STUDENT DASHBOARD - ACCESS CONTROL AND DATA ISOLATION
+# ============================================================
+
+class StudentDashboardAccessTests(TestCase):
+
+    def setUp(self):
+        self.department = Department.objects.create(
+            name="Computer Science"
+        )
+
+        # Student account 1
+        self.student_user_1 = User.objects.create_user(
+            username="STU-001",
+            password="StudentPass!123",
+        )
+        UserProfile.objects.create(
+            user=self.student_user_1,
+            role="STUDENT",
+        )
+
+        self.student_1 = Student.objects.create(
+            student_id="STU-001",
+            user=self.student_user_1,
+            first_name="Asha",
+            last_name="Kumar",
+            department=self.department,
+            course="BCA",
+            semester=1,
+        )
+
+        # Student account 2 - must remain private from student 1
+        self.student_user_2 = User.objects.create_user(
+            username="STU-002",
+            password="StudentPass!456",
+        )
+        UserProfile.objects.create(
+            user=self.student_user_2,
+            role="STUDENT",
+        )
+
+        self.student_2 = Student.objects.create(
+            student_id="STU-002",
+            user=self.student_user_2,
+            first_name="Rahul",
+            last_name="Sharma",
+            department=self.department,
+            course="B.Tech",
+            semester=2,
+        )
+
+        # Non-student application roles
+        self.teacher_user = User.objects.create_user(
+            username="dashboard_teacher",
+            password="TeacherPass!123",
+        )
+        UserProfile.objects.create(
+            user=self.teacher_user,
+            role="TEACHER",
+        )
+
+        self.mentor_user = User.objects.create_user(
+            username="dashboard_mentor",
+            password="MentorPass!123",
+        )
+        UserProfile.objects.create(
+            user=self.mentor_user,
+            role="MENTOR",
+        )
+
+    def test_unauthenticated_user_is_redirected_to_login(self):
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            response.url.startswith(reverse("login"))
+        )
+
+    def test_linked_student_can_access_dashboard(self):
+        self.client.force_login(self.student_user_1)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["student"],
+            self.student_1,
+        )
+        self.assertContains(response, "STU-001")
+        self.assertContains(response, "Asha")
+
+    def test_student_cannot_view_another_students_profile(self):
+        self.client.force_login(self.student_user_1)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "Asha")
+        self.assertNotContains(response, "Rahul")
+        self.assertNotContains(response, "STU-002")
+
+    def test_changing_query_parameters_does_not_change_student_record(self):
+        self.client.force_login(self.student_user_1)
+
+        response = self.client.get(
+            reverse("student_dashboard"),
+            {"student_id": "STU-002"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["student"],
+            self.student_1,
+        )
+        self.assertContains(response, "Asha")
+        self.assertNotContains(response, "Rahul")
+
+    def test_student_without_linked_record_fails_safely(self):
+        unlinked_user = User.objects.create_user(
+            username="STU-UNLINKED",
+            password="UnlinkedPass!123",
+        )
+        UserProfile.objects.create(
+            user=unlinked_user,
+            role="STUDENT",
+        )
+
+        self.client.force_login(unlinked_user)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertIsNone(response.context["student"])
+        self.assertContains(
+            response,
+            "Your student profile is not linked to this account.",
+            status_code=403,
+        )
+
+    def test_teacher_cannot_access_student_dashboard(self):
+        self.client.force_login(self.teacher_user)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            response.url.startswith(reverse("login"))
+        )
+
+    def test_mentor_cannot_access_student_dashboard(self):
+        self.client.force_login(self.mentor_user)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            response.url.startswith(reverse("login"))
+        )
+
+    def test_superuser_cannot_access_student_dashboard(self):
+        superuser = User.objects.create_superuser(
+            username="dashboard_superuser",
+            password="SuperPass!123",
+        )
+        UserProfile.objects.create(
+            user=superuser,
+            role="STUDENT",
+        )
+
+        self.client.force_login(superuser)
+
+        response = self.client.get(
+            reverse("student_dashboard")
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(
+            response.url.startswith(reverse("login"))
+        )

@@ -3,6 +3,7 @@ from .risk_utils import (
     generate_risk_prediction,
 )
 from datetime import date
+from django.db.models import Sum
 from django.contrib import messages
 from decimal import Decimal
 from django.core.exceptions import ValidationError
@@ -1161,12 +1162,145 @@ def exam_result_list(request):
     )
 
 
+
+
 @role_required("STUDENT")
 def student_dashboard(request):
+    try:
+        # Resolve the student exclusively from the logged-in user.
+        student = request.user.student_record
+
+    except Student.DoesNotExist:
+        return render(
+            request,
+            "student/student_dashboard.html",
+            {
+                "student": None,
+                "student_profile_error": (
+                    "Your student profile is not linked to this account. "
+                    "Please contact the administrator."
+                ),
+            },
+            status=403,
+        )
+
+    # --------------------------------------------------
+    # ATTENDANCE SUMMARY
+    # --------------------------------------------------
+    attendance_totals = Attendance.objects.filter(
+        student=student
+    ).aggregate(
+        total_conducted=Sum("classes_conducted"),
+        total_attended=Sum("classes_attended"),
+    )
+
+    total_classes_conducted = (
+        attendance_totals["total_conducted"] or 0
+    )
+    total_classes_attended = (
+        attendance_totals["total_attended"] or 0
+    )
+
+    attendance_percentage = None
+
+    if total_classes_conducted > 0:
+        attendance_percentage = (
+            Decimal(total_classes_attended)
+            * Decimal("100")
+            / Decimal(total_classes_conducted)
+        ).quantize(Decimal("0.01"))
+
+    # --------------------------------------------------
+    # ACADEMIC PERFORMANCE SUMMARY
+    # --------------------------------------------------
+    academic_records = AcademicPerformance.objects.filter(
+        student=student
+    ).values_list(
+        "internal_marks",
+        "total_internal_marks",
+    )
+
+    academic_percentages = []
+
+    for marks, maximum_marks in academic_records:
+        if maximum_marks is not None and maximum_marks > 0:
+            percentage = (
+                marks * Decimal("100") / maximum_marks
+            )
+            academic_percentages.append(percentage)
+
+    academic_average = None
+
+    if academic_percentages:
+        academic_average = (
+            sum(academic_percentages, Decimal("0"))
+            / Decimal(len(academic_percentages))
+        ).quantize(Decimal("0.01"))
+
+    # --------------------------------------------------
+    # ASSIGNMENT SUMMARY
+    # --------------------------------------------------
+    assignments = Assignment.objects.filter(
+        student=student
+    )
+
+    assignment_count = assignments.count()
+
+    pending_assignment_count = assignments.filter(
+        status="Pending"
+    ).count()
+
+    # --------------------------------------------------
+    # EXAMINATION SUMMARY
+    # --------------------------------------------------
+    exam_results = ExamResult.objects.filter(
+        student=student
+    )
+
+    exam_count = exam_results.count()
+
+    valid_exam_percentages = []
+
+    for marks, maximum_marks in exam_results.values_list(
+        "marks_obtained",
+        "total_marks",
+    ):
+        if maximum_marks is not None and maximum_marks > 0:
+            percentage = (
+                marks * Decimal("100") / maximum_marks
+            )
+            valid_exam_percentages.append(percentage)
+
+    exam_average = None
+
+    if valid_exam_percentages:
+        exam_average = (
+            sum(valid_exam_percentages, Decimal("0"))
+            / Decimal(len(valid_exam_percentages))
+        ).quantize(Decimal("0.01"))
+
+    # --------------------------------------------------
+    # DASHBOARD
+    # --------------------------------------------------
+    context = {
+        "student": student,
+        "attendance_percentage": attendance_percentage,
+        "total_classes_conducted": total_classes_conducted,
+        "total_classes_attended": total_classes_attended,
+        "academic_average": academic_average,
+        "assignment_count": assignment_count,
+        "pending_assignment_count": pending_assignment_count,
+        "exam_count": exam_count,
+        "exam_average": exam_average,
+    }
+
     return render(
         request,
         "student/student_dashboard.html",
+        context,
     )
+
+
 
 
 
