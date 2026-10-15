@@ -225,6 +225,152 @@
         </section>
 
         
+<!-- Student Attendance Summary and History -->
+<section class="bg-white border rounded-4 p-4 p-md-5 mb-4">
+
+    <div class="mb-4">
+        <h2 class="h5 fw-bold mb-1">My Attendance</h2>
+        <p class="text-secondary small mb-0">
+            Your recorded attendance and class participation history.
+        </p>
+    </div>
+
+    <!-- Attendance summary -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="border rounded-3 p-3 h-100">
+                <div class="small text-secondary mb-2">
+                    Overall Attendance
+                </div>
+
+                {% if attendance_percentage != None %}
+                    <div class="h3 fw-bold text-primary mb-0">
+                        {{ attendance_percentage }}%
+                    </div>
+                {% else %}
+                    <div class="fw-semibold">
+                        No data available
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="border rounded-3 p-3 h-100">
+                <div class="small text-secondary mb-2">
+                    Classes Conducted
+                </div>
+
+                <div class="h3 fw-bold mb-0">
+                    {{ total_classes_conducted }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="border rounded-3 p-3 h-100">
+                <div class="small text-secondary mb-2">
+                    Classes Attended
+                </div>
+
+                <div class="h3 fw-bold text-success mb-0">
+                    {{ total_classes_attended }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="border rounded-3 p-3 h-100">
+                <div class="small text-secondary mb-2">
+                    Classes Missed
+                </div>
+
+                {% if total_classes_missed != None %}
+                    <div class="h3 fw-bold text-danger mb-0">
+                        {{ total_classes_missed }}
+                    </div>
+                {% else %}
+                    <div class="fw-semibold">
+                        No data available
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Attendance history -->
+    <h3 class="h6 fw-bold mb-3">Attendance History</h3>
+
+    {% if attendance_history %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Classes Conducted</th>
+                        <th scope="col">Classes Attended</th>
+                        <th scope="col">Classes Missed</th>
+                        <th scope="col">Attendance</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for record in attendance_history %}
+                        <tr>
+                            <td class="text-nowrap">
+                                {{ record.date|date:"d M Y" }}
+                            </td>
+
+                            <td>{{ record.classes_conducted }}</td>
+                            <td>{{ record.classes_attended }}</td>
+
+                            <td>
+                                {% if record.is_valid %}
+                                    {{ record.classes_missed }}
+                                {% else %}
+                                    <span class="text-secondary">—</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if record.is_valid %}
+                                    <span class="badge text-bg-success">
+                                        {{ record.attendance_percentage }}%
+                                    </span>
+                                {% else %}
+                                    <span
+                                        class="badge text-bg-secondary"
+                                        title="The recorded class counts do not support a valid percentage."
+                                    >
+                                        Unavailable
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="small text-secondary mt-3 mb-0">
+            Records are displayed from newest to oldest. Attendance
+            percentages are calculated from classes attended and
+            classes conducted.
+        </p>
+
+    {% else %}
+        <div class="alert alert-light border mb-0" role="status">
+            No attendance records are available yet.
+            Please check again after your attendance has been recorded
+            by an authorized staff member.
+        </div>
+    {% endif %}
+
+</section>
+
+        
 <!-- Student Profile Details -->
 <section class="bg-white border rounded-4 p-4 p-md-5 mb-4">
 

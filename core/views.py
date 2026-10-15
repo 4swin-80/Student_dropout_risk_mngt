@@ -1164,10 +1164,11 @@ def exam_result_list(request):
 
 
 
+
 @role_required("STUDENT")
 def student_dashboard(request):
     try:
-        # Resolve the student exclusively from the logged-in user.
+        # Always resolve the student from the authenticated account.
         student = request.user.student_record
 
     except Student.DoesNotExist:
@@ -1185,23 +1186,52 @@ def student_dashboard(request):
         )
 
     # --------------------------------------------------
-    # ATTENDANCE SUMMARY
+    # ATTENDANCE SUMMARY AND HISTORY
     # --------------------------------------------------
-    attendance_totals = Attendance.objects.filter(
+    attendance_records = Attendance.objects.filter(
         student=student
-    ).aggregate(
-        total_conducted=Sum("classes_conducted"),
-        total_attended=Sum("classes_attended"),
-    )
+    ).order_by("-date", "-id")
 
-    total_classes_conducted = (
-        attendance_totals["total_conducted"] or 0
-    )
-    total_classes_attended = (
-        attendance_totals["total_attended"] or 0
-    )
+    attendance_history = []
+
+    total_classes_conducted = 0
+    total_classes_attended = 0
+
+    for record in attendance_records:
+        conducted = record.classes_conducted
+        attended = record.classes_attended
+
+        # Do not calculate misleading percentages for invalid records.
+        valid_record = (
+            conducted > 0
+            and 0 <= attended <= conducted
+        )
+
+        if valid_record:
+            percentage = (
+                Decimal(attended) * Decimal("100")
+                / Decimal(conducted)
+            ).quantize(Decimal("0.01"))
+
+            missed = conducted - attended
+
+            total_classes_conducted += conducted
+            total_classes_attended += attended
+        else:
+            percentage = None
+            missed = None
+
+        attendance_history.append({
+            "date": record.date,
+            "classes_conducted": conducted,
+            "classes_attended": attended,
+            "classes_missed": missed,
+            "attendance_percentage": percentage,
+            "is_valid": valid_record,
+        })
 
     attendance_percentage = None
+    total_classes_missed = None
 
     if total_classes_conducted > 0:
         attendance_percentage = (
@@ -1209,6 +1239,10 @@ def student_dashboard(request):
             * Decimal("100")
             / Decimal(total_classes_conducted)
         ).quantize(Decimal("0.01"))
+
+        total_classes_missed = (
+            total_classes_conducted - total_classes_attended
+        )
 
     # --------------------------------------------------
     # ACADEMIC PERFORMANCE SUMMARY
@@ -1224,10 +1258,9 @@ def student_dashboard(request):
 
     for marks, maximum_marks in academic_records:
         if maximum_marks is not None and maximum_marks > 0:
-            percentage = (
+            academic_percentages.append(
                 marks * Decimal("100") / maximum_marks
             )
-            academic_percentages.append(percentage)
 
     academic_average = None
 
@@ -1258,7 +1291,6 @@ def student_dashboard(request):
     )
 
     exam_count = exam_results.count()
-
     valid_exam_percentages = []
 
     for marks, maximum_marks in exam_results.values_list(
@@ -1266,10 +1298,9 @@ def student_dashboard(request):
         "total_marks",
     ):
         if maximum_marks is not None and maximum_marks > 0:
-            percentage = (
+            valid_exam_percentages.append(
                 marks * Decimal("100") / maximum_marks
             )
-            valid_exam_percentages.append(percentage)
 
     exam_average = None
 
@@ -1280,16 +1311,26 @@ def student_dashboard(request):
         ).quantize(Decimal("0.01"))
 
     # --------------------------------------------------
-    # DASHBOARD
+    # DASHBOARD CONTEXT
     # --------------------------------------------------
     context = {
         "student": student,
+
+        # Attendance
+        "attendance_history": attendance_history,
         "attendance_percentage": attendance_percentage,
         "total_classes_conducted": total_classes_conducted,
         "total_classes_attended": total_classes_attended,
+        "total_classes_missed": total_classes_missed,
+
+        # Academic summary
         "academic_average": academic_average,
+
+        # Assignment summary
         "assignment_count": assignment_count,
         "pending_assignment_count": pending_assignment_count,
+
+        # Examination summary
         "exam_count": exam_count,
         "exam_average": exam_average,
     }
@@ -1299,8 +1340,6 @@ def student_dashboard(request):
         "student/student_dashboard.html",
         context,
     )
-
-
 
 
 
