@@ -1,3 +1,5 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,273 +12,1518 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
     <style>
+        :root {
+            --mentor-primary: #6d45b8;
+            --mentor-primary-dark: #50318f;
+            --mentor-primary-light: #f1ebfc;
+            --mentor-accent: #a855f7;
+            --mentor-plum: #7e3f83;
+            --mentor-bg: #f7f6fb;
+            --mentor-surface: #ffffff;
+            --mentor-text: #29253a;
+            --mentor-muted: #77748a;
+            --mentor-border: #eae6f2;
+            --mentor-sidebar-width: 264px;
+            --mentor-shadow: 0 8px 28px rgba(49, 35, 82, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #f5f7fb;
-            color: #243047;
-            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            background: var(--mentor-bg);
+            color: var(--mentor-text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
-        .page-card {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        a {
+            text-decoration: none;
         }
 
-        .info-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 18px;
-            height: 100%;
+        /* Sidebar */
+
+        .mentor-sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 1040;
+            display: flex;
+            flex-direction: column;
+            width: var(--mentor-sidebar-width);
+            padding: 25px 17px 18px;
+            background: var(--mentor-surface);
+            border-right: 1px solid var(--mentor-border);
+            transition: transform 0.25s ease;
         }
 
-        .info-label {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 6px;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 9px 27px;
+            border-bottom: 1px solid var(--mentor-border);
         }
 
-        .info-value {
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 21px;
+            border-radius: 14px;
+            background: linear-gradient(
+                140deg,
+                var(--mentor-primary),
+                var(--mentor-accent)
+            );
+            box-shadow: 0 5px 13px rgba(109, 69, 184, 0.2);
+        }
+
+        .brand-name {
+            margin: 0;
+            color: var(--mentor-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+
+        .brand-caption {
+            margin: 3px 0 0;
+            color: var(--mentor-muted);
+            font-size: 10px;
             font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-section-label {
+            margin: 22px 8px 10px;
+            color: #9994aa;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+            padding: 11px 13px;
+            color: #6e6980;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .sidebar-link i {
+            width: 19px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            color: var(--mentor-primary);
+            background: #f8f5fe;
+        }
+
+        .sidebar-link.active {
+            color: var(--mentor-primary);
+            background: var(--mentor-primary-light);
+            font-weight: 700;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--mentor-border);
+        }
+
+        .sidebar-support {
+            margin: 0 3px 16px;
+            padding: 15px;
+            border: 1px solid #eee5fb;
+            border-radius: 13px;
+            background: linear-gradient(145deg, #faf7ff, #f4edff);
+        }
+
+        .sidebar-support-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            margin-bottom: 10px;
+            color: var(--mentor-primary);
+            font-size: 16px;
+            border-radius: 9px;
+            background: #e9ddff;
+        }
+
+        .sidebar-support h6 {
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .sidebar-support p {
+            margin: 0;
+            color: var(--mentor-muted);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .sidebar-logout {
+            color: #bc4563;
+        }
+
+        .sidebar-logout:hover {
+            color: #a72f50;
+            background: #fff1f4;
+        }
+
+        .sidebar-overlay {
+            display: none;
+        }
+
+        /* Main layout */
+
+        .main-content {
+            min-height: 100vh;
+            margin-left: var(--mentor-sidebar-width);
+            padding: 31px 36px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 27px;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .mobile-menu-button {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            color: var(--mentor-primary);
+            font-size: 19px;
+            border: 1px solid var(--mentor-border);
+            border-radius: 11px;
+            background: #fff;
+        }
+
+        .breadcrumb-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: var(--mentor-muted);
+            font-size: 11px;
+        }
+
+        .breadcrumb-line a {
+            color: var(--mentor-muted);
+        }
+
+        .breadcrumb-line a:hover {
+            color: var(--mentor-primary);
+        }
+
+        .breadcrumb-current {
+            color: var(--mentor-primary);
+            font-weight: 700;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--mentor-text);
+            font-size: clamp(23px, 2.4vw, 29px);
+            font-weight: 800;
+            letter-spacing: -1.1px;
+        }
+
+        .page-subtitle {
+            margin: 7px 0 0;
+            color: var(--mentor-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 13px;
+            color: var(--mentor-primary);
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            border: 1px solid #e7dcfb;
+            border-radius: 999px;
+            background: #f9f6ff;
+        }
+
+        .role-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #9a65e9;
+        }
+
+        /* General cards */
+
+        .surface-card {
+            margin-bottom: 22px;
+            overflow: hidden;
+            border: 1px solid var(--mentor-border);
+            border-radius: 17px;
+            background: var(--mentor-surface);
+            box-shadow: var(--mentor-shadow);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 21px 24px;
+            border-bottom: 1px solid var(--mentor-border);
+        }
+
+        .section-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            color: var(--mentor-primary);
+            font-size: 18px;
+            border: 1px solid #e9defb;
+            border-radius: 12px;
+            background: var(--mentor-primary-light);
+        }
+
+        .card-heading h2 {
+            margin: 0;
+            color: var(--mentor-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.25px;
+        }
+
+        .card-heading p {
+            margin: 5px 0 0;
+            color: var(--mentor-muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .card-body-custom {
+            padding: 25px;
+        }
+
+        /* Student overview */
+
+        .student-overview {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 22px;
+            padding: 25px;
+            border: 1px solid #e8defa;
+            border-radius: 17px;
+            background:
+                radial-gradient(
+                    circle at 100% 0,
+                    rgba(168, 85, 247, 0.10),
+                    transparent 40%
+                ),
+                #fff;
+            box-shadow: var(--mentor-shadow);
+        }
+
+        .student-overview-top {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            margin-bottom: 23px;
+        }
+
+        .student-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 61px;
+            height: 61px;
+            flex-shrink: 0;
+            color: var(--mentor-primary);
+            font-size: 24px;
+            border: 1px solid #e4d7fa;
+            border-radius: 17px;
+            background: linear-gradient(145deg, #f4edff, #e9defc);
+        }
+
+        .student-overline {
+            margin: 0 0 4px;
+            color: var(--mentor-primary);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .student-overview h2 {
+            margin: 0;
+            color: var(--mentor-text);
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .student-id-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 6px;
+            color: var(--mentor-muted);
+            font-size: 11px;
+        }
+
+        .student-id-label i {
+            color: var(--mentor-primary);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            min-width: 0;
+            padding: 15px 16px;
+            border: 1px solid #eeeaf5;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.78);
+        }
+
+        .detail-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 7px;
+            color: var(--mentor-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .detail-label i {
+            color: var(--mentor-primary);
+            font-size: 13px;
+        }
+
+        .detail-value {
+            color: var(--mentor-text);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.8;
             overflow-wrap: anywhere;
         }
 
-        .section-card {
-            border: 1px solid #e2e8f0;
+        /* Referral information */
+
+        .referral-block {
+            margin-bottom: 22px;
+            padding-bottom: 21px;
+            border-bottom: 1px solid #f0edf5;
+        }
+
+        .referral-block:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .referral-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--mentor-muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .referral-label i {
+            color: var(--mentor-primary);
+            font-size: 15px;
+        }
+
+        .referral-text {
+            color: #514b64;
+            font-size: 12px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        .notes-panel {
+            padding: 15px 17px;
+            border: 1px solid #eee7f7;
             border-radius: 12px;
-            padding: 22px;
-            margin-top: 24px;
+            background: #fbf9fe;
+        }
+
+        .no-notes {
+            color: var(--mentor-muted);
+            font-size: 12px;
+            font-style: italic;
+        }
+
+        /* Follow-up overview */
+
+        .follow-up-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 21px;
+            padding: 19px;
+            border: 1px solid #e8defa;
+            border-radius: 13px;
+            background: linear-gradient(120deg, #faf7ff, #fff);
+        }
+
+        .follow-up-banner-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: var(--mentor-primary);
+            font-size: 19px;
+            border-radius: 12px;
+            background: #eee5fc;
+        }
+
+        .follow-up-banner h3 {
+            margin: 0 0 5px;
+            color: var(--mentor-text);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .follow-up-banner p {
+            margin: 0;
+            color: var(--mentor-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .follow-up-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 12px;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            border-radius: 9px;
+        }
+
+        .follow-up-status::before {
+            width: 7px;
+            height: 7px;
+            content: "";
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-completed {
+            color: #19815d;
+            border-color: #cdeee0;
+            background: #ebfaf3;
+        }
+
+        .status-overdue {
+            color: #b83251;
+            border-color: #f5cbd5;
+            background: #fff0f3;
+        }
+
+        .status-pending {
+            color: #a46a08;
+            border-color: #f4e0b1;
+            background: #fff8e7;
+        }
+
+        /* Completion form */
+
+        .completion-intro {
+            margin: 0 0 22px;
+            padding: 14px 16px;
+            color: #695b84;
+            font-size: 11px;
+            line-height: 1.9;
+            border: 1px solid #e9defb;
+            border-radius: 11px;
+            background: #faf7ff;
+        }
+
+        .form-label {
+            margin-bottom: 8px;
+            color: #49435d;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .form-control {
+            min-height: 45px;
+            color: var(--mentor-text);
+            font-family: "Inter", sans-serif;
+            font-size: 12px;
+            border: 1px solid #e4dfed;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        textarea.form-control {
+            min-height: 125px;
+            padding: 13px 14px;
+            line-height: 1.8;
+            resize: vertical;
+        }
+
+        .form-control::placeholder {
+            color: #aaa5b9;
+        }
+
+        .form-control:focus {
+            border-color: #a58bd8;
+            box-shadow: 0 0 0 4px rgba(109, 69, 184, 0.10);
+        }
+
+        .form-help {
+            margin: 8px 0 0;
+            color: var(--mentor-muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 23px;
+            padding-top: 20px;
+            border-top: 1px solid var(--mentor-border);
+        }
+
+        /* Buttons */
+
+        .btn-mentor {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 10px 16px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid var(--mentor-primary);
+            border-radius: 10px;
+            background: linear-gradient(
+                135deg,
+                var(--mentor-primary),
+                var(--mentor-primary-dark)
+            );
+            box-shadow: 0 4px 10px rgba(109, 69, 184, 0.13);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-mentor:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 7px 15px rgba(109, 69, 184, 0.2);
+        }
+
+        .btn-mentor-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 10px 15px;
+            color: var(--mentor-primary);
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #e3d8f8;
+            border-radius: 10px;
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mentor-secondary:hover {
+            color: var(--mentor-primary-dark);
+            border-color: #b8a0e5;
+            background: #faf7ff;
+        }
+
+        .btn-complete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 11px 17px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #19815d;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #26956c, #167650);
+            box-shadow: 0 4px 10px rgba(25, 129, 93, 0.13);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-complete:hover {
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 7px 15px rgba(25, 129, 93, 0.2);
+        }
+
+        /* Messages */
+
+        .message-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 13px;
+            padding: 13px 15px;
+            font-size: 12px;
+            line-height: 1.7;
+            border-radius: 11px;
+        }
+
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-alert .btn-close {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+            margin-top: 4px;
+            padding: 4px;
+        }
+
+        .alert-success.message-alert {
+            color: #176d4d;
+            border: 1px solid #ccebdc;
+            background: #effaf4;
+        }
+
+        .alert-danger.message-alert {
+            color: #a42d47;
+            border: 1px solid #f2cbd5;
+            background: #fff1f4;
+        }
+
+        .alert-warning.message-alert {
+            color: #8a5c0c;
+            border: 1px solid #f1dfb7;
+            background: #fff9eb;
+        }
+
+        .alert-info.message-alert {
+            color: #286b88;
+            border: 1px solid #cce6f1;
+            background: #f0faff;
+        }
+
+        /* Completion notice */
+
+        .completed-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-top: 22px;
+            padding: 18px 20px;
+            color: #176d4d;
+            border: 1px solid #ccebdc;
+            border-radius: 13px;
+            background: #effaf4;
+        }
+
+        .completed-notice-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            font-size: 18px;
+            border-radius: 10px;
+            background: #d9f3e5;
+        }
+
+        .completed-notice h3 {
+            margin: 0 0 4px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .completed-notice p {
+            margin: 0;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 25px;
+            color: #938da3;
+            font-size: 10px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 1100px) {
+            .main-content {
+                padding: 27px 23px 35px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .mentor-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .mentor-sidebar.is-open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.is-visible {
+                position: fixed;
+                inset: 0;
+                z-index: 1030;
+                display: block;
+                background: rgba(30, 20, 48, 0.38);
+                backdrop-filter: blur(2px);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px 28px;
+            }
+
+            .topbar {
+                margin-bottom: 22px;
+            }
+
+            .mobile-menu-button {
+                display: inline-flex;
+            }
+
+            .role-chip {
+                display: none;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .card-heading {
+                padding: 18px;
+            }
+
+            .card-body-custom {
+                padding: 19px;
+            }
+
+            .student-overview {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .page-heading {
+                gap: 10px;
+            }
+
+            .page-title {
+                font-size: 21px;
+                letter-spacing: -0.7px;
+            }
+
+            .breadcrumb-line {
+                font-size: 10px;
+            }
+
+            .topbar-actions .btn-mentor-secondary {
+                padding: 9px 10px;
+                font-size: 10px;
+            }
+
+            .student-overview-top {
+                gap: 12px;
+            }
+
+            .student-avatar {
+                width: 51px;
+                height: 51px;
+                font-size: 20px;
+                border-radius: 14px;
+            }
+
+            .student-overview h2 {
+                font-size: 16px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-body-custom {
+                padding: 16px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions a,
+            .form-actions button {
+                width: 100%;
+            }
+
+            .page-footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
 
 <body>
-<div class="container px-3">
 
-    <div class="page-card">
+    <!-- MOBILE SIDEBAR OVERLAY -->
+    <div
+        class="sidebar-overlay"
+        id="sidebarOverlay"
+        aria-hidden="true">
+    </div>
 
-        <div class="d-flex flex-wrap justify-content-between
-                    align-items-start gap-3 mb-4">
+    <!-- MENTOR SIDEBAR -->
+    <aside class="mentor-sidebar" id="mentorSidebar">
+
+        <a href="{% url 'mentor_dashboard' %}" class="brand">
+            <div class="brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </div>
 
             <div>
-                <h2 class="fw-bold mb-2">Follow-up Details</h2>
-                <p class="text-secondary mb-0">
-                    Review the follow-up record and record its outcome.
-                </p>
+                <p class="brand-name">Student Risk System</p>
+                <p class="brand-caption">Mentor Workspace</p>
             </div>
+        </a>
+
+        <p class="sidebar-section-label">Mentor Workspace</p>
+
+        <nav class="sidebar-nav" aria-label="Mentor navigation">
+
+            <a href="{% url 'mentor_dashboard' %}" class="sidebar-link">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard Overview</span>
+            </a>
+
+            <a href="{% url 'mentor_assigned_students' %}" class="sidebar-link">
+                <i class="bi bi-people"></i>
+                <span>Assigned Students</span>
+            </a>
+
+            <a href="{% url 'mentor_risk_scores' %}" class="sidebar-link">
+                <i class="bi bi-graph-up-arrow"></i>
+                <span>Monitor Risk Scores</span>
+            </a>
+
+            <a href="{% url 'mentor_risk_alerts' %}" class="sidebar-link">
+                <i class="bi bi-bell"></i>
+                <span>Risk Alerts</span>
+            </a>
+
+            <a href="{% url 'mentor_student_support' %}" class="sidebar-link">
+                <i class="bi bi-heart-pulse"></i>
+                <span>Student Support</span>
+            </a>
 
             <a
                 href="{% url 'mentor_track_follow_ups' %}"
-                class="btn btn-outline-secondary"
-            >
-                Back to Follow-ups
+                class="sidebar-link active"
+                aria-current="page">
+                <i class="bi bi-calendar2-check"></i>
+                <span>Track Follow-ups</span>
             </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-support">
+                <div class="sidebar-support-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h6>Student-first support</h6>
+                <p>Record meaningful follow-up outcomes and help keep student interventions on track.</p>
+            </div>
+
+            <a href="{% url 'logout' %}" class="sidebar-link sidebar-logout">
+                <i class="bi bi-box-arrow-left"></i>
+                <span>Sign Out</span>
+            </a>
+
         </div>
 
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- PAGE HEADER -->
+        <header class="topbar">
+
+            <div class="page-heading">
+
+                <button
+                    type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation menu"
+                    aria-controls="mentorSidebar"
+                    aria-expanded="false">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <div class="breadcrumb-line">
+                        <a href="{% url 'mentor_dashboard' %}">Dashboard</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <a href="{% url 'mentor_track_follow_ups' %}">Track Follow-ups</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span class="breadcrumb-current">Follow-up Details</span>
+                    </div>
+
+                    <h1 class="page-title">Follow-up Details</h1>
+
+                    <p class="page-subtitle">
+                        Review the follow-up record, document the interaction,
+                        and record its outcome.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="topbar-actions">
+                <span class="role-chip">
+                    <span class="role-dot"></span>
+                    Mentor Workspace
+                </span>
+
+                <a
+                    href="{% url 'mentor_track_follow_ups' %}"
+                    class="btn-mentor-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Follow-ups
+                </a>
+            </div>
+
+        </header>
+
+        <!-- DJANGO MESSAGES -->
         {% if messages %}
             {% for message in messages %}
                 <div
-                    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show"
-                    role="alert"
-                >
-                    {{ message }}
+                    class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show message-alert"
+                    role="alert">
+
+                    <i class="bi bi-info-circle-fill mt-1"></i>
+
+                    <div class="message-content">
+                        {{ message }}
+                    </div>
+
                     <button
                         type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"
-                        aria-label="Close"
-                    ></button>
+                        aria-label="Close">
+                    </button>
                 </div>
             {% endfor %}
         {% endif %}
 
-        <!-- Student and Referral Information -->
-        <h5 class="fw-bold mb-3">Student & Referral Information</h5>
+        <!-- STUDENT AND REFERRAL INFORMATION -->
+        <section class="surface-card">
 
-        <div class="row g-3">
+            <div class="card-heading">
+                <div class="section-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
 
-            <div class="col-12 col-md-6">
-                <div class="info-card">
-                    <div class="info-label">Student Name</div>
-                    <div class="info-value">
-                        {{ follow_up.referral.student.first_name }}
-                        {{ follow_up.referral.student.last_name }}
-                    </div>
+                <div>
+                    <h2>Student &amp; Referral Information</h2>
+                    <p>Student profile details and the original support request.</p>
                 </div>
             </div>
 
-            <div class="col-12 col-md-6">
-                <div class="info-card">
-                    <div class="info-label">Student ID</div>
-                    <div class="info-value">
-                        {{ follow_up.referral.student.student_id }}
-                    </div>
-                </div>
-            </div>
+            <div class="card-body-custom">
 
-            <div class="col-12 col-md-6">
-                <div class="info-card">
-                    <div class="info-label">Support Type</div>
-                    <div class="info-value">
-                        {{ follow_up.referral.get_support_type_display }}
-                    </div>
-                </div>
-            </div>
+                <div class="student-overview mb-4">
 
-            <div class="col-12 col-md-6">
-                <div class="info-card">
-                    <div class="info-label">Referral Status</div>
-                    <div class="info-value">
-                        {{ follow_up.referral.status }}
-                    </div>
-                </div>
-            </div>
+                    <div class="student-overview-top mb-0">
+                        <div class="student-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
 
-            <div class="col-12">
-                <div class="info-card">
-                    <div class="info-label">Referral Reason</div>
-                    <div class="info-value">
+                        <div>
+                            <p class="student-overline">Student Profile</p>
+
+                            <h2>
+                                {{ follow_up.referral.student.first_name }}
+                                {{ follow_up.referral.student.last_name }}
+                            </h2>
+
+                            <div class="student-id-label">
+                                <i class="bi bi-person-badge"></i>
+                                Student ID:
+                                {{ follow_up.referral.student.student_id }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-heart-pulse"></i>
+                            Support Type
+                        </div>
+
+                        <div class="detail-value">
+                            {{ follow_up.referral.get_support_type_display }}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Referral Status
+                        </div>
+
+                        <div class="detail-value">
+                            {{ follow_up.referral.status }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="referral-block mt-4">
+                    <div class="referral-label">
+                        <i class="bi bi-chat-left-text"></i>
+                        Referral Reason
+                    </div>
+
+                    <div class="notes-panel referral-text">
                         {{ follow_up.referral.reason|default:"Not provided"|linebreaksbr }}
                     </div>
                 </div>
+
             </div>
 
-        </div>
+        </section>
 
-        <!-- Follow-up Information -->
-        <div class="section-card">
+        <!-- FOLLOW-UP RECORD -->
+        <section class="surface-card">
 
-            <h5 class="fw-bold mb-3">Follow-up Record</h5>
+            <div class="card-heading">
+                <div class="section-icon">
+                    <i class="bi bi-calendar2-check"></i>
+                </div>
 
-            <div class="row g-3">
+                <div>
+                    <h2>Follow-up Record</h2>
+                    <p>Review the scheduled date, recorded notes, and outcome.</p>
+                </div>
+            </div>
 
-                <div class="col-12 col-md-6">
-                    <div class="info-label">Scheduled Date</div>
-                    <div class="info-value">
-                        {{ follow_up.scheduled_date|date:"d M Y" }}
+            <div class="card-body-custom">
+
+                <div class="follow-up-banner">
+
+                    <div class="follow-up-banner-icon">
+                        <i class="bi bi-calendar-event"></i>
                     </div>
-                </div>
 
-                <div class="col-12 col-md-6">
-                    <div class="info-label">Follow-up Status</div>
-
-                    {% if follow_up.status == "Completed" %}
-                        <span class="badge bg-success">Completed</span>
-                    {% elif follow_up.scheduled_date < today %}
-                        <span class="badge bg-danger">Overdue</span>
-                    {% else %}
-                        <span class="badge bg-warning text-dark">Pending</span>
-                    {% endif %}
-                </div>
-
-                <div class="col-12">
-                    <div class="info-label">Follow-up Notes</div>
                     <div>
+                        <h3>Scheduled Follow-up</h3>
+                        <p>
+                            {{ follow_up.scheduled_date|date:"d M Y" }}
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="detail-grid mb-4">
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-calendar-date"></i>
+                            Scheduled Date
+                        </div>
+
+                        <div class="detail-value">
+                            {{ follow_up.scheduled_date|date:"d M Y" }}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-check2-circle"></i>
+                            Follow-up Status
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if follow_up.status == "Completed" %}
+                                <span class="follow-up-status status-completed">
+                                    Completed
+                                </span>
+                            {% elif follow_up.scheduled_date < today %}
+                                <span class="follow-up-status status-overdue">
+                                    Overdue
+                                </span>
+                            {% else %}
+                                <span class="follow-up-status status-pending">
+                                    Pending
+                                </span>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-clock-history"></i>
+                            Created At
+                        </div>
+
+                        <div class="detail-value">
+                            {{ follow_up.created_at|date:"d M Y, h:i A" }}
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Last Updated
+                        </div>
+
+                        <div class="detail-value">
+                            {{ follow_up.updated_at|date:"d M Y, h:i A" }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="referral-block">
+                    <div class="referral-label">
+                        <i class="bi bi-journal-text"></i>
+                        Follow-up Notes
+                    </div>
+
+                    <div class="notes-panel referral-text">
                         {{ follow_up.notes|default:"No notes recorded yet."|linebreaksbr }}
                     </div>
                 </div>
 
-                <div class="col-12">
-                    <div class="info-label">Outcome / Result</div>
-                    <div>
+                <div class="referral-block">
+                    <div class="referral-label">
+                        <i class="bi bi-clipboard2-check"></i>
+                        Outcome / Result
+                    </div>
+
+                    <div class="notes-panel referral-text">
                         {{ follow_up.outcome|default:"No outcome recorded yet."|linebreaksbr }}
                     </div>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <div class="info-label">Created At</div>
-                    <div>
-                        {{ follow_up.created_at|date:"d M Y, h:i A" }}
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6">
-                    <div class="info-label">Last Updated</div>
-                    <div>
-                        {{ follow_up.updated_at|date:"d M Y, h:i A" }}
-                    </div>
-                </div>
-
             </div>
-        </div>
 
-        <!-- Completion Form -->
+        </section>
+
+        <!-- COMPLETION FORM -->
         {% if follow_up.status == "Pending" %}
 
-            <div class="section-card">
+            <section class="surface-card">
 
-                <h5 class="fw-bold mb-2">Complete Follow-up</h5>
-
-                <p class="text-secondary">
-                    Record what was discussed or done and the resulting
-                    outcome. Both fields are required for completion.
-                </p>
-
-                <form
-                    method="post"
-                    action="{% url 'mentor_complete_follow_up' follow_up.pk %}"
-                >
-                    {% csrf_token %}
-
-                    <div class="mb-3">
-                        <label for="notes" class="form-label fw-semibold">
-                            Follow-up Notes
-                        </label>
-
-                        <textarea
-                            id="notes"
-                            name="notes"
-                            class="form-control"
-                            rows="4"
-                            required
-                            placeholder="Describe what was discussed or done"
-                        >{{ follow_up.notes }}</textarea>
+                <div class="card-heading">
+                    <div class="section-icon">
+                        <i class="bi bi-pencil-square"></i>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="outcome" class="form-label fw-semibold">
-                            Outcome / Result
-                        </label>
+                    <div>
+                        <h2>Complete Follow-up</h2>
+                        <p>Record the interaction and its resulting outcome.</p>
+                    </div>
+                </div>
 
-                        <textarea
-                            id="outcome"
-                            name="outcome"
-                            class="form-control"
-                            rows="4"
-                            required
-                            placeholder="Record the follow-up result or outcome"
-                        >{{ follow_up.outcome }}</textarea>
+                <div class="card-body-custom">
+
+                    <div class="completion-intro">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Both fields are required before this follow-up can be marked
+                        as completed. Provide clear, factual notes about the support
+                        provided and the outcome observed.
                     </div>
 
-                    <button
-                        type="submit"
-                        class="btn btn-success"
-                        onclick="return confirm('Mark this follow-up as completed?');"
-                    >
-                        Mark as Completed
-                    </button>
+                    <form
+                        method="post"
+                        action="{% url 'mentor_complete_follow_up' follow_up.pk %}">
 
-                </form>
-            </div>
+                        {% csrf_token %}
+
+                        <div class="mb-4">
+                            <label for="notes" class="form-label">
+                                <i class="bi bi-journal-text me-1"></i>
+                                Follow-up Notes
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                name="notes"
+                                class="form-control"
+                                rows="5"
+                                required
+                                placeholder="Describe what was discussed, what action was taken, or what support was provided."
+                            >{{ follow_up.notes }}</textarea>
+
+                            <p class="form-help">
+                                Record the discussion, actions taken, and relevant observations.
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="outcome" class="form-label">
+                                <i class="bi bi-clipboard2-check me-1"></i>
+                                Outcome / Result
+                                <span class="text-danger">*</span>
+                            </label>
+
+                            <textarea
+                                id="outcome"
+                                name="outcome"
+                                class="form-control"
+                                rows="5"
+                                required
+                                placeholder="Record the result of the follow-up, the student's response, and any next steps."
+                            >{{ follow_up.outcome }}</textarea>
+
+                            <p class="form-help">
+                                Describe the observed outcome and any further support that may be needed.
+                            </p>
+                        </div>
+
+                        <div class="form-actions">
+
+                            <button
+                                type="submit"
+                                class="btn-complete"
+                                onclick="return confirm('Mark this follow-up as completed?');">
+
+                                <i class="bi bi-check-circle"></i>
+                                Mark as Completed
+                            </button>
+
+                            <a
+                                href="{% url 'mentor_track_follow_ups' %}"
+                                class="btn-mentor-secondary">
+
+                                <i class="bi bi-arrow-left"></i>
+                                Back to Follow-ups
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
 
         {% else %}
 
-            <div class="alert alert-success mt-4 mb-0">
-                <strong>Follow-up completed.</strong>
-                The recorded notes and outcome are available above.
+            <div class="completed-notice">
+
+                <div class="completed-notice-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+
+                <div>
+                    <h3>Follow-up Completed</h3>
+                    <p>
+                        This follow-up is no longer pending. The recorded notes
+                        and outcome are available in the follow-up record above.
+                    </p>
+                </div>
+
             </div>
 
         {% endif %}
 
-    </div>
-</div>
+        <!-- FOOTER -->
+        <footer class="page-footer">
+            <span>Student Dropout Risk Management System</span>
+            <span>Mentor Workspace · Follow-up Management</span>
+        </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const sidebar = document.getElementById("mentorSidebar");
+            const overlay = document.getElementById("sidebarOverlay");
+            const menuButton = document.getElementById("mobileMenuButton");
+
+            if (!sidebar || !overlay || !menuButton) {
+                return;
+            }
+
+            function openSidebar() {
+                sidebar.classList.add("is-open");
+                overlay.classList.add("is-visible");
+                menuButton.setAttribute("aria-expanded", "true");
+                menuButton.setAttribute("aria-label", "Close navigation menu");
+                overlay.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove("is-open");
+                overlay.classList.remove("is-visible");
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.setAttribute("aria-label", "Open navigation menu");
+                overlay.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
+
+            menuButton.addEventListener("click", function () {
+                if (sidebar.classList.contains("is-open")) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            overlay.addEventListener("click", closeSidebar);
+
+            sidebar.querySelectorAll("a").forEach(function (link) {
+                link.addEventListener("click", function () {
+                    if (window.innerWidth < 768) {
+                        closeSidebar();
+                    }
+                });
+            });
+
+            window.addEventListener("resize", function () {
+                if (window.innerWidth >= 768) {
+                    closeSidebar();
+                }
+            });
+
+            document.addEventListener("keydown", function (event) {
+                if (event.key === "Escape") {
+                    closeSidebar();
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
