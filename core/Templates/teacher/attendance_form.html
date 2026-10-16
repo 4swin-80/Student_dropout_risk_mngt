@@ -1,347 +1,1206 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Enter Attendance</title>
+    <title>Enter Attendance | Teacher Panel</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --teal: #0d9488;
+            --page-bg: #f4f8f7;
+            --surface: #ffffff;
+            --text-primary: #18352e;
+            --text-secondary: #74867f;
+            --border: #e2ece8;
+            --sidebar-bg: #102a27;
+            --sidebar-text: #c2d4d0;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
+            margin: 0;
             min-height: 100vh;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
         }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Sidebar */
 
         .sidebar {
             min-height: 100vh;
+            padding: 26px 16px;
+            background:
+                radial-gradient(
+                    circle at 0% 0%,
+                    rgba(13, 148, 136, 0.15),
+                    transparent 35%
+                ),
+                var(--sidebar-bg);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 10px 28px;
+        }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: #ffffff;
+            font-size: 22px;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, 0.2);
+        }
+
+        .brand-name {
+            margin: 0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+
+        .brand-caption {
+            margin-top: 4px;
+            color: #8eaaa3;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-label {
+            padding: 0 12px;
+            margin: 13px 0 10px;
+            color: #78968e;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
         }
 
         .sidebar .nav-link {
-            color: rgba(255,255,255,.75);
-            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 5px;
+            padding: 12px 13px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: var(--sidebar-text);
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: #fff;
-            background: rgba(255,255,255,.12);
+        .sidebar .nav-link i {
+            width: 20px;
+            font-size: 17px;
+            text-align: center;
         }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            border-color: rgba(52, 211, 153, 0.12);
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link.active i {
+            color: #6ee7b7;
+        }
+
+        .sidebar-bottom {
+            margin-top: 28px;
+            padding: 17px 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .sidebar-note {
+            color: #8eaaa3;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .sidebar-note i {
+            margin-right: 5px;
+            color: #6ee7b7;
+        }
+
+        .sidebar-logout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #d4e6e0;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-logout:hover {
+            border-color: rgba(251, 113, 133, 0.35);
+            background: rgba(251, 113, 133, 0.09);
+            color: #fda4af;
+        }
+
+        /* Mobile navigation */
+
+        .mobile-header {
+            display: none;
+        }
+
+        /* Main content */
+
+        .main-content {
+            min-width: 0;
+            padding: 30px 34px 36px;
+        }
+
+        .page-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 27px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 9px;
+            font-size: 11px;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: clamp(24px, 2.5vw, 31px);
+            font-weight: 800;
+            letter-spacing: -1.2px;
+        }
+
+        .page-subtitle {
+            margin: 9px 0 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .header-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 13px;
+            border: 1px solid #cdeee0;
+            border-radius: 11px;
+            background: #edfcf5;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Intro panel */
+
+        .intro-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 18px 20px;
+            border: 1px solid #cdeee0;
+            border-radius: 15px;
+            background: linear-gradient(110deg, #effcf5, #f0fbfa);
+        }
+
+        .intro-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: #d1fae5;
+            color: #047857;
+            font-size: 21px;
+        }
+
+        .intro-title {
+            margin: 0 0 5px;
+            color: #145044;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .intro-text {
+            margin: 0;
+            color: #648078;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Form card */
 
         .form-card {
-            border-radius: 14px;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: 0 12px 32px rgba(20, 65, 57, 0.06);
         }
 
-        .form-control,
-        .form-select {
+        .form-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(110deg, #ffffff, #fbfefd);
+        }
+
+        .form-heading-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 15px;
+            background: #e6f9ef;
+            color: var(--primary-dark);
+            font-size: 22px;
+        }
+
+        .form-card-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+
+        .form-card-description {
+            margin: 6px 0 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .form-card-body {
+            padding: 28px;
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 0 0 22px;
+            color: #36564b;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .form-section-title i {
+            color: var(--primary);
+            font-size: 17px;
+        }
+
+        .form-section-divider {
+            margin: 27px 0;
+            border: 0;
+            border-top: 1px solid var(--border);
+            opacity: 1;
+        }
+
+        /* Form fields generated by Django */
+
+        .field-group {
+            height: 100%;
+            margin-bottom: 0;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 9px;
+            color: #344f45;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .form-card-body input:not([type="checkbox"]):not([type="radio"]),
+        .form-card-body select,
+        .form-card-body textarea {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 13px;
+            border: 1px solid #dce7e2;
+            border-radius: 11px;
+            outline: none;
+            background-color: #fbfdfc;
+            color: #24443a;
+            font-family: inherit;
+            font-size: 12px;
+            box-shadow: none;
+            transition:
+                border-color 0.2s ease,
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .form-card-body select {
+            cursor: pointer;
+        }
+
+        .form-card-body textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-card-body input:focus,
+        .form-card-body select:focus,
+        .form-card-body textarea:focus {
+            border-color: #34b58a;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.09);
+        }
+
+        .form-card-body input::placeholder,
+        .form-card-body textarea::placeholder {
+            color: #a0afa9;
+        }
+
+        .field-hint {
+            margin-top: 8px;
+            color: #85958e;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .field-hint i {
+            margin-right: 4px;
+            color: var(--teal);
+        }
+
+        .field-error {
+            margin-top: 7px;
+            color: #c03939;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .field-error ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .non-field-errors ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+
+        /* Messages */
+
+        .messages-container {
+            margin-bottom: 22px;
+        }
+
+        .messages-container .alert,
+        .non-field-errors {
+            border-radius: 12px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Attendance guidance */
+
+        .attendance-guidance {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 25px;
+            padding: 15px 17px;
+            border: 1px solid #dbeee7;
+            border-radius: 12px;
+            background: #f6fbf8;
+        }
+
+        .guidance-icon {
+            flex-shrink: 0;
+            color: var(--primary);
+            font-size: 17px;
+        }
+
+        .guidance-title {
+            margin: 0 0 4px;
+            color: #315548;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .guidance-text {
+            margin: 0;
+            color: #71877e;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Form actions */
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 30px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .actions-note {
+            color: #869790;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .actions-note i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        .actions-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-primary-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 11px 17px;
+            border: 1px solid var(--primary);
+            border-radius: 11px;
+            background: linear-gradient(135deg, #059669, #0d9488);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            border-color: var(--primary-dark);
+            background: var(--primary-dark);
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 10px 15px;
+            border: 1px solid #dbe6e2;
             border-radius: 10px;
+            background: #ffffff;
+            color: #526b63;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
         }
 
-        .btn {
-            border-radius: 10px;
+        .btn-secondary-custom:hover {
+            border-color: #b8dacf;
+            background: #f2faf6;
+            color: #047857;
         }
 
+        /* Footer */
+
+        .page-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+            color: #879790;
+            font-size: 10px;
+        }
+
+        .page-footer i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                padding: 25px 22px;
+            }
+
+            .sidebar {
+                min-height: auto;
+            }
+
+            .form-card-header {
+                padding: 22px 24px;
+            }
+
+            .form-card-body {
+                padding: 24px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 13px 17px;
+                border-bottom: 1px solid var(--border);
+                background: #ffffff;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--text-primary);
+                font-size: 13px;
+                font-weight: 800;
+            }
+
+            .mobile-brand-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 11px;
+                background: linear-gradient(135deg, #10b981, #0d9488);
+                color: #ffffff;
+                font-size: 19px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 39px;
+                height: 39px;
+                border: 1px solid var(--border);
+                border-radius: 11px;
+                background: #ffffff;
+                color: var(--primary-dark);
+                font-size: 20px;
+            }
+
+            .sidebar {
+                min-height: auto;
+                padding: 18px 15px;
+            }
+
+            .sidebar .brand {
+                display: none;
+            }
+
+            .sidebar-label {
+                margin-top: 6px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+            }
+
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .page-topbar {
+                align-items: flex-start;
+                margin-bottom: 22px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .header-role {
+                display: none;
+            }
+
+            .intro-strip {
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .form-card-header {
+                padding: 19px;
+            }
+
+            .form-card-body {
+                padding: 20px;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .actions-buttons {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .actions-buttons > * {
+                width: 100%;
+            }
+
+            .page-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
     </style>
-
 </head>
 
-<body class="bg-light">
-
-<div class="container-fluid">
-
-    <div class="row">
-
-        <!-- ================= SIDEBAR ================= -->
-
-        <aside class="col-md-3 col-lg-2 bg-dark text-white sidebar p-3">
-
-            <h5 class="fw-bold mb-4">
-                Student Risk
-            </h5>
-
-            <div class="text-white-50 small mb-3">
-                TEACHER
-            </div>
-
-            <nav class="nav flex-column">
-
-                <a
-                    href="{% url 'teacher_dashboard' %}"
-                    class="nav-link"
-                >
-                    Dashboard
-                </a>
-
-                <a
-                    href="{% url 'attendance_create' %}"
-                    class="nav-link active"
-                >
-                    Attendance
-                </a>
-
-            </nav>
-
-            <hr class="border-secondary">
-
-            <a
-                href="{% url 'logout' %}"
-                class="btn btn-outline-light btn-sm w-100"
-            >
-                Logout
-            </a>
-
-        </aside>
-
-
-        <!-- ================= MAIN CONTENT ================= -->
-
-        <main class="col-md-9 col-lg-10 px-md-4 py-4">
-
-            <!-- Header -->
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div>
-
-                    <h2 class="fw-bold mb-1">
-                        Enter Attendance
-                    </h2>
-
-                    <p class="text-secondary mb-0">
-                        Record student attendance information.
-                    </p>
-
-                </div>
-
-                <div class="text-end">
-
-                    <div class="fw-semibold">
-                        {{ request.user.get_full_name|default:request.user.username }}
-                    </div>
-
-                    <small class="text-secondary">
-                        Teacher
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- Messages -->
-
-            {% if messages %}
-
-                {% for message in messages %}
-
-                    <div
-                        class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
-                        role="alert"
-                    >
-
-                        {{ message }}
-
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert"
-                            aria-label="Close"
-                        ></button>
-
-                    </div>
-
-                {% endfor %}
-
-            {% endif %}
-
-
-            <!-- Form Card -->
-
-            <div class="card form-card border-0 shadow-sm">
-
-                <div class="card-body p-4">
-
-                    <div class="mb-4">
-
-                        <h4 class="fw-bold mb-1">
-                            Attendance Information
-                        </h4>
-
-                        <p class="text-secondary mb-0">
-                            Enter the attendance details for a student.
-                        </p>
-
-                    </div>
-
-
-                    <form method="post">
-
-                        {% csrf_token %}
-
-
-                        <!-- Non-field errors -->
-
-                        {% if form.non_field_errors %}
-
-                            <div class="alert alert-danger">
-
-                                {{ form.non_field_errors }}
-
-                            </div>
-
-                        {% endif %}
-
-
-                        <div class="row g-4">
-
-
-                            <!-- Student -->
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.student.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Student
-                                </label>
-
-                                {{ form.student }}
-
-                                {% if form.student.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ form.student.errors }}
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-
-
-                            <!-- Date -->
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.date.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Attendance Date
-                                </label>
-
-                                {{ form.date }}
-
-                                {% if form.date.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ form.date.errors }}
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-
-
-                            <!-- Classes Conducted -->
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.classes_conducted.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Classes Conducted
-                                </label>
-
-                                {{ form.classes_conducted }}
-
-                                {% if form.classes_conducted.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ form.classes_conducted.errors }}
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-
-
-                            <!-- Classes Attended -->
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.classes_attended.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Classes Attended
-                                </label>
-
-                                {{ form.classes_attended }}
-
-                                {% if form.classes_attended.errors %}
-
-                                    <div class="text-danger small mt-1">
-                                        {{ form.classes_attended.errors }}
-                                    </div>
-
-                                {% endif %}
-
-                            </div>
-
-
-                        </div>
-
-
-                        <!-- Buttons -->
-
-                        <div class="d-flex gap-2 mt-4">
-
-                            <button
-                                type="submit"
-                                class="btn btn-success px-4"
-                            >
-                                Save Attendance
-                            </button>
-
-                            <a
-                                href="{% url 'teacher_dashboard' %}"
-                                class="btn btn-outline-secondary px-4"
-                            >
-                                Back to Dashboard
-                            </a>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </main>
-
+<body>
+
+    <!-- Mobile navigation -->
+    <div class="mobile-header">
+        <div class="mobile-brand">
+            <span class="mobile-brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
+            <span>Teacher Panel</span>
+        </div>
+
+        <button
+            class="mobile-menu-btn"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#teacherSidebar"
+            aria-controls="teacherSidebar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <i class="bi bi-list"></i>
+        </button>
     </div>
 
-</div>
+    <div class="container-fluid">
+        <div class="row">
 
+            <!-- Sidebar -->
+            <aside
+                class="col-md-3 col-lg-2 sidebar collapse d-md-block"
+                id="teacherSidebar"
+            >
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+                    <div>
+                        <h1 class="brand-name">Teacher Panel</h1>
+                        <div class="brand-caption">Academic Management</div>
+                    </div>
+                </div>
+
+                <div class="sidebar-label">Workspace</div>
+
+                <nav class="nav flex-column" aria-label="Teacher navigation">
+
+                    <a
+                        href="{% url 'teacher_dashboard' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a
+                        href="{% url 'teacher_student_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-people"></i>
+                        <span>Students</span>
+                    </a>
+
+                    <a
+                        href="{% url 'attendance_create' %}"
+                        class="nav-link active"
+                        aria-current="page"
+                    >
+                        <i class="bi bi-calendar2-plus"></i>
+                        <span>Enter Attendance</span>
+                    </a>
+
+                    <a
+                        href="{% url 'attendance_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-calendar2-check"></i>
+                        <span>Attendance Records</span>
+                    </a>
+
+                    <a
+                        href="{% url 'academic_performance_create' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-journal-check"></i>
+                        <span>Academic Marks</span>
+                    </a>
+
+                    <a
+                        href="{% url 'assignment_create' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Assignments</span>
+                    </a>
+
+                    <a
+                        href="{% url 'exam_result_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-clipboard2-data"></i>
+                        <span>Examination Results</span>
+                    </a>
+
+                </nav>
+
+                <div class="sidebar-label">Student Support</div>
+
+                <nav class="nav flex-column" aria-label="Student support navigation">
+
+                    <a
+                        href="{% url 'teacher_risk_scores' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>Risk Scores</span>
+                    </a>
+
+                    <a
+                        href="{% url 'teacher_alerts' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-bell"></i>
+                        <span>Alerts</span>
+                    </a>
+
+                    <a
+                        href="{% url 'teacher_student_support' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>Student Support</span>
+                    </a>
+
+                </nav>
+
+                <div class="sidebar-bottom">
+                    <div class="sidebar-note">
+                        <i class="bi bi-shield-check"></i>
+                        Keep student attendance records accurate and secure.
+                    </div>
+
+                    <a
+                        href="{% url 'logout' %}"
+                        class="sidebar-logout"
+                    >
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main content -->
+            <main class="col-md-9 col-lg-10 main-content">
+
+                <!-- Page header -->
+                <div class="page-topbar">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'teacher_dashboard' %}">
+                                        Dashboard
+                                    </a>
+                                </li>
+
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Enter Attendance
+                                </li>
+                            </ol>
+                        </nav>
+
+                        <h2 class="page-title">Enter Attendance</h2>
+
+                        <p class="page-subtitle">
+                            Record attendance details for a student and maintain
+                            accurate attendance history.
+                        </p>
+                    </div>
+
+                    <span class="header-role">
+                        <i class="bi bi-person-workspace"></i>
+                        Teacher Workspace
+                    </span>
+                </div>
+
+                <!-- Intro strip -->
+                <section class="intro-strip">
+                    <div class="intro-icon">
+                        <i class="bi bi-calendar2-check"></i>
+                    </div>
+
+                    <div>
+                        <h3 class="intro-title">Daily Attendance Entry</h3>
+                        <p class="intro-text">
+                            Select a student, choose the attendance date, and enter the
+                            number of classes conducted and attended.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Django messages -->
+                {% if messages %}
+                    <div class="messages-container">
+                        {% for message in messages %}
+                            <div
+                                class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                                role="alert"
+                            >
+                                <i class="bi bi-info-circle-fill me-2"></i>
+
+                                {{ message }}
+
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Attendance form card -->
+                <section class="form-card">
+
+                    <div class="form-card-header">
+                        <div class="form-heading-icon">
+                            <i class="bi bi-calendar2-plus"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="form-card-title">
+                                Attendance Information
+                            </h3>
+
+                            <p class="form-card-description">
+                                Complete all attendance details before saving the record.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-card-body">
+
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <!-- Non-field errors -->
+                            {% if form.non_field_errors %}
+                                <div
+                                    class="alert alert-danger non-field-errors"
+                                    role="alert"
+                                >
+                                    <div class="fw-bold mb-1">
+                                        Please correct the following errors:
+                                    </div>
+
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            <!-- Student selection -->
+                            <h4 class="form-section-title">
+                                <i class="bi bi-person-vcard"></i>
+                                Student Information
+                            </h4>
+
+                            <div class="row g-4">
+
+                                <div class="col-md-6">
+                                    <div class="field-group">
+                                        <label
+                                            for="{{ form.student.id_for_label }}"
+                                            class="field-label"
+                                        >
+                                            {{ form.student.label }}
+                                        </label>
+
+                                        {{ form.student }}
+
+                                        {% for error in form.student.errors %}
+                                            <div class="field-error">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="field-hint">
+                                            <i class="bi bi-info-circle"></i>
+                                            Select the student whose attendance you are recording.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="field-group">
+                                        <label
+                                            for="{{ form.date.id_for_label }}"
+                                            class="field-label"
+                                        >
+                                            {{ form.date.label }}
+                                        </label>
+
+                                        {{ form.date }}
+
+                                        {% for error in form.date.errors %}
+                                            <div class="field-error">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="field-hint">
+                                            <i class="bi bi-calendar3"></i>
+                                            Choose the date for this attendance record.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <hr class="form-section-divider">
+
+                            <!-- Class counts -->
+                            <h4 class="form-section-title">
+                                <i class="bi bi-journal-check"></i>
+                                Class Attendance Details
+                            </h4>
+
+                            <div class="row g-4">
+
+                                <div class="col-md-6">
+                                    <div class="field-group">
+                                        <label
+                                            for="{{ form.classes_conducted.id_for_label }}"
+                                            class="field-label"
+                                        >
+                                            {{ form.classes_conducted.label }}
+                                        </label>
+
+                                        {{ form.classes_conducted }}
+
+                                        {% for error in form.classes_conducted.errors %}
+                                            <div class="field-error">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="field-hint">
+                                            <i class="bi bi-info-circle"></i>
+                                            Enter the total number of classes conducted.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="field-group">
+                                        <label
+                                            for="{{ form.classes_attended.id_for_label }}"
+                                            class="field-label"
+                                        >
+                                            {{ form.classes_attended.label }}
+                                        </label>
+
+                                        {{ form.classes_attended }}
+
+                                        {% for error in form.classes_attended.errors %}
+                                            <div class="field-error">
+                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                {{ error }}
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="field-hint">
+                                            <i class="bi bi-info-circle"></i>
+                                            Enter the number of classes attended by the student.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Guidance -->
+                            <div class="attendance-guidance">
+                                <div class="guidance-icon">
+                                    <i class="bi bi-lightbulb"></i>
+                                </div>
+
+                                <div>
+                                    <h5 class="guidance-title">
+                                        Before saving
+                                    </h5>
+
+                                    <p class="guidance-text">
+                                        Verify the selected student, attendance date, and class
+                                        counts. The number of classes attended should not exceed
+                                        the number of classes conducted. Your existing form
+                                        validation remains responsible for enforcing data rules.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Form actions -->
+                            <div class="form-actions">
+                                <div class="actions-note">
+                                    <i class="bi bi-shield-check"></i>
+                                    Review the information before submitting.
+                                </div>
+
+                                <div class="actions-buttons">
+                                    <a
+                                        href="{% url 'teacher_dashboard' %}"
+                                        class="btn-secondary-custom"
+                                    >
+                                        <i class="bi bi-arrow-left"></i>
+                                        Back to Dashboard
+                                    </a>
+
+                                    <button
+                                        type="submit"
+                                        class="btn-primary-custom"
+                                    >
+                                        <i class="bi bi-check2-circle"></i>
+                                        Save Attendance
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="page-footer">
+                    <span>
+                        <i class="bi bi-mortarboard"></i>
+                        Teacher Academic Management
+                    </span>
+
+                    <span>
+                        Student Dropout Risk Management System
+                    </span>
+                </footer>
+
+            </main>
+        </div>
+    </div>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
 
 </body>
-
 </html>

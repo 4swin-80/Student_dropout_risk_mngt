@@ -1,685 +1,1994 @@
+
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Teacher Dashboard | Student Risk Management</title>
 
-<meta charset="UTF-8">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <style>
+        :root {
+            --teacher-950: #102a2a;
+            --teacher-900: #153b38;
+            --teacher-800: #20534c;
+            --teacher-700: #0f766e;
+            --teacher-600: #0d9488;
+            --teacher-500: #14b8a6;
+            --teacher-100: #ccfbf1;
+            --teacher-50: #f0fdfa;
 
-<title>Teacher Dashboard</title>
+            --page-bg: #f4f8f7;
+            --surface: #ffffff;
+            --text-primary: #172e32;
+            --text-secondary: #73848a;
+            --border: #e2eae9;
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+            --success: #15803d;
+            --success-bg: #f0fdf4;
+            --warning: #b45309;
+            --warning-bg: #fffbeb;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --blue: #2563eb;
+            --blue-bg: #eff6ff;
+            --purple: #7c3aed;
+            --purple-bg: #f5f3ff;
 
-<style>
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-card: 0 8px 28px rgba(20, 55, 53, 0.045);
+        }
 
-    body {
-        min-height: 100vh;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .sidebar {
-        min-height: 100vh;
-    }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px;
+        }
 
-    .sidebar .nav-link {
-        color: rgba(255,255,255,.75);
-        border-radius: 8px;
-        margin-bottom: 5px;
-    }
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-        color: #fff;
-        background: rgba(255,255,255,.12);
-    }
+        a {
+            text-decoration: none;
+        }
 
-    .dashboard-card,
-    .function-card {
-        border-radius: 14px;
-        transition: .2s ease;
-    }
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    .dashboard-card:hover,
-    .function-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
-    }
+        /* =========================
+           APPLICATION LAYOUT
+        ========================= */
 
-    .icon-box {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-    }
+        .app-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 255px minmax(0, 1fr);
+        }
 
-</style>
+        /* =========================
+           SIDEBAR
+        ========================= */
 
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 25px 17px 18px;
+            color: #ffffff;
+            background: linear-gradient(
+                180deg,
+                var(--teacher-950) 0%,
+                var(--teacher-900) 60%,
+                #164741 100%
+            );
+            scrollbar-width: thin;
+            scrollbar-color: #38615b transparent;
+        }
 
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            padding: 0 8px;
+            margin-bottom: 33px;
+            color: #ffffff;
+        }
+
+        .sidebar-brand:hover {
+            color: #ffffff;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 13px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            box-shadow: 0 5px 15px rgba(20, 184, 166, 0.17);
+            font-size: 20px;
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+        }
+
+        .brand-caption {
+            display: block;
+            margin-top: 4px;
+            color: #9fc2bb;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-section-label {
+            padding: 0 12px;
+            margin: 0 0 11px;
+            color: #89aca5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-navigation {
+            display: block;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-link {
+            min-height: 43px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: #c3d8d3;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 500;
+            transition:
+                color 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+        .sidebar-link i {
+            width: 19px;
+            flex-shrink: 0;
+            color: #8eb9af;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-link:hover i {
+            color: #5eead4;
+        }
+
+        .sidebar-link.active {
+            border-color: rgba(94, 234, 212, 0.12);
+            color: #ffffff;
+            background: rgba(20, 184, 166, 0.17);
+            font-weight: 700;
+        }
+
+        .sidebar-link.active i {
+            color: #5eead4;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            margin: 20px 5px;
+            border: 0;
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        .sidebar-support-label {
+            margin-top: 4px;
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+            min-height: 22px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 9px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 11px;
+            color: #ffffff;
+            background: rgba(20, 184, 166, 0.22);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .profile-information {
+            min-width: 0;
+        }
+
+        .profile-name {
+            overflow: hidden;
+            margin-bottom: 4px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-role {
+            color: #a6c8c0;
+            font-size: 10px;
+        }
+
+        .sidebar-logout {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            color: #d7e8e3;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-logout i {
+            font-size: 16px;
+        }
+
+        .sidebar-logout:hover {
+            border-color: rgba(252, 165, 165, 0.2);
+            color: #fecaca;
+            background: rgba(220, 38, 38, 0.10);
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main-content {
+            min-width: 0;
+            padding: 32px 34px 26px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 29px;
+        }
+
+        .header-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 9px;
+            color: var(--teacher-700);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .header-eyebrow i {
+            font-size: 13px;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            color: var(--teacher-950);
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.25;
+        }
+
+        .page-description {
+            max-width: 620px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+            padding: 10px 13px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #ffffff;
+        }
+
+        .header-user-avatar {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            color: var(--teacher-800);
+            background: var(--teacher-100);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .header-user-name {
+            max-width: 190px;
+            overflow: hidden;
+            margin-bottom: 4px;
+            color: var(--teacher-950);
+            font-size: 11px;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .header-user-role {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* =========================
+           OVERVIEW SECTION
+        ========================= */
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            margin: 0 0 5px;
+            color: var(--teacher-950);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .section-description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .section-caption {
+            color: #929fa6;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .overview-grid {
+            margin-bottom: 31px;
+        }
+
+        .overview-card {
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .overview-card:hover {
+            border-color: #d4e4df;
+            box-shadow: 0 12px 30px rgba(20, 55, 53, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .overview-card-body {
+            min-height: 139px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 13px;
+            padding: 22px;
+        }
+
+        .overview-label {
+            display: block;
+            margin-bottom: 13px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .overview-number {
+            margin: 0 0 8px;
+            color: var(--teacher-950);
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .overview-note {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #89979c;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .overview-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 14px;
+            font-size: 21px;
+        }
+
+        .icon-students {
+            color: var(--teacher-700);
+            background: var(--teacher-50);
+        }
+
+        .icon-attendance {
+            color: var(--success);
+            background: var(--success-bg);
+        }
+
+        .icon-assignments {
+            color: var(--warning);
+            background: var(--warning-bg);
+        }
+
+        .icon-alerts {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        /* =========================
+           FUNCTION DIRECTORY
+        ========================= */
+
+        .functions-section {
+            margin-bottom: 28px;
+        }
+
+        .functions-heading {
+            margin-bottom: 19px;
+        }
+
+        .function-grid {
+            row-gap: 17px;
+        }
+
+        .function-card {
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .function-card:hover {
+            border-color: #c5ddd6;
+            box-shadow: 0 12px 29px rgba(20, 55, 53, 0.075);
+            transform: translateY(-3px);
+        }
+
+        .function-card-accent {
+            width: 100%;
+            height: 4px;
+            flex-shrink: 0;
+        }
+
+        .accent-students {
+            background: #0d9488;
+        }
+
+        .accent-attendance {
+            background: #16a34a;
+        }
+
+        .accent-marks {
+            background: #2563eb;
+        }
+
+        .accent-assignments {
+            background: #d97706;
+        }
+
+        .accent-exams {
+            background: #7c3aed;
+        }
+
+        .accent-risk {
+            background: #ea580c;
+        }
+
+        .accent-alerts {
+            background: #dc2626;
+        }
+
+        .accent-support {
+            background: #0891b2;
+        }
+
+        .function-card-body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 21px;
+        }
+
+        .function-card-top {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .function-icon {
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 14px;
+            font-size: 21px;
+        }
+
+        .function-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 8px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            line-height: 1.3;
+            text-align: center;
+        }
+
+        .badge-students {
+            color: #0f766e;
+            border-color: #ccfbf1;
+            background: #f0fdfa;
+        }
+
+        .badge-academic {
+            color: #166534;
+            border-color: #bbf7d0;
+            background: #f0fdf4;
+        }
+
+        .badge-marks {
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .badge-assignments {
+            color: #92400e;
+            border-color: #fde68a;
+            background: #fffbeb;
+        }
+
+        .badge-exams {
+            color: #6d28d9;
+            border-color: #ddd6fe;
+            background: #f5f3ff;
+        }
+
+        .badge-risk {
+            color: #c2410c;
+            border-color: #fed7aa;
+            background: #fff7ed;
+        }
+
+        .badge-alerts {
+            color: #b91c1c;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        .badge-support {
+            color: #0e7490;
+            border-color: #a5f3fc;
+            background: #ecfeff;
+        }
+
+        .function-title {
+            margin: 0 0 9px;
+            color: var(--teacher-950);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            line-height: 1.5;
+        }
+
+        .function-description {
+            flex: 1;
+            margin: 0 0 20px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.85;
+        }
+
+        .function-actions {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .function-btn {
+            min-height: 37px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 12px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.3;
+            transition: all 0.18s ease;
+        }
+
+        .function-btn-primary {
+            color: #ffffff;
+            border-color: var(--teacher-700);
+            background: var(--teacher-700);
+        }
+
+        .function-btn-primary:hover {
+            color: #ffffff;
+            border-color: var(--teacher-800);
+            background: var(--teacher-800);
+            transform: translateY(-1px);
+        }
+
+        .function-btn-success {
+            color: #ffffff;
+            border-color: #15803d;
+            background: #15803d;
+        }
+
+        .function-btn-success:hover {
+            color: #ffffff;
+            border-color: #166534;
+            background: #166534;
+        }
+
+        .function-btn-info {
+            color: #ffffff;
+            border-color: #2563eb;
+            background: #2563eb;
+        }
+
+        .function-btn-info:hover {
+            color: #ffffff;
+            border-color: #1d4ed8;
+            background: #1d4ed8;
+        }
+
+        .function-btn-warning {
+            color: #ffffff;
+            border-color: #b45309;
+            background: #b45309;
+        }
+
+        .function-btn-warning:hover {
+            color: #ffffff;
+            border-color: #92400e;
+            background: #92400e;
+        }
+
+        .function-btn-purple {
+            color: #ffffff;
+            border-color: #6d28d9;
+            background: #6d28d9;
+        }
+
+        .function-btn-purple:hover {
+            color: #ffffff;
+            border-color: #5b21b6;
+            background: #5b21b6;
+        }
+
+        .function-btn-danger {
+            color: #ffffff;
+            border-color: #dc2626;
+            background: #dc2626;
+        }
+
+        .function-btn-danger:hover {
+            color: #ffffff;
+            border-color: #b91c1c;
+            background: #b91c1c;
+        }
+
+        .function-btn-outline {
+            color: #53646a;
+            border-color: #dce6e4;
+            background: #ffffff;
+        }
+
+        .function-btn-outline:hover {
+            color: var(--teacher-800);
+            border-color: #9fcfc4;
+            background: #f4fbf9;
+        }
+
+        /* =========================
+           ALERTS AND RISK PRIORITY
+        ========================= */
+
+        .priority-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 12px 13px;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            color: #991b1b;
+            background: #fff7f7;
+        }
+
+        .priority-note i {
+            margin-top: 1px;
+            font-size: 15px;
+        }
+
+        .priority-note p {
+            margin: 0;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .dashboard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 21px;
+            border-top: 1px solid var(--border);
+            color: #8b9b9e;
+            font-size: 10px;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .footer-brand i {
+            color: var(--teacher-700);
+            font-size: 13px;
+        }
+
+        /* =========================
+           ACCESSIBILITY
+        ========================= */
+
+        .sidebar-link:focus-visible,
+        .sidebar-logout:focus-visible,
+        .function-btn:focus-visible,
+        .mobile-nav-toggle:focus-visible {
+            outline: 3px solid #5eead4;
+            outline-offset: 3px;
+        }
+
+        /* =========================
+           TABLET
+        ========================= */
+
+        @media (max-width: 1199.98px) {
+            .app-shell {
+                grid-template-columns: 230px minmax(0, 1fr);
+            }
+
+            .main-content {
+                padding: 27px 24px 24px;
+            }
+
+            .overview-card-body {
+                padding: 18px;
+            }
+
+            .function-card-body {
+                padding: 18px;
+            }
+
+            .function-card-top {
+                gap: 8px;
+            }
+
+            .function-badge {
+                font-size: 8px;
+            }
+        }
+
+        /* =========================
+           MOBILE NAVIGATION
+        ========================= */
+
+        .sidebar-mobile-header {
+            display: none;
+        }
+
+        .mobile-nav-toggle {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 19px;
+        }
+
+        .mobile-nav-toggle:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        @media (max-width: 767.98px) {
+            html {
+                scroll-padding-top: 16px;
+            }
+
+            .app-shell {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                top: auto;
+                width: 100%;
+                height: auto;
+                min-height: auto;
+                overflow: visible;
+                padding: 13px 16px;
+            }
+
+            .sidebar-mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .sidebar-brand {
+                margin: 0;
+                padding: 0;
+            }
+
+            .brand-mark {
+                width: 38px;
+                height: 38px;
+            }
+
+            .sidebar-navigation {
+                display: none;
+                padding-top: 19px;
+            }
+
+            .sidebar-navigation.show {
+                display: block;
+            }
+
+            .sidebar-section-label {
+                margin-top: 4px;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .sidebar-link {
+                min-height: 40px;
+                gap: 9px;
+                padding: 10px;
+                font-size: 11px;
+            }
+
+            .sidebar-link i {
+                width: 17px;
+                font-size: 15px;
+            }
+
+            .sidebar-divider {
+                margin: 14px 3px;
+            }
+
+            .sidebar-spacer {
+                display: none;
+            }
+
+            .sidebar-profile {
+                margin-top: 17px;
+                margin-bottom: 10px;
+            }
+
+            .main-content {
+                width: 100%;
+                padding: 25px 18px 22px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 17px;
+                margin-bottom: 26px;
+            }
+
+            .header-user {
+                width: 100%;
+            }
+
+            .header-user-name {
+                max-width: calc(100vw - 115px);
+            }
+
+            .overview-card-body {
+                min-height: 125px;
+                padding: 17px;
+            }
+
+            .overview-number {
+                font-size: 27px;
+            }
+
+            .overview-icon {
+                width: 41px;
+                height: 41px;
+                border-radius: 12px;
+                font-size: 19px;
+            }
+
+            .function-card-body {
+                padding: 19px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .main-content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .sidebar-nav {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sidebar-link {
+                min-height: 43px;
+                font-size: 10px;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .overview-grid {
+                --bs-gutter-x: 12px;
+                --bs-gutter-y: 12px;
+            }
+
+            .overview-card-body {
+                min-height: 120px;
+                gap: 8px;
+                padding: 14px;
+            }
+
+            .overview-label {
+                font-size: 10px;
+            }
+
+            .overview-number {
+                font-size: 25px;
+            }
+
+            .overview-note {
+                font-size: 9px;
+            }
+
+            .overview-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 17px;
+            }
+
+            .function-card-body {
+                padding: 16px;
+            }
+
+            .function-card-top {
+                flex-wrap: wrap;
+            }
+
+            .function-description {
+                font-size: 11px;
+            }
+
+            .function-actions {
+                align-items: stretch;
+            }
+
+            .function-actions .function-btn {
+                flex: 1 1 auto;
+            }
+
+            .dashboard-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container-fluid">
+<div class="app-shell">
 
+    <!-- =========================
+         TEACHER SIDEBAR
+    ========================== -->
 
-<div class="row">
+    <aside class="sidebar">
 
+        <!-- Desktop Brand / Mobile Header -->
+        <div class="sidebar-mobile-header">
 
-    <!-- ================= SIDEBAR ================= -->
+            <a href="{% url 'teacher_dashboard' %}" class="sidebar-brand">
+                <span class="brand-mark">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </span>
 
-    <aside class="col-md-3 col-lg-2 bg-dark text-white sidebar p-3">
+                <span>
+                    <span class="brand-name">Student Risk</span>
+                    <span class="brand-caption">Teacher Workspace</span>
+                </span>
+            </a>
 
-        <h5 class="fw-bold mb-4">
-            Student Risk
-        </h5>
+            <button
+                type="button"
+                class="mobile-nav-toggle"
+                id="mobileNavToggle"
+                aria-label="Toggle teacher navigation"
+                aria-controls="teacherNavigation"
+                aria-expanded="false"
+            >
+                <i class="bi bi-list"></i>
+            </button>
 
-        <div class="text-white-50 small mb-3">
-            TEACHER
         </div>
 
+        <!-- Desktop Brand -->
+        <a
+            href="{% url 'teacher_dashboard' %}"
+            class="sidebar-brand d-none d-md-flex"
+        >
+            <span class="brand-mark">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
 
-        <nav class="nav flex-column">
-
-            <a href="{% url 'teacher_dashboard' %}"
-               class="nav-link active">
-                Dashboard
-            </a>
-
-            <a href="#students"
-               class="nav-link">
-                Students
-            </a>
-
-            <a href="#attendance"
-               class="nav-link">
-                Attendance
-            </a>
-
-            <a href="#marks"
-               class="nav-link">
-                Marks
-            </a>
-
-            <a href="#assignments"
-               class="nav-link">
-                Assignments
-            </a>
-
-            <a href="#exams"
-               class="nav-link">
-                Examination Results
-            </a>
-
-            <a href="{% url 'teacher_risk_scores' %}"
-               class="nav-link">
-                Risk Scores
-            </a>
-
-            <a href="{% url 'teacher_alerts' %}"
-               class="nav-link">
-                Alerts
-            </a>
-
-        </nav>
-
-
-        <hr class="border-secondary">
-
-
-        <a href="{% url 'logout' %}"
-           class="btn btn-outline-light btn-sm w-100">
-            Logout
+            <span>
+                <span class="brand-name">Student Risk</span>
+                <span class="brand-caption">Teacher Workspace</span>
+            </span>
         </a>
+
+        <div class="sidebar-navigation" id="teacherNavigation">
+
+            <div class="sidebar-section-label">
+                Workspace
+            </div>
+
+            <nav aria-label="Teacher navigation">
+                <ul class="sidebar-nav">
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_dashboard' %}"
+                            class="sidebar-link active"
+                            aria-current="page"
+                        >
+                            <i class="bi bi-grid-1x2-fill"></i>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#students" class="sidebar-link">
+                            <i class="bi bi-people"></i>
+                            Students
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#attendance" class="sidebar-link">
+                            <i class="bi bi-calendar2-check"></i>
+                            Attendance
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#marks" class="sidebar-link">
+                            <i class="bi bi-journal-text"></i>
+                            Marks
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#assignments" class="sidebar-link">
+                            <i class="bi bi-file-earmark-text"></i>
+                            Assignments
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#exams" class="sidebar-link">
+                            <i class="bi bi-mortarboard"></i>
+                            Examination Results
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-section-label">
+                Risk Monitoring
+            </div>
+
+            <nav aria-label="Risk monitoring navigation">
+                <ul class="sidebar-nav">
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_risk_scores' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-graph-up-arrow"></i>
+                            Risk Scores
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#risk" class="sidebar-link">
+                            <i class="bi bi-shield-exclamation"></i>
+                            Risk Analysis
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#alerts" class="sidebar-link">
+                            <i class="bi bi-bell"></i>
+                            Alerts
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-section-label sidebar-support-label">
+                Student Support
+            </div>
+
+            <nav aria-label="Student support navigation">
+                <ul class="sidebar-nav">
+
+                    <li>
+                        <a href="#support" class="sidebar-link">
+                            <i class="bi bi-person-hearts"></i>
+                            Support Students
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <!-- Signed-In Teacher -->
+            <div class="sidebar-profile">
+
+                <div class="profile-avatar">
+                    {{ request.user.get_full_name|default:request.user.username|first|upper }}
+                </div>
+
+                <div class="profile-information">
+                    <div class="profile-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="profile-role">
+                        <i class="bi bi-person-check me-1"></i>
+                        Teacher Account
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="{% url 'logout' %}" class="sidebar-logout">
+                <i class="bi bi-box-arrow-left"></i>
+                Sign Out
+            </a>
+
+        </div>
 
     </aside>
 
+    <!-- =========================
+         MAIN DASHBOARD
+    ========================== -->
 
-    <!-- ================= MAIN ================= -->
-
-    <main class="col-md-9 col-lg-10 px-md-4 py-4">
-
+    <main class="main-content">
 
         <!-- Header -->
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <header class="page-header">
 
             <div>
+                <div class="header-eyebrow">
+                    <i class="bi bi-stars"></i>
+                    Teacher Workspace
+                </div>
 
-                <h2 class="fw-bold mb-1">
+                <h1 class="page-title">
                     Teacher Dashboard
-                </h2>
+                </h1>
 
-                <p class="text-secondary mb-0">
-                    Manage academic information and monitor student performance.
+                <p class="page-description">
+                    Manage academic records, review student performance
+                    and identify students who may need additional support.
                 </p>
-
             </div>
 
+            <div class="header-user">
 
-            <div class="text-end">
-
-                <div class="fw-semibold">
-                    {{ request.user.get_full_name|default:request.user.username }}
+                <div class="header-user-avatar">
+                    {{ request.user.get_full_name|default:request.user.username|first|upper }}
                 </div>
 
-                <small class="text-secondary">
-                    Teacher
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= OVERVIEW ================= -->
-
-        <div class="row g-4 mb-4">
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card border-0 shadow-sm">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-
-                                <small class="text-secondary">
-                                    Students
-                                </small>
-
-                                <h3 class="fw-bold mt-2">
-                                    —
-                                </h3>
-
-                            </div>
-
-                            <div class="icon-box bg-primary-subtle text-primary">
-                                S
-                            </div>
-
-                        </div>
-
+                <div>
+                    <div class="header-user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
                     </div>
 
-                </div>
-
-            </div>
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card border-0 shadow-sm">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-
-                                <small class="text-secondary">
-                                    Attendance
-                                </small>
-
-                                <h3 class="fw-bold mt-2">
-                                    —
-                                </h3>
-
-                            </div>
-
-                            <div class="icon-box bg-success-subtle text-success">
-                                A
-                            </div>
-
-                        </div>
-
+                    <div class="header-user-role">
+                        <span class="online-dot"></span>
+                        Teacher
                     </div>
-
                 </div>
 
             </div>
 
+        </header>
 
-            <div class="col-sm-6 col-xl-3">
+        <!-- =========================
+             OVERVIEW METRICS
+        ========================== -->
 
-                <div class="card dashboard-card border-0 shadow-sm">
+        <section class="overview-grid" aria-labelledby="overviewTitle">
 
-                    <div class="card-body">
+            <div class="section-heading">
+                <div>
+                    <h2 id="overviewTitle" class="section-title">
+                        Overview
+                    </h2>
 
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-
-                                <small class="text-secondary">
-                                    Assignments
-                                </small>
-
-                                <h3 class="fw-bold mt-2">
-                                    —
-                                </h3>
-
-                            </div>
-
-                            <div class="icon-box bg-warning-subtle text-warning">
-                                As
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card border-0 shadow-sm">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-
-                                <small class="text-secondary">
-                                    Risk Alerts
-                                </small>
-
-                                <h3 class="fw-bold mt-2">
-                                    —
-                                </h3>
-
-                            </div>
-
-                            <div class="icon-box bg-danger-subtle text-danger">
-                                !
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-        </div>
-
-
-        <!-- ================= FUNCTIONS ================= -->
-
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body p-4">
-
-                <div class="mb-4">
-
-                    <h4 class="fw-bold mb-1">
-                        Teacher Functions
-                    </h4>
-
-                    <p class="text-secondary mb-0">
-                        Enter academic information and monitor student performance.
+                    <p class="section-description">
+                        A quick view of your academic workspace.
                     </p>
-
                 </div>
 
+                <span class="section-caption">
+                    Summary metrics
+                </span>
+            </div>
 
-                <div class="row g-4">
+            <div class="row g-3">
 
+                <!-- Students -->
+                <div class="col-6 col-xl-3">
+                    <article class="overview-card">
+                        <div class="overview-card-body">
 
-                    <!-- STUDENTS -->
+                            <div>
+                                <span class="overview-label">Students</span>
 
-<div class="col-md-6 col-xl-4"
-     id="students">
+                                <h3 class="overview-number">—</h3>
 
-    <div class="card function-card h-100 border-primary">
+                                <div class="overview-note">
+                                    <i class="bi bi-people"></i>
+                                    Student records
+                                </div>
+                            </div>
 
-        <div class="card-body">
+                            <div class="overview-icon icon-students">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
 
-            <span class="badge bg-primary mb-3">
-                Student Records
-            </span>
+                        </div>
+                    </article>
+                </div>
 
-            <h5 class="fw-bold">
-                View Students
-            </h5>
+                <!-- Attendance -->
+                <div class="col-6 col-xl-3">
+                    <article class="overview-card">
+                        <div class="overview-card-body">
 
-            <p class="text-secondary">
-                View student information and academic
-                details relevant to teaching.
-            </p>
+                            <div>
+                                <span class="overview-label">Attendance</span>
 
-            <a
-                href="{% url 'teacher_student_list' %}"
-                class="btn btn-primary btn-sm mt-2"
-            >
-                View Students
-            </a>
+                                <h3 class="overview-number">—</h3>
 
-        </div>
+                                <div class="overview-note">
+                                    <i class="bi bi-calendar-check"></i>
+                                    Attendance overview
+                                </div>
+                            </div>
 
-    </div>
+                            <div class="overview-icon icon-attendance">
+                                <i class="bi bi-calendar2-check-fill"></i>
+                            </div>
 
-</div>
+                        </div>
+                    </article>
+                </div>
 
+                <!-- Assignments -->
+                <div class="col-6 col-xl-3">
+                    <article class="overview-card">
+                        <div class="overview-card-body">
 
-                    <!-- ATTENDANCE -->
+                            <div>
+                                <span class="overview-label">Assignments</span>
 
-<div class="col-md-6 col-xl-4"
-     id="attendance">
+                                <h3 class="overview-number">—</h3>
 
-    <div class="card function-card h-100 border-success">
+                                <div class="overview-note">
+                                    <i class="bi bi-file-earmark-check"></i>
+                                    Assignment records
+                                </div>
+                            </div>
 
-        <div class="card-body">
+                            <div class="overview-icon icon-assignments">
+                                <i class="bi bi-journal-check"></i>
+                            </div>
 
-            <span class="badge bg-success mb-3">
-                Academic Data
-            </span>
+                        </div>
+                    </article>
+                </div>
 
-            <h5 class="fw-bold">
-                Enter Attendance
-            </h5>
+                <!-- Risk Alerts -->
+                <div class="col-6 col-xl-3">
+                    <article class="overview-card">
+                        <div class="overview-card-body">
 
-            <p class="text-secondary">
-                Record and update student attendance
-                information.
-            </p>
+                            <div>
+                                <span class="overview-label">Risk Alerts</span>
 
-            <a
-                href="{% url 'attendance_create' %}"
-                class="btn btn-success btn-sm mt-2"
-            >
-                Enter Attendance
-            </a>
+                                <h3 class="overview-number">—</h3>
 
-            <a
-    href="{% url 'attendance_list' %}"
-    class="btn btn-outline-secondary btn-sm mt-2"
->
-    View Records
-</a>
+                                <div class="overview-note">
+                                    <i class="bi bi-shield-exclamation"></i>
+                                    Early warnings
+                                </div>
+                            </div>
 
-        </div>
+                            <div class="overview-icon icon-alerts">
+                                <i class="bi bi-bell-fill"></i>
+                            </div>
 
-    </div>
-
-</div>
-
-
-<!-- MARKS -->
-
-<div class="col-md-6 col-xl-4"
-     id="marks">
-
-    <div class="card function-card h-100 border-info">
-
-        <div class="card-body">
-
-            <span class="badge bg-info text-dark mb-3">
-                Academic Data
-            </span>
-
-            <h5 class="fw-bold">
-                Enter Marks
-            </h5>
-
-            <p class="text-secondary">
-                Enter and manage student academic
-                performance and marks.
-            </p>
-
-            <a
-                href="{% url 'academic_performance_create' %}"
-                class="btn btn-info btn-sm mt-2"
-            >
-                Enter Performance
-            </a>
-
-            <a
-    href="{% url 'academic_performance_list' %}"
-    class="btn btn-outline-secondary btn-sm mt-2"
->
-    View Records
-</a>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-                    <!-- ASSIGNMENTS -->
-
-<div class="col-md-6 col-xl-4"
-     id="assignments">
-
-    <div class="card function-card h-100 border-warning">
-
-        <div class="card-body">
-
-            <span class="badge bg-warning text-dark mb-3">
-                Assignments
-            </span>
-
-            <h5 class="fw-bold">
-                Manage Assignments
-            </h5>
-
-            <p class="text-secondary">
-                Record assignment submissions,
-                performance and related information.
-            </p>
-
-            <a
-                href="{% url 'assignment_create' %}"
-                class="btn btn-warning btn-sm mt-2"
-            >
-                Add Assignment
-            </a>
-
-            <a
-                href="{% url 'assignment_list' %}"
-                class="btn btn-outline-secondary btn-sm mt-2"
-            >
-                View Records
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-                    <!-- EXAMS -->
-
-<div class="col-md-6 col-xl-4"
-     id="exams">
-
-    <div class="card function-card h-100 border-secondary">
-
-        <div class="card-body">
-
-            <span class="badge bg-secondary mb-3">
-                Examinations
-            </span>
-
-            <h5 class="fw-bold">
-                Examination Results
-            </h5>
-
-            <p class="text-secondary">
-                Enter and manage student examination
-                results.
-            </p>
-
-            <a href="{% url 'exam_result_create' %}"
-               class="btn btn-warning btn-sm mt-2">
-                Enter Result
-            </a>
-
-            <a href="{% url 'exam_result_list' %}"
-   class="btn btn-outline-secondary btn-sm mt-2">
-    View Records
-</a>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-                    <!-- RISK -->
-
-                    <div class="col-md-6 col-xl-4"
-                         id="risk">
-
-                        <div class="card function-card h-100 border-danger">
-
-                            <div class="card-body">
-
-                                <span class="badge bg-danger mb-3">
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =========================
+             TEACHER FUNCTIONS
+        ========================== -->
+
+        <section class="functions-section" aria-labelledby="functionsTitle">
+
+            <div class="section-heading functions-heading">
+
+                <div>
+                    <h2 id="functionsTitle" class="section-title">
+                        Teacher Functions
+                    </h2>
+
+                    <p class="section-description">
+                        Choose a module to manage academic information
+                        and support student success.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="row g-3 function-grid">
+
+                <!-- STUDENTS -->
+                <div class="col-md-6 col-xl-4" id="students">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-students"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon icon-students">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+
+                                <span class="function-badge badge-students">
+                                    Student Records
+                                </span>
+                            </div>
+
+                            <h3 class="function-title">
+                                View Students
+                            </h3>
+
+                            <p class="function-description">
+                                View student information and academic
+                                details relevant to teaching.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'teacher_student_list' %}"
+                                    class="function-btn function-btn-primary"
+                                >
+                                    <i class="bi bi-arrow-up-right-square"></i>
+                                    View Students
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+                <!-- ATTENDANCE -->
+                <div class="col-md-6 col-xl-4" id="attendance">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-attendance"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon icon-attendance">
+                                    <i class="bi bi-calendar2-check-fill"></i>
+                                </div>
+
+                                <span class="function-badge badge-academic">
+                                    Academic Data
+                                </span>
+                            </div>
+
+                            <h3 class="function-title">
+                                Enter Attendance
+                            </h3>
+
+                            <p class="function-description">
+                                Record and update student attendance
+                                information for academic monitoring.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'attendance_create' %}"
+                                    class="function-btn function-btn-success"
+                                >
+                                    <i class="bi bi-plus-circle"></i>
+                                    Enter Attendance
+                                </a>
+
+                                <a
+                                    href="{% url 'attendance_list' %}"
+                                    class="function-btn function-btn-outline"
+                                >
+                                    <i class="bi bi-list-ul"></i>
+                                    View Records
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+                <!-- MARKS -->
+                <div class="col-md-6 col-xl-4" id="marks">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-marks"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon icon-info"
+                                     style="color: var(--blue); background: var(--blue-bg);">
+                                    <i class="bi bi-journal-text"></i>
+                                </div>
+
+                                <span class="function-badge badge-marks">
+                                    Academic Data
+                                </span>
+                            </div>
+
+                            <h3 class="function-title">
+                                Enter Marks
+                            </h3>
+
+                            <p class="function-description">
+                                Record and manage student academic
+                                performance and internal assessment marks.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'academic_performance_create' %}"
+                                    class="function-btn function-btn-info"
+                                >
+                                    <i class="bi bi-pencil-square"></i>
+                                    Enter Performance
+                                </a>
+
+                                <a
+                                    href="{% url 'academic_performance_list' %}"
+                                    class="function-btn function-btn-outline"
+                                >
+                                    <i class="bi bi-list-ul"></i>
+                                    View Records
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+                <!-- ASSIGNMENTS -->
+                <div class="col-md-6 col-xl-4" id="assignments">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-assignments"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon icon-assignments">
+                                    <i class="bi bi-file-earmark-text-fill"></i>
+                                </div>
+
+                                <span class="function-badge badge-assignments">
+                                    Assignments
+                                </span>
+                            </div>
+
+                            <h3 class="function-title">
+                                Manage Assignments
+                            </h3>
+
+                            <p class="function-description">
+                                Record assignment submissions, marks
+                                and submission status for each student.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'assignment_create' %}"
+                                    class="function-btn function-btn-warning"
+                                >
+                                    <i class="bi bi-plus-circle"></i>
+                                    Add Assignment
+                                </a>
+
+                                <a
+                                    href="{% url 'assignment_list' %}"
+                                    class="function-btn function-btn-outline"
+                                >
+                                    <i class="bi bi-list-ul"></i>
+                                    View Records
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+                <!-- EXAMINATION RESULTS -->
+                <div class="col-md-6 col-xl-4" id="exams">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-exams"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon"
+                                     style="color: var(--purple); background: var(--purple-bg);">
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                </div>
+
+                                <span class="function-badge badge-exams">
+                                    Examinations
+                                </span>
+                            </div>
+
+                            <h3 class="function-title">
+                                Examination Results
+                            </h3>
+
+                            <p class="function-description">
+                                Enter and manage student examination
+                                results to track academic progress.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'exam_result_create' %}"
+                                    class="function-btn function-btn-purple"
+                                >
+                                    <i class="bi bi-plus-circle"></i>
+                                    Enter Result
+                                </a>
+
+                                <a
+                                    href="{% url 'exam_result_list' %}"
+                                    class="function-btn function-btn-outline"
+                                >
+                                    <i class="bi bi-list-ul"></i>
+                                    View Records
+                                </a>
+                            </div>
+
+                        </div>
+                    </article>
+                </div>
+
+                <!-- RISK SCORES -->
+                <div class="col-md-6 col-xl-4" id="risk">
+                    <article class="function-card">
+
+                        <div class="function-card-accent accent-risk"></div>
+
+                        <div class="function-card-body">
+
+                            <div class="function-card-top">
+                                <div class="function-icon"
+                                     style="color: #c2410c; background: #fff7ed;">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </div>
+
+                                <span class="function-badge badge-risk">
                                     AI Monitoring
                                 </span>
+                            </div>
 
-                                <h5 class="fw-bold">
+                            <h3 class="function-title">
+                                View Risk Scores
+                            </h3>
+
+                            <p class="function-description">
+                                Monitor dropout risk scores derived from
+                                attendance, academic performance, assignments
+                                and examination results.
+                            </p>
+
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'teacher_risk_scores' %}"
+                                    class="function-btn function-btn-warning"
+                                >
+                                    <i class="bi bi-activity"></i>
                                     View Risk Scores
-                                </h5>
-
-                                
-<p class="text-secondary">
-    Monitor dropout risk scores based on attendance, grades, assignments, and exams.
-</p>
-
-                                
-<a
-    href="{% url 'teacher_risk_scores' %}"
-    class="btn btn-danger btn-sm mt-2"
->
-    View Risk Scores
-</a>
-
-
+                                </a>
                             </div>
 
                         </div>
+                    </article>
+                </div>
 
-                    </div>
+                <!-- ALERTS -->
+                <div class="col-md-6 col-xl-4" id="alerts">
+                    <article class="function-card">
 
+                        <div class="function-card-accent accent-alerts"></div>
 
+                        <div class="function-card-body">
 
-<!-- ALERTS -->
+                            <div class="function-card-top">
+                                <div class="function-icon icon-alerts">
+                                    <i class="bi bi-bell-fill"></i>
+                                </div>
 
-<div class="col-md-6 col-xl-4">
+                                <span class="function-badge badge-alerts">
+                                    Early Warning
+                                </span>
+                            </div>
 
-    <div class="card function-card h-100 border-danger">
+                            <h3 class="function-title">
+                                View Alerts
+                            </h3>
 
-        <div class="card-body d-flex flex-column">
+                            <p class="function-description">
+                                Review students classified as High or Very
+                                High dropout risk who may require timely
+                                attention and intervention.
+                            </p>
 
-            <span class="badge bg-danger mb-3 align-self-start">
-                Early Warning
-            </span>
+                            <div class="priority-note">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
 
-            <h5 class="fw-bold">
-                View Alerts
-            </h5>
+                                <p>
+                                    Review high-priority risk alerts and
+                                    follow your institution's intervention process.
+                                </p>
+                            </div>
 
-            <p class="text-secondary">
-                View students with High and Very High dropout
-                risk who require attention.
-            </p>
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'teacher_alerts' %}"
+                                    class="function-btn function-btn-danger"
+                                >
+                                    <i class="bi bi-bell"></i>
+                                    View Alerts
+                                </a>
+                            </div>
 
-            <div class="mt-auto">
+                        </div>
+                    </article>
+                </div>
 
-                <a
-                    href="{% url 'teacher_alerts' %}"
-                    class="btn btn-danger"
-                >
-                    <i class="bi bi-bell me-1"></i>
-                    View Alerts
-                </a>
+                <!-- STUDENT SUPPORT -->
+                <div class="col-md-6 col-xl-4" id="support">
+                    <article class="function-card">
 
-            </div>
+                        <div class="function-card-accent accent-support"></div>
 
-        </div>
+                        <div class="function-card-body">
 
-    </div>
+                            <div class="function-card-top">
+                                <div class="function-icon"
+                                     style="color: #0e7490; background: #ecfeff;">
+                                    <i class="bi bi-person-hearts"></i>
+                                </div>
 
-</div>
+                                <span class="function-badge badge-support">
+                                    Student Support
+                                </span>
+                            </div>
 
+                            <h3 class="function-title">
+                                Support Students
+                            </h3>
 
-                    <!-- SUPPORT -->
+                            <p class="function-description">
+                                Identify students who may need academic
+                                guidance and review their support requirements.
+                            </p>
 
-<div class="col-md-6 col-xl-4">
+                            <div class="function-actions">
+                                <a
+                                    href="{% url 'teacher_student_support' %}"
+                                    class="function-btn"
+                                    style="color: #ffffff; border-color: #0e7490; background: #0e7490;"
+                                >
+                                    <i class="bi bi-person-hearts"></i>
+                                    View Students
+                                </a>
+                            </div>
 
-    <div class="card function-card h-100 border-primary">
-
-        <div class="card-body">
-
-            <span class="badge bg-primary mb-3">
-                Student Support
-            </span>
-
-            <h5 class="fw-bold">
-                Support Students
-            </h5>
-
-            <p class="text-secondary">
-                Monitor student performance and identify
-                students requiring academic support.
-            </p>
-
-            <a
-                href="{% url 'teacher_student_support' %}"
-                class="btn btn-primary mt-2"
-            >
-                <i class="bi bi-person-hearts me-1"></i>
-                View Students
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-
-
+                        </div>
+                    </article>
                 </div>
 
             </div>
+        </section>
 
-        </div>
+        <!-- Footer -->
+        <footer class="dashboard-footer">
 
+            <span class="footer-brand">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Dropout Risk Management System
+            </span>
+
+            <span>
+                Teacher Workspace
+            </span>
+
+        </footer>
 
     </main>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleButton = document.getElementById("mobileNavToggle");
+        const navigation = document.getElementById("teacherNavigation");
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+        if (!toggleButton || !navigation) {
+            return;
+        }
+
+        toggleButton.addEventListener("click", function () {
+            const isExpanded = navigation.classList.toggle("show");
+
+            toggleButton.setAttribute(
+                "aria-expanded",
+                String(isExpanded)
+            );
+
+            toggleButton.innerHTML = isExpanded
+                ? '<i class="bi bi-x-lg"></i>'
+                : '<i class="bi bi-list"></i>';
+        });
+
+        navigation.querySelectorAll('a[href^="#"]').forEach(function (link) {
+            link.addEventListener("click", function () {
+                if (window.innerWidth <= 767) {
+                    navigation.classList.remove("show");
+                    toggleButton.setAttribute("aria-expanded", "false");
+                    toggleButton.innerHTML = '<i class="bi bi-list"></i>';
+                }
+            });
+        });
+    });
 </script>
 
 </body>
-
 </html>

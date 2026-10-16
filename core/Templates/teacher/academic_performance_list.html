@@ -1,351 +1,1178 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Academic Performance Records</title>
+    <title>Academic Performance Records | Teacher Panel</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --teal: #0d9488;
+            --page-bg: #f4f8f7;
+            --surface: #ffffff;
+            --text-primary: #18352e;
+            --text-secondary: #74867f;
+            --border: #e2ece8;
+            --sidebar-bg: #102a27;
+            --sidebar-text: #c2d4d0;
+            --radius: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
 
         body {
+            margin: 0;
             min-height: 100vh;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
         }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Sidebar */
 
         .sidebar {
             min-height: 100vh;
+            padding: 26px 16px;
+            background:
+                radial-gradient(
+                    circle at 0% 0%,
+                    rgba(13, 148, 136, 0.15),
+                    transparent 35%
+                ),
+                var(--sidebar-bg);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 10px 28px;
+        }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: #ffffff;
+            font-size: 22px;
+            box-shadow: 0 8px 18px rgba(16, 185, 129, 0.2);
+        }
+
+        .brand-name {
+            margin: 0;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+        }
+
+        .brand-caption {
+            margin-top: 4px;
+            color: #8eaaa3;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-label {
+            padding: 0 12px;
+            margin: 13px 0 10px;
+            color: #78968e;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
         }
 
         .sidebar .nav-link {
-            color: rgba(255,255,255,.75);
-            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-bottom: 5px;
+            padding: 12px 13px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: var(--sidebar-text);
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.2s ease, color 0.2s ease;
         }
 
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: #fff;
-            background: rgba(255,255,255,.12);
+        .sidebar .nav-link i {
+            width: 20px;
+            font-size: 17px;
+            text-align: center;
         }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
+
+        .sidebar .nav-link.active {
+            border-color: rgba(52, 211, 153, 0.12);
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        .sidebar .nav-link.active i {
+            color: #6ee7b7;
+        }
+
+        .sidebar-bottom {
+            margin-top: 28px;
+            padding: 17px 12px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .sidebar-note {
+            color: #8eaaa3;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .sidebar-note i {
+            margin-right: 5px;
+            color: #6ee7b7;
+        }
+
+        .sidebar-logout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #d4e6e0;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-logout:hover {
+            border-color: rgba(251, 113, 133, 0.35);
+            background: rgba(251, 113, 133, 0.09);
+            color: #fda4af;
+        }
+
+        /* Mobile navigation */
+
+        .mobile-header {
+            display: none;
+        }
+
+        /* Main content */
+
+        .main-content {
+            min-width: 0;
+            padding: 30px 34px 36px;
+        }
+
+        .page-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 27px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 9px;
+            font-size: 11px;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: clamp(24px, 2.5vw, 31px);
+            font-weight: 800;
+            letter-spacing: -1.2px;
+        }
+
+        .page-subtitle {
+            margin: 9px 0 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .header-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 13px;
+            border: 1px solid #cdeee0;
+            border-radius: 11px;
+            background: #edfcf5;
+            color: #047857;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Intro panel */
+
+        .intro-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 18px 20px;
+            border: 1px solid #cdeee0;
+            border-radius: 15px;
+            background: linear-gradient(110deg, #effcf5, #f0fbfa);
+        }
+
+        .intro-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: #d1fae5;
+            color: #047857;
+            font-size: 21px;
+        }
+
+        .intro-title {
+            margin: 0 0 5px;
+            color: #145044;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .intro-text {
+            margin: 0;
+            color: #648078;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* Records card */
 
         .records-card {
-            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            box-shadow: 0 12px 32px rgba(20, 65, 57, 0.06);
         }
 
-        .table {
+        .records-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 23px 25px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .section-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: #e6f9ef;
+            color: #047857;
+            font-size: 19px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .section-description {
+            margin: 6px 0 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Buttons */
+
+        .btn-primary-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            padding: 10px 15px;
+            border: 1px solid var(--primary);
+            border-radius: 11px;
+            background: linear-gradient(135deg, #059669, #0d9488);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-custom:hover {
+            border-color: var(--primary-dark);
+            background: var(--primary-dark);
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 41px;
+            padding: 9px 14px;
+            border: 1px solid #dbe6e2;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #526b63;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary-custom:hover {
+            border-color: #b8dacf;
+            background: #f2faf6;
+            color: #047857;
+        }
+
+        /* Performance table */
+
+        .table-responsive {
+            width: 100%;
+        }
+
+        .performance-table {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 12px;
             vertical-align: middle;
         }
 
-        .btn {
-            border-radius: 10px;
+        .performance-table thead th {
+            padding: 15px 17px;
+            border-bottom: 1px solid var(--border);
+            background: #f7faf9;
+            color: #718680;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-    </style>
+        .performance-table tbody td {
+            padding: 17px;
+            border-bottom: 1px solid #edf2f0;
+        }
 
+        .performance-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .performance-table tbody tr {
+            transition: background 0.18s ease;
+        }
+
+        .performance-table tbody tr:hover {
+            background: #f7fcfa;
+        }
+
+        .row-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 29px;
+            height: 29px;
+            border: 1px solid #e0ebe6;
+            border-radius: 9px;
+            background: #f5f9f7;
+            color: #678077;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .student-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 155px;
+        }
+
+        .student-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 37px;
+            height: 37px;
+            flex-shrink: 0;
+            border: 1px solid #ccefe0;
+            border-radius: 12px;
+            background: #e6f9ef;
+            color: #047857;
+            font-size: 16px;
+        }
+
+        .student-name {
+            color: #24443a;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+
+        .subject-cell {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 115px;
+        }
+
+        .subject-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+            border: 1px solid #d8eae3;
+            border-radius: 9px;
+            background: #f1f8f4;
+            color: #16835e;
+            font-size: 14px;
+        }
+
+        .subject-name {
+            color: #49665b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .marks-value {
+            color: #24443a;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .marks-total {
+            color: #81928a;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .percentage-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 68px;
+            padding: 8px 10px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .performance-high {
+            border-color: #bde8d0;
+            background: #e8f9ef;
+            color: #087443;
+        }
+
+        .performance-medium {
+            border-color: #f0dba1;
+            background: #fff7df;
+            color: #92650b;
+        }
+
+        .performance-low {
+            border-color: #f2c9c9;
+            background: #fff0f0;
+            color: #bd3535;
+        }
+
+        .performance-na {
+            border-color: #dfe6e8;
+            background: #f3f6f7;
+            color: #6e7e84;
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            padding: 62px 24px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 19px;
+            border: 1px solid #d3eee2;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #effcf5, #e5f8f5);
+            color: #059669;
+            font-size: 32px;
+        }
+
+        .empty-title {
+            margin-bottom: 9px;
+            color: #24443a;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .empty-description {
+            max-width: 400px;
+            margin: 0 auto 23px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
+            color: #879790;
+            font-size: 10px;
+        }
+
+        .page-footer i {
+            margin-right: 5px;
+            color: var(--primary);
+        }
+
+        /* Responsive */
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                padding: 25px 22px;
+            }
+
+            .sidebar {
+                min-height: auto;
+            }
+
+            .records-header {
+                padding: 20px;
+            }
+
+            .performance-table thead th,
+            .performance-table tbody td {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 13px 17px;
+                border-bottom: 1px solid var(--border);
+                background: #ffffff;
+            }
+
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--text-primary);
+                font-size: 13px;
+                font-weight: 800;
+            }
+
+            .mobile-brand-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 11px;
+                background: linear-gradient(135deg, #10b981, #0d9488);
+                color: #ffffff;
+                font-size: 19px;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 39px;
+                height: 39px;
+                border: 1px solid var(--border);
+                border-radius: 11px;
+                background: #ffffff;
+                color: var(--primary-dark);
+                font-size: 20px;
+            }
+
+            .sidebar {
+                min-height: auto;
+                padding: 18px 15px;
+            }
+
+            .sidebar .brand {
+                display: none;
+            }
+
+            .sidebar-label {
+                margin-top: 6px;
+            }
+
+            .sidebar-bottom {
+                margin-top: 18px;
+            }
+
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .page-topbar {
+                align-items: flex-start;
+                margin-bottom: 22px;
+            }
+
+            .page-title {
+                font-size: 25px;
+            }
+
+            .header-role {
+                display: none;
+            }
+
+            .intro-strip {
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .records-header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 18px;
+            }
+
+            .records-header .btn-primary-custom {
+                width: 100%;
+            }
+
+            .empty-state {
+                padding: 46px 18px;
+            }
+
+            .page-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container-fluid">
+    <!-- Mobile navigation -->
+    <div class="mobile-header">
+        <div class="mobile-brand">
+            <span class="mobile-brand-icon">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
+            <span>Teacher Panel</span>
+        </div>
 
-    <div class="row">
+        <button
+            class="mobile-menu-btn"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#teacherSidebar"
+            aria-controls="teacherSidebar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
 
-        <!-- ================= SIDEBAR ================= -->
+    <div class="container-fluid">
+        <div class="row">
 
-        <aside class="col-md-3 col-lg-2 bg-dark text-white sidebar p-3">
-
-            <h5 class="fw-bold mb-4">
-                Student Risk
-            </h5>
-
-            <div class="text-white-50 small mb-3">
-                TEACHER
-            </div>
-
-            <nav class="nav flex-column">
-
-                <a
-                    href="{% url 'teacher_dashboard' %}"
-                    class="nav-link"
-                >
-                    Dashboard
-                </a>
-
-                <a
-                    href="{% url 'attendance_create' %}"
-                    class="nav-link"
-                >
-                    Attendance
-                </a>
-
-                <a
-                    href="{% url 'academic_performance_create' %}"
-                    class="nav-link"
-                >
-                    Enter Performance
-                </a>
-
-                <a
-                    href="{% url 'academic_performance_list' %}"
-                    class="nav-link active"
-                >
-                    Performance Records
-                </a>
-
-            </nav>
-
-            <hr class="border-secondary">
-
-            <a
-                href="{% url 'logout' %}"
-                class="btn btn-outline-light btn-sm w-100"
+            <!-- Sidebar -->
+            <aside
+                class="col-md-3 col-lg-2 sidebar collapse d-md-block"
+                id="teacherSidebar"
             >
-                Logout
-            </a>
-
-        </aside>
-
-
-        <!-- ================= MAIN CONTENT ================= -->
-
-        <main class="col-md-9 col-lg-10 px-md-4 py-4">
-
-            <!-- Header -->
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <div>
-
-                    <h2 class="fw-bold mb-1">
-                        Academic Performance
-                    </h2>
-
-                    <p class="text-secondary mb-0">
-                        View academic performance records entered by you.
-                    </p>
-
-                </div>
-
-                <div class="text-end">
-
-                    <div class="fw-semibold">
-                        {{ request.user.get_full_name|default:request.user.username }}
+                <div class="brand">
+                    <div class="brand-icon">
+                        <i class="bi bi-mortarboard-fill"></i>
                     </div>
 
-                    <small class="text-secondary">
-                        Teacher
-                    </small>
-
+                    <div>
+                        <h1 class="brand-name">Teacher Panel</h1>
+                        <div class="brand-caption">Academic Management</div>
+                    </div>
                 </div>
 
-            </div>
+                <div class="sidebar-label">Workspace</div>
 
+                <nav class="nav flex-column" aria-label="Teacher navigation">
 
-            <!-- Messages -->
-
-            {% if messages %}
-
-                {% for message in messages %}
-
-                    <div
-                        class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
-                        role="alert"
+                    <a
+                        href="{% url 'teacher_dashboard' %}"
+                        class="nav-link"
                     >
+                        <i class="bi bi-grid-1x2"></i>
+                        <span>Dashboard</span>
+                    </a>
 
-                        {{ message }}
+                    <a
+                        href="{% url 'teacher_student_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-people"></i>
+                        <span>Students</span>
+                    </a>
 
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="alert"
-                            aria-label="Close"
-                        ></button>
+                    <a
+                        href="{% url 'attendance_create' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-calendar2-check"></i>
+                        <span>Attendance</span>
+                    </a>
 
+                    <a
+                        href="{% url 'academic_performance_create' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-journal-plus"></i>
+                        <span>Enter Performance</span>
+                    </a>
+
+                    <a
+                        href="{% url 'academic_performance_list' %}"
+                        class="nav-link active"
+                        aria-current="page"
+                    >
+                        <i class="bi bi-journal-check"></i>
+                        <span>Performance Records</span>
+                    </a>
+
+                    <a
+                        href="{% url 'assignment_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Assignments</span>
+                    </a>
+
+                    <a
+                        href="{% url 'exam_result_list' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-clipboard2-data"></i>
+                        <span>Examination Results</span>
+                    </a>
+
+                </nav>
+
+                <div class="sidebar-label">Student Support</div>
+
+                <nav class="nav flex-column" aria-label="Student support navigation">
+
+                    <a
+                        href="{% url 'teacher_risk_scores' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <span>Risk Scores</span>
+                    </a>
+
+                    <a
+                        href="{% url 'teacher_alerts' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-bell"></i>
+                        <span>Alerts</span>
+                    </a>
+
+                    <a
+                        href="{% url 'teacher_student_support' %}"
+                        class="nav-link"
+                    >
+                        <i class="bi bi-heart-pulse"></i>
+                        <span>Student Support</span>
+                    </a>
+
+                </nav>
+
+                <div class="sidebar-bottom">
+                    <div class="sidebar-note">
+                        <i class="bi bi-shield-check"></i>
+                        Keep academic records accurate and student information secure.
                     </div>
 
-                {% endfor %}
+                    <a
+                        href="{% url 'logout' %}"
+                        class="sidebar-logout"
+                    >
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
+                </div>
+            </aside>
 
-            {% endif %}
+            <!-- Main content -->
+            <main class="col-md-9 col-lg-10 main-content">
 
+                <!-- Page header -->
+                <div class="page-topbar">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'teacher_dashboard' %}">
+                                        Dashboard
+                                    </a>
+                                </li>
 
-            <!-- Records Card -->
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Academic Performance Records
+                                </li>
+                            </ol>
+                        </nav>
 
-            <div class="card records-card border-0 shadow-sm">
+                        <h2 class="page-title">Academic Performance</h2>
 
-                <div class="card-body p-4">
+                        <p class="page-subtitle">
+                            Review subject-wise internal marks entered by you and
+                            understand each student's recorded performance.
+                        </p>
+                    </div>
 
-                    <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="header-role">
+                        <i class="bi bi-person-workspace"></i>
+                        Teacher Workspace
+                    </span>
+                </div>
 
-                        <div>
+                <!-- Intro panel -->
+                <section class="intro-strip">
+                    <div class="intro-icon">
+                        <i class="bi bi-journal-check"></i>
+                    </div>
 
-                            <h4 class="fw-bold mb-1">
-                                Performance Records
-                            </h4>
+                    <div>
+                        <h3 class="intro-title">Academic Performance Overview</h3>
+                        <p class="intro-text">
+                            Review student records, compare internal marks with the
+                            maximum marks, and identify performance levels using
+                            your existing percentage thresholds.
+                        </p>
+                    </div>
+                </section>
 
-                            <p class="text-secondary mb-0">
-                                Student subject performance entered by you.
-                            </p>
+                <!-- Django messages -->
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div
+                                class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                                role="alert"
+                            >
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                {{ message }}
 
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="alert"
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Performance records card -->
+                <section class="records-card">
+
+                    <div class="records-header">
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="bi bi-table"></i>
+                            </div>
+
+                            <div>
+                                <h3 class="section-title">Performance Records</h3>
+
+                                <p class="section-description">
+                                    Student subject performance entered by you.
+                                </p>
+                            </div>
                         </div>
 
                         <a
                             href="{% url 'academic_performance_create' %}"
-                            class="btn btn-primary"
+                            class="btn-primary-custom"
                         >
-                            + Add Performance
+                            <i class="bi bi-plus-lg"></i>
+                            Add Performance
                         </a>
-
                     </div>
-
 
                     {% if performance_records %}
 
                         <div class="table-responsive">
-
-                            <table class="table table-hover">
+                            <table class="table performance-table">
 
                                 <thead>
-
                                     <tr>
-
-                                        <th>#</th>
-
-                                        <th>Student</th>
-
-                                        <th>Subject</th>
-
-                                        <th>Internal Marks</th>
-
-                                        <th>Total Marks</th>
-
-                                        <th>Performance</th>
-
+                                        <th scope="col">#</th>
+                                        <th scope="col">Student</th>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">Internal Marks</th>
+                                        <th scope="col">Total Marks</th>
+                                        <th scope="col">Performance</th>
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
-
                                     {% for record in performance_records %}
-
                                         <tr>
 
                                             <td>
-                                                {{ forloop.counter }}
+                                                <span class="row-number">
+                                                    {{ forloop.counter }}
+                                                </span>
                                             </td>
 
-                                            <td class="fw-semibold">
-                                                {{ record.student }}
-                                            </td>
-
+                                            <!-- Student -->
                                             <td>
-                                                {{ record.subject }}
+                                                <div class="student-cell">
+                                                    <div class="student-avatar">
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+
+                                                    <span class="student-name">
+                                                        {{ record.student }}
+                                                    </span>
+                                                </div>
                                             </td>
 
+                                            <!-- Subject -->
                                             <td>
-                                                {{ record.internal_marks }}
+                                                <div class="subject-cell">
+                                                    <div class="subject-icon">
+                                                        <i class="bi bi-journal-text"></i>
+                                                    </div>
+
+                                                    <span class="subject-name">
+                                                        {{ record.subject }}
+                                                    </span>
+                                                </div>
                                             </td>
 
+                                            <!-- Internal marks -->
                                             <td>
-                                                {{ record.total_internal_marks }}
+                                                <span class="marks-value">
+                                                    {{ record.internal_marks }}
+                                                </span>
                                             </td>
 
+                                            <!-- Total marks -->
                                             <td>
+                                                <span class="marks-value">
+                                                    {{ record.total_internal_marks }}
+                                                </span>
+                                            </td>
 
+                                            <!-- Performance percentage -->
+                                            <td>
                                                 {% if record.total_internal_marks > 0 %}
 
                                                     {% widthratio record.internal_marks record.total_internal_marks 100 as percentage %}
 
                                                     {% if percentage >= 75 %}
-
-                                                        <span class="badge bg-success">
+                                                        <span class="percentage-badge performance-high">
+                                                            <i class="bi bi-graph-up-arrow me-1"></i>
                                                             {{ percentage }}%
                                                         </span>
 
                                                     {% elif percentage >= 50 %}
-
-                                                        <span class="badge bg-warning text-dark">
+                                                        <span class="percentage-badge performance-medium">
+                                                            <i class="bi bi-dash-circle me-1"></i>
                                                             {{ percentage }}%
                                                         </span>
 
                                                     {% else %}
-
-                                                        <span class="badge bg-danger">
+                                                        <span class="percentage-badge performance-low">
+                                                            <i class="bi bi-graph-down-arrow me-1"></i>
                                                             {{ percentage }}%
                                                         </span>
-
                                                     {% endif %}
 
                                                 {% else %}
 
-                                                    <span class="badge bg-secondary">
+                                                    <span class="percentage-badge performance-na">
+                                                        <i class="bi bi-dash-circle me-1"></i>
                                                         N/A
                                                     </span>
 
                                                 {% endif %}
-
                                             </td>
 
                                         </tr>
-
                                     {% endfor %}
-
                                 </tbody>
 
                             </table>
-
                         </div>
 
                     {% else %}
 
-                        <div class="text-center py-5">
+                        <!-- Empty state -->
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="bi bi-journal-x"></i>
+                            </div>
 
-                            <h5 class="fw-semibold">
-                                No Performance Records
-                            </h5>
+                            <h3 class="empty-title">
+                                No Performance Records Yet
+                            </h3>
 
-                            <p class="text-secondary">
-                                You have not entered any academic-performance
-                                records yet.
+                            <p class="empty-description">
+                                You haven't entered any academic performance records yet.
+                                Add your first record to begin maintaining subject-wise
+                                internal marks for your students.
                             </p>
 
                             <a
                                 href="{% url 'academic_performance_create' %}"
-                                class="btn btn-primary"
+                                class="btn-primary-custom"
                             >
+                                <i class="bi bi-plus-lg"></i>
                                 Enter Performance
                             </a>
-
                         </div>
 
                     {% endif %}
 
+                </section>
+
+                <!-- Bottom action -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mt-4">
+                    <a
+                        href="{% url 'teacher_dashboard' %}"
+                        class="btn-secondary-custom"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
                 </div>
 
-            </div>
+                <!-- Footer -->
+                <footer class="page-footer">
+                    <span>
+                        <i class="bi bi-mortarboard"></i>
+                        Teacher Academic Management
+                    </span>
 
-        </main>
+                    <span>
+                        Student Dropout Risk Management System
+                    </span>
+                </footer>
 
+            </main>
+        </div>
     </div>
 
-</div>
-
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
 
 </body>
-
 </html>

@@ -7,217 +7,1995 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Student Support | Teacher Dashboard</title>
+    <title>Student Support | Teacher Workspace</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         rel="stylesheet"
     >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --teacher-950: #102a2a;
+            --teacher-900: #153b38;
+            --teacher-800: #20534c;
+            --teacher-700: #0f766e;
+            --teacher-600: #0d9488;
+            --teacher-500: #14b8a6;
+            --teacher-100: #ccfbf1;
+            --teacher-50: #f0fdfa;
+
+            --page-bg: #f4f8f7;
+            --surface: #ffffff;
+            --text-primary: #172e32;
+            --text-secondary: #73848a;
+            --border: #e2eae9;
+
+            --success: #15803d;
+            --success-bg: #f0fdf4;
+            --success-border: #bbf7d0;
+
+            --warning: #b45309;
+            --warning-bg: #fffbeb;
+            --warning-border: #fde68a;
+
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+
+            --blue: #1d4ed8;
+            --blue-bg: #eff6ff;
+            --blue-border: #bfdbfe;
+
+            --cyan: #0e7490;
+            --cyan-bg: #ecfeff;
+            --cyan-border: #a5f3fc;
+
+            --neutral: #64748b;
+            --neutral-bg: #f8fafc;
+            --neutral-border: #e2e8f0;
+
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-card: 0 8px 28px rgba(20, 55, 53, 0.045);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a,
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* =========================
+           APPLICATION LAYOUT
+        ========================= */
+
+        .app-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 255px minmax(0, 1fr);
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 25px 17px 18px;
+            color: #ffffff;
+            background: linear-gradient(
+                180deg,
+                var(--teacher-950) 0%,
+                var(--teacher-900) 60%,
+                #164741 100%
+            );
+            scrollbar-width: thin;
+            scrollbar-color: #38615b transparent;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            padding: 0 8px;
+            margin-bottom: 33px;
+            color: #ffffff;
+        }
+
+        .sidebar-brand:hover {
+            color: #ffffff;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 13px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #14b8a6, #0f766e);
+            box-shadow: 0 5px 15px rgba(20, 184, 166, 0.17);
+            font-size: 20px;
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            line-height: 1.4;
+        }
+
+        .brand-caption {
+            display: block;
+            margin-top: 4px;
+            color: #9fc2bb;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-section-label {
+            padding: 0 12px;
+            margin: 0 0 11px;
+            color: #89aca5;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .sidebar-link {
+            min-height: 43px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: #c3d8d3;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 500;
+            transition:
+                color 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+        .sidebar-link i {
+            width: 19px;
+            flex-shrink: 0;
+            color: #8eb9af;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .sidebar-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .sidebar-link:hover i {
+            color: #5eead4;
+        }
+
+        .sidebar-link.active {
+            border-color: rgba(94, 234, 212, 0.12);
+            color: #ffffff;
+            background: rgba(20, 184, 166, 0.17);
+            font-weight: 700;
+        }
+
+        .sidebar-link.active i {
+            color: #5eead4;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            margin: 20px 5px;
+            border: 0;
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        .sidebar-spacer {
+            flex: 1;
+            min-height: 22px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 9px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 11px;
+            color: #ffffff;
+            background: rgba(20, 184, 166, 0.22);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .profile-information {
+            min-width: 0;
+        }
+
+        .profile-name {
+            overflow: hidden;
+            margin-bottom: 4px;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .profile-role {
+            color: #a6c8c0;
+            font-size: 10px;
+        }
+
+        .sidebar-logout {
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            color: #d7e8e3;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-logout i {
+            font-size: 16px;
+        }
+
+        .sidebar-logout:hover {
+            border-color: rgba(252, 165, 165, 0.2);
+            color: #fecaca;
+            background: rgba(220, 38, 38, 0.10);
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .main-content {
+            min-width: 0;
+            padding: 32px 34px 26px;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 23px;
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--teacher-700);
+            font-weight: 600;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--teacher-800);
+        }
+
+        .breadcrumb-nav i {
+            color: #a1b2b1;
+            font-size: 10px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        .header-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 9px;
+            color: var(--teacher-700);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .page-title {
+            margin: 0 0 8px;
+            color: var(--teacher-950);
+            font-size: clamp(25px, 3vw, 32px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.25;
+        }
+
+        .page-description {
+            max-width: 680px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.85;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+            padding: 10px 13px;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #ffffff;
+        }
+
+        .header-user-avatar {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            color: var(--teacher-800);
+            background: var(--teacher-100);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .header-user-name {
+            max-width: 190px;
+            overflow: hidden;
+            margin-bottom: 4px;
+            color: var(--teacher-950);
+            font-size: 11px;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .header-user-role {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .online-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        /* =========================
+           RISK SUMMARY CARDS
+        ========================= */
+
+        .summary-section {
+            margin-bottom: 30px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            margin: 0 0 5px;
+            color: var(--teacher-950);
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .section-description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.75;
+        }
+
+        .section-caption {
+            color: #929fa6;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .summary-card {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: #ffffff;
+            box-shadow: var(--shadow-card);
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .summary-card:hover {
+            box-shadow: 0 12px 28px rgba(20, 55, 53, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .summary-card-body {
+            min-height: 138px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 13px;
+            padding: 21px;
+        }
+
+        .summary-label {
+            display: block;
+            margin-bottom: 13px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .summary-number {
+            margin: 0 0 9px;
+            color: var(--teacher-950);
+            font-size: 31px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .summary-note {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #89979c;
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .summary-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 14px;
+            font-size: 21px;
+        }
+
+        .summary-card-total .summary-icon {
+            color: var(--teacher-700);
+            background: var(--teacher-50);
+        }
+
+        .summary-card-medium {
+            border-top: 3px solid #d97706;
+        }
+
+        .summary-card-medium .summary-icon {
+            color: var(--warning);
+            background: var(--warning-bg);
+        }
+
+        .summary-card-high {
+            border-top: 3px solid #dc2626;
+        }
+
+        .summary-card-high .summary-icon {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .summary-card-very-high {
+            border-top: 3px solid #7f1d1d;
+        }
+
+        .summary-card-very-high .summary-icon {
+            color: #991b1b;
+            background: #fff1f2;
+        }
+
+        .summary-card-medium .summary-number {
+            color: #b45309;
+        }
+
+        .summary-card-high .summary-number {
+            color: #b91c1c;
+        }
+
+        .summary-card-very-high .summary-number {
+            color: #7f1d1d;
+        }
+
+        /* =========================
+           SUPPORT DIRECTORY
+        ========================= */
+
+        .directory-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: #ffffff;
+            box-shadow: var(--shadow-card);
+        }
+
+        .directory-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .directory-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .directory-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 13px;
+            color: var(--teacher-700);
+            background: var(--teacher-50);
+            font-size: 19px;
+        }
+
+        .directory-title {
+            margin: 0 0 5px;
+            color: var(--teacher-950);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .directory-subtitle {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .directory-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 10px;
+            border: 1px solid #ccfbf1;
+            border-radius: 9px;
+            color: var(--teacher-700);
+            background: var(--teacher-50);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        /* Table */
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #bed5d0 #f5f8f7;
+        }
+
+        .support-table {
+            width: 100%;
+            min-width: 890px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            vertical-align: middle;
+        }
+
+        .support-table thead th {
+            padding: 15px 17px;
+            border-bottom: 1px solid var(--border);
+            color: #72858a;
+            background: #f8fbfa;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.55px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .support-table thead th:first-child {
+            padding-left: 24px;
+        }
+
+        .support-table thead th:last-child {
+            padding-right: 24px;
+        }
+
+        .support-table tbody td {
+            padding: 17px;
+            border-bottom: 1px solid #edf2f1;
+            color: #465b60;
+            background: #ffffff;
+            font-size: 11px;
+            line-height: 1.7;
+            transition: background 0.15s ease;
+        }
+
+        .support-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .support-table tbody tr:hover td {
+            background: #f8fcfb;
+        }
+
+        .support-table tbody td:first-child {
+            padding-left: 24px;
+        }
+
+        .support-table tbody td:last-child {
+            padding-right: 24px;
+        }
+
+        /* Student Identity */
+
+        .student-id-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border: 1px solid #bfeae1;
+            border-radius: 7px;
+            color: var(--teacher-800);
+            background: var(--teacher-50);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .student-identity {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 175px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #c9ece5;
+            border-radius: 12px;
+            color: var(--teacher-800);
+            background: linear-gradient(145deg, #f0fdfa, #ccfbf1);
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .student-name {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--teacher-950);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .student-name-caption {
+            display: block;
+            color: #9aa9ab;
+            font-size: 10px;
+        }
+
+        /* Risk Scores */
+
+        .risk-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #344b4e;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .risk-score i {
+            color: #94a3a7;
+            font-size: 12px;
+        }
+
+        .risk-level {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .risk-level::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .risk-medium {
+            color: #92400e;
+            border-color: var(--warning-border);
+            background: var(--warning-bg);
+        }
+
+        .risk-high {
+            color: #b91c1c;
+            border-color: var(--danger-border);
+            background: var(--danger-bg);
+        }
+
+        .risk-very-high {
+            color: #7f1d1d;
+            border-color: #fecaca;
+            background: #fff1f2;
+        }
+
+        /* Support Status */
+
+        .support-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .status-pending {
+            color: #92400e;
+            border-color: var(--warning-border);
+            background: var(--warning-bg);
+        }
+
+        .status-accepted {
+            color: #1d4ed8;
+            border-color: var(--blue-border);
+            background: var(--blue-bg);
+        }
+
+        .status-progress {
+            color: #0e7490;
+            border-color: var(--cyan-border);
+            background: var(--cyan-bg);
+        }
+
+        .status-completed {
+            color: #166534;
+            border-color: var(--success-border);
+            background: var(--success-bg);
+        }
+
+        .status-follow-up {
+            color: #b91c1c;
+            border-color: var(--danger-border);
+            background: var(--danger-bg);
+        }
+
+        .status-not-referred {
+            color: #536273;
+            border-color: var(--neutral-border);
+            background: var(--neutral-bg);
+        }
+
+        /* Report Button */
+
+        .report-btn {
+            min-height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 9px 12px;
+            border: 1px solid var(--teacher-700);
+            border-radius: 9px;
+            color: #ffffff;
+            background: var(--teacher-700);
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.18s ease;
+        }
+
+        .report-btn:hover {
+            border-color: var(--teacher-800);
+            color: #ffffff;
+            background: var(--teacher-800);
+            box-shadow: 0 4px 10px rgba(15, 118, 110, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .report-btn i {
+            font-size: 13px;
+        }
+
+        /* =========================
+           EMPTY STATE
+        ========================= */
+
+        .empty-state {
+            padding: 63px 24px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 1px solid #bbf7d0;
+            border-radius: 23px;
+            color: #15803d;
+            background: #f0fdf4;
+            font-size: 31px;
+        }
+
+        .empty-title {
+            margin: 0 0 9px;
+            color: var(--teacher-950);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .empty-description {
+            max-width: 460px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        /* =========================
+           INFORMATION FOOTER
+        ========================= */
+
+        .information-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 17px;
+            padding: 14px 15px;
+            border: 1px solid #cde6e0;
+            border-radius: 12px;
+            color: #386761;
+            background: #f0faf7;
+        }
+
+        .information-note > i {
+            flex-shrink: 0;
+            margin-top: 2px;
+            color: var(--teacher-700);
+            font-size: 15px;
+        }
+
+        .information-note p {
+            margin: 0;
+            font-size: 10px;
+            line-height: 1.85;
+        }
+
+        .bottom-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 22px;
+        }
+
+        .bottom-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #8a9a9c;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .bottom-note i {
+            color: var(--teacher-700);
+            font-size: 14px;
+        }
+
+        .btn-back {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 1px solid #d7e4e1;
+            border-radius: 10px;
+            color: #425b5d;
+            background: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.18s ease;
+        }
+
+        .btn-back:hover {
+            border-color: #9fcfc4;
+            color: var(--teacher-800);
+            background: var(--teacher-50);
+        }
+
+        .dashboard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 22px;
+            margin-top: 27px;
+            border-top: 1px solid var(--border);
+            color: #8b9b9e;
+            font-size: 10px;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .footer-brand i {
+            color: var(--teacher-700);
+            font-size: 13px;
+        }
+
+        /* Accessibility */
+
+        .sidebar-link:focus-visible,
+        .sidebar-logout:focus-visible,
+        .report-btn:focus-visible,
+        .btn-back:focus-visible,
+        .mobile-nav-toggle:focus-visible {
+            outline: 3px solid #5eead4;
+            outline-offset: 3px;
+        }
+
+        /* =========================
+           MOBILE NAVIGATION
+        ========================= */
+
+        .sidebar-mobile-header {
+            display: none;
+        }
+
+        .mobile-nav-toggle {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 19px;
+            cursor: pointer;
+        }
+
+        .mobile-nav-toggle:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        @media (max-width: 1199.98px) {
+            .app-shell {
+                grid-template-columns: 230px minmax(0, 1fr);
+            }
+
+            .main-content {
+                padding: 27px 24px 24px;
+            }
+
+            .summary-card-body {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .page-header {
+                flex-direction: column;
+                gap: 17px;
+            }
+
+            .header-user {
+                width: 100%;
+            }
+
+            .header-user-name {
+                max-width: calc(100vw - 130px);
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .app-shell {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: relative;
+                top: auto;
+                width: 100%;
+                height: auto;
+                min-height: auto;
+                overflow: visible;
+                padding: 13px 16px;
+            }
+
+            .sidebar-mobile-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .sidebar-brand {
+                margin: 0;
+                padding: 0;
+            }
+
+            .brand-mark {
+                width: 38px;
+                height: 38px;
+            }
+
+            .sidebar-navigation {
+                display: none;
+                padding-top: 19px;
+            }
+
+            .sidebar-navigation.show {
+                display: block;
+            }
+
+            .sidebar-section-label {
+                margin-top: 4px;
+            }
+
+            .sidebar-nav {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .sidebar-link {
+                min-height: 40px;
+                gap: 9px;
+                padding: 10px;
+                font-size: 11px;
+            }
+
+            .sidebar-link i {
+                width: 17px;
+                font-size: 15px;
+            }
+
+            .sidebar-divider {
+                margin: 14px 3px;
+            }
+
+            .sidebar-spacer {
+                display: none;
+            }
+
+            .sidebar-profile {
+                margin-top: 17px;
+                margin-bottom: 10px;
+            }
+
+            .main-content {
+                width: 100%;
+                padding: 25px 18px 22px;
+            }
+
+            .page-header {
+                margin-bottom: 23px;
+            }
+
+            .directory-header {
+                padding: 18px;
+            }
+
+            .support-table thead th:first-child,
+            .support-table tbody td:first-child {
+                padding-left: 18px;
+            }
+
+            .support-table thead th:last-child,
+            .support-table tbody td:last-child {
+                padding-right: 18px;
+            }
+
+            .empty-state {
+                padding: 48px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .main-content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .sidebar-nav {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sidebar-link {
+                min-height: 42px;
+                font-size: 10px;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .summary-card-body {
+                min-height: 123px;
+                gap: 8px;
+                padding: 14px;
+            }
+
+            .summary-label {
+                font-size: 10px;
+            }
+
+            .summary-number {
+                font-size: 26px;
+            }
+
+            .summary-note {
+                font-size: 9px;
+            }
+
+            .summary-icon {
+                width: 35px;
+                height: 35px;
+                border-radius: 11px;
+                font-size: 17px;
+            }
+
+            .directory-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 13px;
+            }
+
+            .directory-label {
+                margin-left: 54px;
+            }
+
+            .bottom-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .btn-back {
+                align-self: flex-start;
+            }
+
+            .dashboard-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .empty-icon {
+                width: 65px;
+                height: 65px;
+                border-radius: 20px;
+                font-size: 27px;
+            }
+
+            .empty-title {
+                font-size: 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-    <div class="container py-5">
+<div class="app-shell">
 
-        <!-- PAGE HEADER -->
-        <div class="d-flex flex-wrap justify-content-between
-                    align-items-center gap-3 mb-4">
+    <!-- =========================
+         TEACHER SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <!-- Mobile Navigation Header -->
+        <div class="sidebar-mobile-header">
+
+            <a
+                href="{% url 'teacher_dashboard' %}"
+                class="sidebar-brand"
+            >
+                <span class="brand-mark">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </span>
+
+                <span>
+                    <span class="brand-name">Student Risk</span>
+                    <span class="brand-caption">Teacher Workspace</span>
+                </span>
+            </a>
+
+            <button
+                type="button"
+                class="mobile-nav-toggle"
+                id="mobileNavToggle"
+                aria-label="Toggle teacher navigation"
+                aria-controls="teacherNavigation"
+                aria-expanded="false"
+            >
+                <i class="bi bi-list"></i>
+            </button>
+
+        </div>
+
+        <!-- Desktop Brand -->
+        <a
+            href="{% url 'teacher_dashboard' %}"
+            class="sidebar-brand d-none d-md-flex"
+        >
+            <span class="brand-mark">
+                <i class="bi bi-mortarboard-fill"></i>
+            </span>
+
+            <span>
+                <span class="brand-name">Student Risk</span>
+                <span class="brand-caption">Teacher Workspace</span>
+            </span>
+        </a>
+
+        <div class="sidebar-navigation" id="teacherNavigation">
+
+            <div class="sidebar-section-label">
+                Workspace
+            </div>
+
+            <nav aria-label="Teacher navigation">
+                <ul class="sidebar-nav">
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_dashboard' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-grid-1x2-fill"></i>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_student_list' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-people-fill"></i>
+                            Students
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'attendance_create' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-calendar2-check"></i>
+                            Attendance
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'academic_performance_create' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-journal-text"></i>
+                            Marks
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'assignment_create' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-file-earmark-text"></i>
+                            Assignments
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'exam_result_list' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-mortarboard"></i>
+                            Examination Results
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-section-label">
+                Risk Monitoring
+            </div>
+
+            <nav aria-label="Risk monitoring navigation">
+                <ul class="sidebar-nav">
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_risk_scores' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-graph-up-arrow"></i>
+                            Risk Scores
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="{% url 'teacher_alerts' %}"
+                            class="sidebar-link"
+                        >
+                            <i class="bi bi-bell"></i>
+                            Alerts
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-section-label">
+                Student Support
+            </div>
+
+            <nav aria-label="Student support navigation">
+                <ul class="sidebar-nav">
+                    <li>
+                        <a
+                            href="{% url 'teacher_student_support' %}"
+                            class="sidebar-link active"
+                            aria-current="page"
+                        >
+                            <i class="bi bi-person-hearts"></i>
+                            Support Students
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-spacer"></div>
+
+            <!-- Signed-In Teacher -->
+            <div class="sidebar-profile">
+
+                <div class="profile-avatar">
+                    {{ request.user.get_full_name|default:request.user.username|first|upper }}
+                </div>
+
+                <div class="profile-information">
+                    <div class="profile-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="profile-role">
+                        <i class="bi bi-person-check me-1"></i>
+                        Teacher Account
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="{% url 'logout' %}" class="sidebar-logout">
+                <i class="bi bi-box-arrow-left"></i>
+                Sign Out
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="{% url 'teacher_dashboard' %}">
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Student Support</span>
+        </nav>
+
+        <!-- Page Header -->
+        <header class="page-header">
 
             <div>
-                <h2 class="fw-bold mb-1">
-                    <i class="bi bi-person-hearts text-primary me-2"></i>
-                    Student Support
-                </h2>
+                <div class="header-eyebrow">
+                    <i class="bi bi-person-hearts"></i>
+                    Student Wellbeing
+                </div>
 
-                <p class="text-secondary mb-0">
-                    Identify at-risk students and review their academic reports.
+                <h1 class="page-title">Student Support</h1>
+
+                <p class="page-description">
+                    Identify students who may be at risk of dropping out,
+                    review their support progress and access individual
+                    academic reports to help guide appropriate interventions.
                 </p>
+            </div>
+
+            <div class="header-user">
+
+                <div class="header-user-avatar">
+                    {{ request.user.get_full_name|default:request.user.username|first|upper }}
+                </div>
+
+                <div>
+                    <div class="header-user-name">
+                        {{ request.user.get_full_name|default:request.user.username }}
+                    </div>
+
+                    <div class="header-user-role">
+                        <span class="online-dot"></span>
+                        Teacher
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- =========================
+             RISK SUMMARY
+        ========================== -->
+
+        <section class="summary-section" aria-labelledby="summaryTitle">
+
+            <div class="section-heading">
+                <div>
+                    <h2 id="summaryTitle" class="section-title">
+                        Risk Overview
+                    </h2>
+
+                    <p class="section-description">
+                        Summary of students currently identified as
+                        requiring academic support.
+                    </p>
+                </div>
+
+                <span class="section-caption">
+                    Current calculated risk
+                </span>
+            </div>
+
+            <div class="row g-3">
+
+                <!-- Total Students -->
+                <div class="col-6 col-xl-3">
+                    <article class="summary-card summary-card-total">
+
+                        <div class="summary-card-body">
+                            <div>
+                                <span class="summary-label">
+                                    Students Requiring Support
+                                </span>
+
+                                <h3 class="summary-number">
+                                    {{ total_students }}
+                                </h3>
+
+                                <div class="summary-note">
+                                    <i class="bi bi-people"></i>
+                                    Students identified
+                                </div>
+                            </div>
+
+                            <div class="summary-icon">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                        </div>
+
+                    </article>
+                </div>
+
+                <!-- Medium Risk -->
+                <div class="col-6 col-xl-3">
+                    <article class="summary-card summary-card-medium">
+
+                        <div class="summary-card-body">
+                            <div>
+                                <span class="summary-label">
+                                    Medium Risk
+                                </span>
+
+                                <h3 class="summary-number">
+                                    {{ medium_count }}
+                                </h3>
+
+                                <div class="summary-note">
+                                    <i class="bi bi-exclamation-circle"></i>
+                                    Monitor performance
+                                </div>
+                            </div>
+
+                            <div class="summary-icon">
+                                <i class="bi bi-activity"></i>
+                            </div>
+                        </div>
+
+                    </article>
+                </div>
+
+                <!-- High Risk -->
+                <div class="col-6 col-xl-3">
+                    <article class="summary-card summary-card-high">
+
+                        <div class="summary-card-body">
+                            <div>
+                                <span class="summary-label">
+                                    High Risk
+                                </span>
+
+                                <h3 class="summary-number">
+                                    {{ high_count }}
+                                </h3>
+
+                                <div class="summary-note">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Review support needs
+                                </div>
+                            </div>
+
+                            <div class="summary-icon">
+                                <i class="bi bi-shield-exclamation"></i>
+                            </div>
+                        </div>
+
+                    </article>
+                </div>
+
+                <!-- Very High Risk -->
+                <div class="col-6 col-xl-3">
+                    <article class="summary-card summary-card-very-high">
+
+                        <div class="summary-card-body">
+                            <div>
+                                <span class="summary-label">
+                                    Very High Risk
+                                </span>
+
+                                <h3 class="summary-number">
+                                    {{ very_high_count }}
+                                </h3>
+
+                                <div class="summary-note">
+                                    <i class="bi bi-bell"></i>
+                                    Prioritize review
+                                </div>
+                            </div>
+
+                            <div class="summary-icon">
+                                <i class="bi bi-exclamation-octagon-fill"></i>
+                            </div>
+                        </div>
+
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- =========================
+             STUDENT SUPPORT DIRECTORY
+        ========================== -->
+
+        <section
+            class="directory-card"
+            aria-labelledby="directoryTitle"
+        >
+
+            <div class="directory-header">
+
+                <div class="directory-heading">
+                    <div class="directory-icon">
+                        <i class="bi bi-clipboard2-heart-fill"></i>
+                    </div>
+
+                    <div>
+                        <h2 id="directoryTitle" class="directory-title">
+                            Students Requiring Support
+                        </h2>
+
+                        <p class="directory-subtitle">
+                            Review dropout risk scores and the latest
+                            mentor support status.
+                        </p>
+                    </div>
+                </div>
+
+                <span class="directory-label">
+                    <i class="bi bi-shield-check"></i>
+                    Support Overview
+                </span>
+
+            </div>
+
+            {% if risk_results %}
+
+                <div class="table-container">
+                    <table class="table support-table align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Student ID</th>
+                                <th scope="col">Student Name</th>
+                                <th scope="col">Risk Score</th>
+                                <th scope="col">Risk Level</th>
+                                <th scope="col">Support Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for result in risk_results %}
+                                <tr>
+
+                                    <!-- Student ID -->
+                                    <td>
+                                        <span class="student-id-badge">
+                                            <i class="bi bi-person-badge"></i>
+                                            {{ result.student.student_id }}
+                                        </span>
+                                    </td>
+
+                                    <!-- Student Name -->
+                                    <td>
+                                        <div class="student-identity">
+
+                                            <div class="student-avatar">
+                                                {{ result.student.first_name|first|upper }}
+                                            </div>
+
+                                            <div>
+                                                <span class="student-name">
+                                                    {{ result.student }}
+                                                </span>
+
+                                                <span class="student-name-caption">
+                                                    Student record
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </td>
+
+                                    <!-- Risk Score -->
+                                    <td>
+                                        <span class="risk-score">
+                                            <i class="bi bi-graph-up-arrow"></i>
+                                            {{ result.risk_score }}%
+                                        </span>
+                                    </td>
+
+                                    <!-- Risk Level -->
+                                    <td>
+                                        {% if result.risk_level == "Very High" %}
+                                            <span class="risk-level risk-very-high">
+                                                Very High
+                                            </span>
+                                        {% elif result.risk_level == "High" %}
+                                            <span class="risk-level risk-high">
+                                                High
+                                            </span>
+                                        {% else %}
+                                            <span class="risk-level risk-medium">
+                                                Medium
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Latest Mentor Support Status -->
+                                    <td>
+                                        {% if result.support_status == "Pending" %}
+                                            <span class="support-status status-pending">
+                                                <i class="bi bi-clock-history"></i>
+                                                Pending
+                                            </span>
+                                        {% elif result.support_status == "Accepted" %}
+                                            <span class="support-status status-accepted">
+                                                <i class="bi bi-check-circle"></i>
+                                                Accepted
+                                            </span>
+                                        {% elif result.support_status == "In Progress" %}
+                                            <span class="support-status status-progress">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                                In Progress
+                                            </span>
+                                        {% elif result.support_status == "Completed" %}
+                                            <span class="support-status status-completed">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Completed
+                                            </span>
+                                        {% elif result.support_status == "Follow-up Required" %}
+                                            <span class="support-status status-follow-up">
+                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                Follow-up Required
+                                            </span>
+                                        {% else %}
+                                            <span class="support-status status-not-referred">
+                                                <i class="bi bi-dash-circle"></i>
+                                                Not Referred
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- Student Report -->
+                                    <td>
+                                        <a
+                                            href="{% url 'teacher_student_support_report' result.student.pk %}"
+                                            class="report-btn"
+                                        >
+                                            <i class="bi bi-file-earmark-bar-graph"></i>
+                                            View Report
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+            {% else %}
+
+                <!-- Empty State -->
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <h3 class="empty-title">
+                        No Students Currently Require Support
+                    </h3>
+
+                    <p class="empty-description">
+                        No students currently have Medium, High or Very High
+                        calculated risk. Continue monitoring attendance,
+                        academic performance, assignments and examinations
+                        to identify any changes that may require attention.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Risk Calculation Information -->
+        <div class="information-note">
+            <i class="bi bi-info-circle-fill"></i>
+
+            <p>
+                <strong>About these risk scores:</strong>
+                Risk scores are calculated using the existing rule-based
+                risk calculation. This page does not create or save new
+                risk predictions. The support status shown for each student
+                reflects the value supplied by the existing Django view.
+            </p>
+        </div>
+
+        <!-- Bottom Actions -->
+        <div class="bottom-actions">
+
+            <div class="bottom-note">
+                <i class="bi bi-shield-check"></i>
+
+                <span>
+                    Use the student report to review individual support needs.
+                </span>
             </div>
 
             <a
                 href="{% url 'teacher_dashboard' %}"
-                class="btn btn-outline-secondary"
+                class="btn-back"
             >
-                <i class="bi bi-arrow-left me-1"></i>
+                <i class="bi bi-arrow-left"></i>
                 Back to Dashboard
             </a>
 
         </div>
 
-        <!-- SUMMARY CARDS -->
-        <div class="row g-3 mb-4">
+        <!-- Footer -->
+        <footer class="dashboard-footer">
 
-            <div class="col-6 col-lg-3">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <p class="text-secondary mb-1">
-                            Students Requiring Support
-                        </p>
-                        <h3 class="fw-bold mb-0">
-                            {{ total_students }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
+            <span class="footer-brand">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Dropout Risk Management System
+            </span>
 
-            <div class="col-6 col-lg-3">
-                <div class="card border-0 shadow-sm border-start border-4 border-warning h-100">
-                    <div class="card-body">
-                        <p class="text-secondary mb-1">Medium Risk</p>
-                        <h3 class="fw-bold text-warning mb-0">
-                            {{ medium_count }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
+            <span>Teacher Workspace</span>
 
-            <div class="col-6 col-lg-3">
-                <div class="card border-0 shadow-sm border-start border-4 border-danger h-100">
-                    <div class="card-body">
-                        <p class="text-secondary mb-1">High Risk</p>
-                        <h3 class="fw-bold text-danger mb-0">
-                            {{ high_count }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
+        </footer>
 
-            <div class="col-6 col-lg-3">
-                <div class="card border-0 shadow-sm border-start border-4 border-dark h-100">
-                    <div class="card-body">
-                        <p class="text-secondary mb-1">Very High Risk</p>
-                        <h3 class="fw-bold text-dark mb-0">
-                            {{ very_high_count }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
+    </main>
 
-        </div>
-
-        
-<!-- STUDENT TABLE -->
-<div class="card border-0 shadow-sm">
-
-    <div class="card-header bg-white py-3">
-        <h5 class="fw-bold mb-0">
-            Students Requiring Support
-        </h5>
-    </div>
-
-    <div class="card-body p-0">
-
-        {% if risk_results %}
-
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-
-                    <thead class="table-light">
-                        <tr>
-                            <th class="px-3">Student ID</th>
-                            <th>Student Name</th>
-                            <th>Risk Score</th>
-                            <th>Risk Level</th>
-                            <th>Support Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for result in risk_results %}
-                            <tr>
-                                <td class="px-3">
-                                    {{ result.student.student_id }}
-                                </td>
-
-                                <td class="fw-semibold">
-                                    {{ result.student }}
-                                </td>
-
-                                <td>
-                                    {{ result.risk_score }}%
-                                </td>
-
-                                <td>
-                                    {% if result.risk_level == "Very High" %}
-                                        <span class="badge bg-dark">Very High</span>
-                                    {% elif result.risk_level == "High" %}
-                                        <span class="badge bg-danger">High</span>
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark">Medium</span>
-                                    {% endif %}
-                                </td>
-
-                                <!-- LATEST MENTOR SUPPORT STATUS -->
-                                <td>
-                                    {% if result.support_status == "Pending" %}
-                                        <span class="badge bg-warning text-dark">Pending</span>
-                                    {% elif result.support_status == "Accepted" %}
-                                        <span class="badge bg-primary">Accepted</span>
-                                    {% elif result.support_status == "In Progress" %}
-                                        <span class="badge bg-info text-dark">In Progress</span>
-                                    {% elif result.support_status == "Completed" %}
-                                        <span class="badge bg-success">Completed</span>
-                                    {% elif result.support_status == "Follow-up Required" %}
-                                        <span class="badge bg-danger">Follow-up Required</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary">Not Referred</span>
-                                    {% endif %}
-                                </td>
-
-                                <!-- VIEW STUDENT REPORT -->
-                                <td>
-                                    <a
-                                        href="{% url 'teacher_student_support_report' result.student.pk %}"
-                                        class="btn btn-sm btn-primary"
-                                    >
-                                        <i class="bi bi-file-earmark-bar-graph me-1"></i>
-                                        View Report
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-
-                </table>
-            </div>
-
-        {% else %}
-
-            <div class="text-center py-5 px-3">
-                <i class="bi bi-check-circle text-success fs-1"></i>
-
-                <h5 class="fw-bold mt-3">
-                    No Students Currently Require Support
-                </h5>
-
-                <p class="text-secondary mb-0">
-                    No students currently have Medium, High,
-                    or Very High calculated risk.
-                </p>
-            </div>
-
-        {% endif %}
-
-    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-        <p class="text-secondary small mt-3 mb-0">
-            Risk scores are calculated using the existing rule-based
-            risk calculation. This page does not create saved predictions.
-        </p>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleButton = document.getElementById("mobileNavToggle");
+        const navigation = document.getElementById("teacherNavigation");
 
-    </div>
+        if (!toggleButton || !navigation) {
+            return;
+        }
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+        toggleButton.addEventListener("click", function () {
+            const isExpanded = navigation.classList.toggle("show");
+
+            toggleButton.setAttribute(
+                "aria-expanded",
+                String(isExpanded)
+            );
+
+            toggleButton.innerHTML = isExpanded
+                ? '<i class="bi bi-x-lg"></i>'
+                : '<i class="bi bi-list"></i>';
+        });
+    });
+</script>
 
 </body>
 </html>
