@@ -1,634 +1,1767 @@
-<!DOCTYPE html>
 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Administrator Dashboard | Student Risk Management</title>
 
-<title>Administrator Dashboard</title>
+    <!-- Existing Bootstrap dependency -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+    <!-- Existing Bootstrap Icons dependency -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
 
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
->
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
 
-<style>
-    body {
-        min-height: 100vh;
-    }
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #19264b;
+            --admin-navy-hover: #24345f;
 
-    .sidebar {
-        min-height: 100vh;
-    }
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
 
-    .sidebar .nav-link {
-        color: rgba(255, 255, 255, 0.75);
-        border-radius: 8px;
-        margin-bottom: 5px;
-    }
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e7eaf2;
 
-    .sidebar .nav-link:hover,
-    .sidebar .nav-link.active {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.12);
-    }
+            --admin-text: #172033;
+            --admin-muted: #718096;
 
-    .dashboard-card {
-        border: 0;
-        border-radius: 14px;
-        transition: 0.2s ease;
-    }
+            --admin-success-soft: #e9f8ef;
+            --admin-info-soft: #e8f5ff;
+            --admin-danger-soft: #fff0f0;
+            --admin-warning-soft: #fff7e6;
 
-    .dashboard-card:hover {
-        transform: translateY(-3px);
-    }
+            --admin-radius: 16px;
+            --admin-radius-sm: 11px;
 
-    .function-card {
-        border-radius: 14px;
-        transition: 0.2s ease;
-    }
+            --admin-shadow:
+                0 4px 20px rgba(22, 34, 67, 0.045);
 
-    .function-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 .5rem 1rem rgba(0,0,0,.08);
-    }
+            --admin-shadow-hover:
+                0 12px 28px rgba(22, 34, 67, 0.09);
+        }
 
-    .icon-box {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-    }
-</style>
+        /* =====================================================
+           GLOBAL
+        ===================================================== */
 
+        * {
+            box-sizing: border-box;
+        }
 
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.94rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #818cf8;
+            outline-offset: 3px;
+        }
+
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 16px;
+            z-index: 2000;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: #fff;
+            color: var(--admin-navy);
+            font-weight: 700;
+            box-shadow: var(--admin-shadow);
+        }
+
+        .skip-link:focus {
+            top: 16px;
+        }
+
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            color: #fff;
+        }
+
+        .brand:hover {
+            color: #fff;
+        }
+
+        .brand-mark {
+            display: inline-flex;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 13px;
+            background: rgba(129, 140, 248, 0.17);
+            color: #c7d2fe;
+            font-size: 1.3rem;
+        }
+
+        .brand-name {
+            margin: 0;
+            font-size: 0.98rem;
+            font-weight: 750;
+            letter-spacing: -0.025em;
+        }
+
+        .brand-caption {
+            display: block;
+            margin-top: 3px;
+            color: #aebbe0;
+            font-size: 0.71rem;
+            font-weight: 500;
+        }
+
+        /* =====================================================
+           DESKTOP SIDEBAR
+        ===================================================== */
+
+        .admin-sidebar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 25px 17px 18px;
+            background: var(--admin-navy);
+            color: #fff;
+        }
+
+        .sidebar-brand {
+            padding: 0 6px 33px;
+        }
+
+        .sidebar-section-label {
+            margin: 0 0 13px;
+            padding: 0 12px;
+            color: #8594bf;
+            font-size: 0.68rem;
+            font-weight: 750;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            gap: 5px;
+        }
+
+        .sidebar-nav .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 45px;
+            padding: 11px 13px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: #bec8e2;
+            font-size: 0.87rem;
+            font-weight: 550;
+            transition:
+                background 0.18s ease,
+                color 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+        .sidebar-nav .nav-link i {
+            width: 20px;
+            flex-shrink: 0;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+
+        .sidebar-nav .nav-link:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-link.active {
+            border-color: rgba(165, 180, 252, 0.13);
+            background: rgba(99, 102, 241, 0.24);
+            color: #fff;
+        }
+
+        .sidebar-nav .nav-link.active i {
+            color: #a5b4fc;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 25px;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            margin: 0 0 17px;
+            border: 0;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .sidebar-logout {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 43px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 11px;
+            color: #e2e8f0;
+            font-size: 0.86rem;
+            font-weight: 600;
+            transition: background 0.18s ease;
+        }
+
+        .sidebar-logout:hover {
+            background: rgba(255, 255, 255, 0.09);
+            color: #fff;
+        }
+
+        .sidebar-version {
+            margin-top: 15px;
+            color: #7180aa;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        /* =====================================================
+           MOBILE NAVIGATION
+        ===================================================== */
+
+        .mobile-admin-navbar {
+            position: relative;
+            z-index: 20;
+            padding: 13px 17px;
+            background: var(--admin-navy);
+        }
+
+        .mobile-admin-navbar .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            padding: 7px 10px;
+        }
+
+        .mobile-admin-navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(165, 180, 252, 0.2);
+        }
+
+        .mobile-menu-links {
+            padding-top: 14px;
+        }
+
+        .mobile-menu-links .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 12px;
+            border-radius: 9px;
+            color: #d2daee;
+            font-size: 0.88rem;
+        }
+
+        .mobile-menu-links .nav-link:hover,
+        .mobile-menu-links .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .mobile-menu-links .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main-content {
+            min-width: 0;
+            padding: 31px 32px 38px;
+        }
+
+        .page-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 22px;
+            margin-bottom: 30px;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 11px;
+            color: var(--admin-indigo);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.3vw, 2.05rem);
+            font-weight: 780;
+            letter-spacing: -0.045em;
+        }
+
+        .page-description {
+            max-width: 600px;
+            margin: 9px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.91rem;
+            line-height: 1.65;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            padding: 8px 13px 8px 8px;
+            border: 1px solid var(--admin-border);
+            border-radius: 14px;
+            background: #fff;
+        }
+
+        .user-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.2rem;
+        }
+
+        .user-name {
+            max-width: 230px;
+            overflow-wrap: anywhere;
+            color: var(--admin-text);
+            font-size: 0.83rem;
+            font-weight: 750;
+            line-height: 1.4;
+        }
+
+        .user-role {
+            margin-top: 3px;
+            color: var(--admin-muted);
+            font-size: 0.73rem;
+        }
+
+        /* =====================================================
+           SECTION HEADINGS
+        ===================================================== */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 18px;
+            margin-bottom: 17px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1.1rem;
+            font-weight: 750;
+            letter-spacing: -0.025em;
+        }
+
+        .section-description {
+            margin: 6px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.84rem;
+            line-height: 1.6;
+        }
+
+        .section-kicker {
+            color: #8490a6;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        /* =====================================================
+           STATISTIC CARDS
+        ===================================================== */
+
+        .overview-section {
+            margin-bottom: 34px;
+        }
+
+        .stat-card {
+            position: relative;
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--admin-shadow-hover);
+        }
+
+        .stat-card .card-body {
+            padding: 22px;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-label {
+            margin: 2px 0 0;
+            color: #707d93;
+            font-size: 0.83rem;
+            font-weight: 650;
+        }
+
+        .stat-value {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.8rem, 2.3vw, 2.15rem);
+            font-weight: 800;
+            letter-spacing: -0.055em;
+            line-height: 1.15;
+            overflow-wrap: anywhere;
+        }
+
+        .stat-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            font-size: 1.25rem;
+        }
+
+        .stat-icon-indigo {
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+        }
+
+        .stat-icon-green {
+            background: var(--admin-success-soft);
+            color: #16834a;
+        }
+
+        .stat-icon-blue {
+            background: var(--admin-info-soft);
+            color: #1870b9;
+        }
+
+        .stat-icon-red {
+            background: var(--admin-danger-soft);
+            color: #d43b48;
+        }
+
+        .stat-footer {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding-top: 13px;
+            border-top: 1px solid #f0f2f7;
+            color: var(--admin-muted);
+            font-size: 0.77rem;
+            line-height: 1.5;
+        }
+
+        .stat-footer i {
+            color: #94a0b4;
+        }
+
+        /* =====================================================
+           ADMINISTRATOR FUNCTIONS
+        ===================================================== */
+
+        .functions-section {
+            margin-bottom: 30px;
+        }
+
+        .functions-header {
+            margin-bottom: 20px;
+        }
+
+        .feature-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-width: 0;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #d5dafa;
+            box-shadow: var(--admin-shadow-hover);
+        }
+
+        .feature-card .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: 100%;
+            padding: 23px;
+        }
+
+        .feature-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 19px;
+        }
+
+        .feature-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 47px;
+            height: 47px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.28rem;
+        }
+
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border-radius: 7px;
+            background: #f1f3f8;
+            color: #66738a;
+            font-size: 0.66rem;
+            font-weight: 750;
+            line-height: 1.3;
+        }
+
+        .feature-title {
+            margin: 0 0 9px;
+            color: var(--admin-text);
+            font-size: 1.02rem;
+            font-weight: 750;
+            letter-spacing: -0.025em;
+        }
+
+        .feature-description {
+            flex-grow: 1;
+            margin: 0 0 23px;
+            color: var(--admin-muted);
+            font-size: 0.84rem;
+            line-height: 1.75;
+        }
+
+        /* Reuse one consistent administrator action style. */
+
+        .btn-admin-primary {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            max-width: 100%;
+            min-height: 41px;
+            padding: 10px 14px;
+            border: 1px solid var(--admin-indigo);
+            border-radius: 10px;
+            background: var(--admin-indigo);
+            color: #fff;
+            font-size: 0.79rem;
+            font-weight: 700;
+            line-height: 1.35;
+            text-align: center;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .btn-admin-primary:hover {
+            border-color: var(--admin-indigo-dark);
+            background: var(--admin-indigo-dark);
+            color: #fff;
+            box-shadow: 0 5px 12px rgba(79, 70, 229, 0.18);
+        }
+
+        .btn-admin-primary i {
+            flex-shrink: 0;
+            font-size: 0.93rem;
+        }
+
+        /* Semantic accents for risk and alert features. */
+
+        .feature-icon-warning {
+            background: var(--admin-warning-soft);
+            color: #a56b00;
+        }
+
+        .feature-icon-danger {
+            background: var(--admin-danger-soft);
+            color: #d43b48;
+        }
+
+        .feature-icon-blue {
+            background: var(--admin-info-soft);
+            color: #1870b9;
+        }
+
+        .feature-icon-green {
+            background: var(--admin-success-soft);
+            color: #16834a;
+        }
+
+        .feature-icon-violet {
+            background: #f2edff;
+            color: #7947c6;
+        }
+
+        .feature-icon-slate {
+            background: #eef1f6;
+            color: #475569;
+        }
+
+        .tag-warning {
+            background: var(--admin-warning-soft);
+            color: #956000;
+        }
+
+        .tag-danger {
+            background: var(--admin-danger-soft);
+            color: #c53240;
+        }
+
+        .tag-green {
+            background: var(--admin-success-soft);
+            color: #187343;
+        }
+
+        .tag-violet {
+            background: #f2edff;
+            color: #6c40b5;
+        }
+
+        .tag-blue {
+            background: var(--admin-info-soft);
+            color: #17629d;
+        }
+
+        .tag-indigo {
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo-dark);
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .dashboard-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--admin-border);
+            color: #8994a8;
+            font-size: 0.75rem;
+        }
+
+        .footer-brand {
+            color: #66738a;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           RESPONSIVE LAYOUT
+        ===================================================== */
+
+        @media (max-width: 1199.98px) {
+            .main-content {
+                padding: 28px 24px 32px;
+            }
+
+            .stat-card .card-body {
+                padding: 19px;
+            }
+
+            .feature-card .card-body {
+                padding: 21px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .main-content {
+                padding: 25px 18px 28px;
+            }
+
+            .page-topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                margin-bottom: 27px;
+            }
+
+            .page-title {
+                font-size: 1.7rem;
+            }
+
+            .user-profile {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .user-name {
+                max-width: 100%;
+            }
+
+            .overview-section {
+                margin-bottom: 29px;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .stat-card .card-body {
+                padding: 18px;
+            }
+
+            .stat-icon {
+                width: 41px;
+                height: 41px;
+                border-radius: 11px;
+                font-size: 1.1rem;
+            }
+
+            .stat-top {
+                margin-bottom: 17px;
+            }
+
+            .feature-card .card-body {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 399.98px) {
+            .main-content {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .page-title {
+                font-size: 1.48rem;
+            }
+
+            .stat-card .card-body {
+                padding: 15px;
+            }
+
+            .stat-label {
+                font-size: 0.77rem;
+            }
+
+            .stat-value {
+                font-size: 1.7rem;
+            }
+
+            .feature-card .card-body {
+                padding: 17px;
+            }
+
+            .btn-admin-primary {
+                width: 100%;
+            }
+        }
+
+        /* Respect the user's motion preferences. */
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
-
-<div class="container-fluid">
-
-
-<div class="row">
-
-    <!-- ================= SIDEBAR ================= -->
-
-    <aside class="col-md-3 col-lg-2 bg-dark text-white sidebar p-3">
-
-        <h5 class="fw-bold mb-4">
-            Student Risk
-        </h5>
-
-        <div class="text-white-50 small mb-3">
-            ADMINISTRATOR
-        </div>
-
-        <nav class="nav flex-column">
-
-            <a href="{% url 'admin_dashboard' %}"
-               class="nav-link active">
-                Dashboard
-            </a>
-
-            <a href="#student-management"
-               class="nav-link">
-                Students
-            </a>
-
-            <a href="#staff-management"
-               class="nav-link">
-                Teachers
-            </a>
-
-            <a href="#staff-management"
-               class="nav-link">
-                Mentors
-            </a>
-
-            <a href="#academic-management"
-               class="nav-link">
-                Departments
-            </a>
-
-            <a href="#risk-monitoring"
-               class="nav-link">
-                Risk Monitoring
-            </a>
-
-            <a href="#alerts"
-               class="nav-link">
-                Alerts
-            </a>
-
-            <a href="{% url 'admin_reports' %}"
-               class="nav-link">
-                Reports & Analytics
-            </a>
-
-        </nav>
-
-        <hr class="border-secondary">
-
-        <a href="{% url 'logout' %}"
-           class="btn btn-outline-light btn-sm w-100">
-            Logout
-        </a>
-
-    </aside>
-
-
-    <!-- ================= MAIN CONTENT ================= -->
-
-    <main class="col-md-9 col-lg-10 px-md-4 py-4">
-
-        <!-- TOP BAR -->
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-
-            <div>
-                <h2 class="fw-bold mb-1">
-                    Administrator Dashboard
-                </h2>
-
-                <p class="text-secondary mb-0">
-                    Monitor and manage the student risk management system.
-                </p>
-            </div>
-
-            <div class="text-end">
-
-                <div class="fw-semibold">
-                    {{ request.user.get_full_name|default:request.user.username }}
-                </div>
-
-                <small class="text-secondary">
-                    Administrator
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= OVERVIEW ================= -->
-
-        <div class="row g-4 mb-4">
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card shadow-sm h-100">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-                                <small class="text-secondary">
-                                    Students
-                                </small>
-
-                                <h3 class="fw-bold mt-2 mb-0">
-                                    —
-                                </h3>
-                            </div>
-
-                            <div class="icon-box bg-primary-subtle text-primary">
-                                S
-                            </div>
-
-                        </div>
-
-                        <small class="text-secondary">
-                            Student records
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card shadow-sm h-100">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-                                <small class="text-secondary">
-                                    Teachers
-                                </small>
-
-                                <h3 class="fw-bold mt-2 mb-0">
-                                    —
-                                </h3>
-                            </div>
-
-                            <div class="icon-box bg-success-subtle text-success">
-                                T
-                            </div>
-
-                        </div>
-
-                        <small class="text-secondary">
-                            Teaching staff
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card shadow-sm h-100">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-                                <small class="text-secondary">
-                                    Mentors
-                                </small>
-
-                                <h3 class="fw-bold mt-2 mb-0">
-                                    —
-                                </h3>
-                            </div>
-
-                            <div class="icon-box bg-info-subtle text-info">
-                                M
-                            </div>
-
-                        </div>
-
-                        <small class="text-secondary">
-                            Mentoring staff
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-sm-6 col-xl-3">
-
-                <div class="card dashboard-card shadow-sm h-100">
-
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-
-                            <div>
-                                <small class="text-secondary">
-                                    Risk Alerts
-                                </small>
-
-                                <h3 class="fw-bold mt-2 mb-0">
-                                    —
-                                </h3>
-                            </div>
-
-                            <div class="icon-box bg-danger-subtle text-danger">
-                                !
-                            </div>
-
-                        </div>
-
-                        <small class="text-secondary">
-                            Students requiring attention
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= FUNCTIONS ================= -->
-
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body p-4">
-
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-1">
-                        Administrator Functions
-                    </h4>
-
-                    <p class="text-secondary mb-0">
-                        Manage student information, staff and system-wide
-                        dropout risk information.
-                    </p>
-                </div>
-
-
-                <div class="row g-4">
-
-
-                   
-
-    <div class="card function-card h-100 border-primary">
-
-        <div class="card-body">
-
-            <span class="badge bg-primary mb-3">
-                Student Management
-            </span>
-
-            <h5 class="fw-bold">
-                Manage Students
-            </h5>
-
-            <p class="text-secondary mb-0">
-                Add, update, view and manage student
-                personal and basic academic information.
-            </p>
+<body>
+
+<a class="skip-link" href="#main-content">
+    Skip to main content
+</a>
+
+<div class="container-fluid p-0">
+
+    <!-- =================================================
+         MOBILE NAVIGATION
+         Visible below the desktop sidebar breakpoint
+    ================================================== -->
+
+    <nav
+        class="navbar navbar-dark mobile-admin-navbar d-lg-none"
+        aria-label="Mobile administrator navigation"
+    >
+        <div class="container-fluid p-0">
 
             <a
-                href="{% url 'student_list' %}"
-                class="btn btn-primary mt-2"
+                class="brand"
+                href="{% url 'admin_dashboard' %}"
+                aria-label="Student Risk home"
             >
-                <i class="bi bi-people"></i>
-                Manage Students
+                <span class="brand-mark" aria-hidden="true">
+                    <i class="bi bi-shield-check"></i>
+                </span>
+
+                <span>
+                    <span class="brand-name">Student Risk</span>
+                    <span class="brand-caption">Administrator Portal</span>
+                </span>
             </a>
 
-        </div>
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#adminMobileNavigation"
+                aria-controls="adminMobileNavigation"
+                aria-expanded="false"
+                aria-label="Toggle administrator navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    </div>
+            <div
+                class="collapse navbar-collapse"
+                id="adminMobileNavigation"
+            >
+                <div class="mobile-menu-links">
 
-
-
-
-                    <!-- TEACHERS -->
-
-                    <div class="col-md-6 col-xl-4"
-                         id="staff-management">
-
-                        <div class="card function-card h-100 border-success">
-
-                            <div class="card-body">
-
-    <span class="badge bg-success mb-3">
-        Staff Management
-    </span>
-
-    <h5 class="fw-bold">
-        Manage Teachers
-    </h5>
-
-    <p class="text-secondary">
-        Manage teacher information and
-        teaching staff records.
-    </p>
-
-    <a
-        href="{% url 'teacher_list' %}"
-        class="btn btn-primary mt-2"
-    >
-        <i class="bi bi-people"></i>
-        Manage Teachers
-    </a>
-
-</div>
-
-                        </div>
-
+                    <div class="sidebar-section-label">
+                        Main Menu
                     </div>
 
+                    <a
+                        href="{% url 'admin_dashboard' %}"
+                        class="nav-link active"
+                        aria-current="page"
+                    >
+                        <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
+                        Dashboard
+                    </a>
 
-                    <!-- MENTORS -->
+                    <a href="#student-management" class="nav-link">
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        Students
+                    </a>
 
-                    <div class="col-md-6 col-xl-4">
-    <div class="card function-card h-100 border-info">
+                    <a href="#staff-management" class="nav-link">
+                        <i class="bi bi-person-workspace" aria-hidden="true"></i>
+                        Teachers
+                    </a>
 
-        <div class="card-body">
+                    <a href="#staff-management" class="nav-link">
+                        <i class="bi bi-person-badge" aria-hidden="true"></i>
+                        Mentors
+                    </a>
 
-            <span class="badge bg-info mb-3">
-                Staff Management
-            </span>
+                    <a href="#academic-management" class="nav-link">
+                        <i class="bi bi-building" aria-hidden="true"></i>
+                        Departments
+                    </a>
 
-            <h5 class="fw-bold">
-                Manage Mentors
-            </h5>
+                    <a href="#risk-monitoring" class="nav-link">
+                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                        Risk Monitoring
+                    </a>
 
-            <p class="text-secondary">
-                Manage mentor information and
-                mentor staff records.
-            </p>
+                    <a href="#alerts" class="nav-link">
+                        <i class="bi bi-bell" aria-hidden="true"></i>
+                        Alerts
+                    </a>
 
-            <a href="{% url 'mentor_list' %}"
-               class="btn btn-primary mt-2">
+                    <a href="{% url 'admin_reports' %}" class="nav-link">
+                        <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                        Reports &amp; Analytics
+                    </a>
 
-                <i class="bi bi-person-badge"></i>
-                Manage Mentors
+                    <hr class="sidebar-divider mt-3">
 
-            </a>
+                    <a
+                        href="{% url 'logout' %}"
+                        class="sidebar-logout"
+                    >
+                        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                        Logout
+                    </a>
+
+                </div>
+            </div>
 
         </div>
+    </nav>
 
-    </div>
-</div>
+    <div class="row g-0">
 
+        <!-- =================================================
+             DESKTOP SIDEBAR
+        ================================================== -->
 
-                    <!-- DEPARTMENTS -->
+        <aside class="col-lg-2 admin-sidebar d-none d-lg-flex">
 
-                    <div class="col-md-6 col-xl-4"
-                         id="academic-management">
-
-                        <div class="card function-card h-100 border-secondary">
-
-                            <div class="card-body">
-
-    <span class="badge bg-secondary mb-3">
-        Academic Structure
-    </span>
-
-    <h5 class="fw-bold">
-        Courses & Departments
-    </h5>
-
-    <p class="text-secondary">
-        Manage departments and academic
-        structure used by the system.
-    </p>
-
-    <a href="{% url 'department_list' %}"
-       class="btn btn-primary mt-2">
-
-        <i class="bi bi-building"></i>
-        Manage Departments
-
-    </a>
-
-</div>
-
-                        </div>
-
-                    </div>
-
-
-                    
-<!-- MONITOR RISK SCORES -->
-
-<div class="col-md-6 col-xl-4">
-
-    <div class="card function-card h-100 border-warning">
-
-        <div class="card-body d-flex flex-column">
-
-            <span class="badge bg-warning text-dark mb-3 align-self-start">
-                Risk Analysis
-            </span>
-
-            <h5 class="fw-bold">
-                Monitor Risk Scores
-            </h5>
-
-            <p class="text-secondary">
-                Review student dropout risk scores and risk levels
-                to identify students who may require intervention.
-            </p>
-
-            <div class="mt-auto">
+            <div class="sidebar-brand">
 
                 <a
-                    href="{% url 'admin_risk_scores' %}"
-                    class="btn btn-warning"
+                    class="brand"
+                    href="{% url 'admin_dashboard' %}"
+                    aria-label="Student Risk home"
                 >
-                    <i class="bi bi-graph-up-arrow me-1"></i>
-                    Monitor Risk Scores
+                    <span class="brand-mark" aria-hidden="true">
+                        <i class="bi bi-shield-check"></i>
+                    </span>
+
+                    <span>
+                        <span class="brand-name">Student Risk</span>
+                        <span class="brand-caption">
+                            Management System
+                        </span>
+                    </span>
                 </a>
 
             </div>
 
-        </div>
+            <div class="sidebar-section-label">
+                Main Menu
+            </div>
 
-    </div>
-
-</div>
-
-
-
-                    
-<!-- ALERTS -->
-
-<div class="col-md-6 col-xl-4" id="alerts">
-
-    <div class="card function-card h-100 border-danger">
-
-        <div class="card-body d-flex flex-column">
-
-            <span class="badge bg-danger mb-3 align-self-start">
-                Early Warning
-            </span>
-
-            <h5 class="fw-bold">
-                View Alerts
-            </h5>
-
-            <p class="text-secondary">
-                Review students with High and Very High dropout
-                risk who require attention.
-            </p>
-
-            <div class="mt-auto">
+            <nav
+                class="nav flex-column sidebar-nav"
+                aria-label="Administrator navigation"
+            >
 
                 <a
-                    href="{% url 'admin_alerts' %}"
-                    class="btn btn-danger"
+                    href="{% url 'admin_dashboard' %}"
+                    class="nav-link active"
+                    aria-current="page"
                 >
-                    <i class="bi bi-bell me-1"></i>
-                    View Alerts
+                    <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
+                    <span>Dashboard</span>
                 </a>
+
+                <a href="#student-management" class="nav-link">
+                    <i class="bi bi-people" aria-hidden="true"></i>
+                    <span>Students</span>
+                </a>
+
+                <a href="#staff-management" class="nav-link">
+                    <i class="bi bi-person-workspace" aria-hidden="true"></i>
+                    <span>Teachers</span>
+                </a>
+
+                <a href="#staff-management" class="nav-link">
+                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                    <span>Mentors</span>
+                </a>
+
+                <a href="#academic-management" class="nav-link">
+                    <i class="bi bi-building" aria-hidden="true"></i>
+                    <span>Departments</span>
+                </a>
+
+                <a href="#risk-monitoring" class="nav-link">
+                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                    <span>Risk Monitoring</span>
+                </a>
+
+                <a href="#alerts" class="nav-link">
+                    <i class="bi bi-bell" aria-hidden="true"></i>
+                    <span>Alerts</span>
+                </a>
+
+                <a href="{% url 'admin_reports' %}" class="nav-link">
+                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                    <span>Reports &amp; Analytics</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <hr class="sidebar-divider">
+
+                <a
+                    href="{% url 'logout' %}"
+                    class="sidebar-logout"
+                >
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    Logout
+                </a>
+
+                <div class="sidebar-version">
+                    Student Dropout Risk Management
+                </div>
 
             </div>
 
-        </div>
+        </aside>
 
-    </div>
+        <!-- =================================================
+             MAIN DASHBOARD
+        ================================================== -->
 
-</div>
+        <main
+            id="main-content"
+            class="col-12 col-lg-10 main-content"
+        >
 
+            <!-- Page heading and signed-in administrator -->
 
+            <header class="page-topbar">
 
-                    <!-- REPORTS -->
+                <div class="page-heading">
 
-                    <div class="col-md-6 col-xl-4"
-                         id="reports">
+                    <div class="page-eyebrow">
+                        <i class="bi bi-grid-1x2-fill" aria-hidden="true"></i>
+                        System Overview
+                    </div>
 
-                        <div class="card function-card h-100 border-dark">
+                    <h1 class="page-title">
+                        Administrator Dashboard
+                    </h1>
 
-                            <div class="card-body d-flex flex-column">
+                    <p class="page-description">
+                        Monitor student records, manage academic resources
+                        and oversee student dropout risk across the system.
+                    </p>
 
-                                <span class="badge bg-dark mb-3 align-self-start">
-                                    Analytics
-                                </span>
+                </div>
 
-                                <h5 class="fw-bold">
-                                    Reports & Analytics
-                                </h5>
+                <div class="user-profile">
 
-                                <p class="text-secondary">
-                                    Monitor student performance,
-                                    dropout risk and intervention results.
-                                </p>
+                    <div class="user-avatar" aria-hidden="true">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
 
-                                <div class="mt-auto">
+                    <div>
+                        <div class="user-name">
+                            {{ request.user.get_full_name|default:request.user.username }}
+                        </div>
 
-                                    <a
-                                        href="{% url 'admin_reports' %}"
-                                        class="btn btn-dark"
+                        <div class="user-role">
+                            Administrator
+                        </div>
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- =================================================
+                 OVERVIEW STATISTICS
+            ================================================== -->
+
+            <section
+                class="overview-section"
+                aria-labelledby="overview-heading"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+                        <h2 class="section-title" id="overview-heading">
+                            At a glance
+                        </h2>
+
+                        <p class="section-description">
+                            A summary of the system's current records and alerts.
+                        </p>
+                    </div>
+
+                    <span class="section-kicker">
+                        System overview
+                    </span>
+
+                </div>
+
+                <div class="row g-3 g-xl-4">
+
+                    <!-- Total students -->
+
+                    <div class="col-6 col-xl-3">
+
+                        <article class="card stat-card">
+
+                            <div class="card-body">
+
+                                <div class="stat-top">
+
+                                    <div>
+                                        <p class="stat-label">
+                                            Students
+                                        </p>
+
+                                        <h3 class="stat-value">
+                                            {{ total_students }}
+                                        </h3>
+                                    </div>
+
+                                    <div
+                                        class="stat-icon stat-icon-indigo"
+                                        aria-hidden="true"
                                     >
-                                        <i class="bi bi-graph-up-arrow me-1"></i>
-                                        View Reports & Analytics
-                                    </a>
+                                        <i class="bi bi-people-fill"></i>
+                                    </div>
 
+                                </div>
+
+                                <div class="stat-footer">
+                                    <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                                    <span>Student records</span>
                                 </div>
 
                             </div>
 
-                        </div>
+                        </article>
 
                     </div>
 
+                    <!-- Total teachers -->
+
+                    <div class="col-6 col-xl-3">
+
+                        <article class="card stat-card">
+
+                            <div class="card-body">
+
+                                <div class="stat-top">
+
+                                    <div>
+                                        <p class="stat-label">
+                                            Teachers
+                                        </p>
+
+                                        <h3 class="stat-value">
+                                            {{ total_teachers }}
+                                        </h3>
+                                    </div>
+
+                                    <div
+                                        class="stat-icon stat-icon-green"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-person-workspace"></i>
+                                    </div>
+
+                                </div>
+
+                                <div class="stat-footer">
+                                    <i class="bi bi-journal-check" aria-hidden="true"></i>
+                                    <span>Teaching staff</span>
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- Total mentors -->
+
+                    <div class="col-6 col-xl-3">
+
+                        <article class="card stat-card">
+
+                            <div class="card-body">
+
+                                <div class="stat-top">
+
+                                    <div>
+                                        <p class="stat-label">
+                                            Mentors
+                                        </p>
+
+                                        <h3 class="stat-value">
+                                            {{ total_mentors }}
+                                        </h3>
+                                    </div>
+
+                                    <div
+                                        class="stat-icon stat-icon-blue"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-person-hearts"></i>
+                                    </div>
+
+                                </div>
+
+                                <div class="stat-footer">
+                                    <i class="bi bi-person-check" aria-hidden="true"></i>
+                                    <span>Mentoring staff</span>
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- Unread alerts -->
+
+                    <div class="col-6 col-xl-3">
+
+                        <article class="card stat-card">
+
+                            <div class="card-body">
+
+                                <div class="stat-top">
+
+                                    <div>
+                                        <p class="stat-label">
+                                            Risk Alerts
+                                        </p>
+
+                                        <h3 class="stat-value">
+                                            {{ unread_alerts }}
+                                        </h3>
+                                    </div>
+
+                                    <div
+                                        class="stat-icon stat-icon-red"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-bell-fill"></i>
+                                    </div>
+
+                                </div>
+
+                                <div class="stat-footer">
+                                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                                    <span>Unread alerts for review</span>
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
 
                 </div>
 
-            </div>
+            </section>
 
-        </div>
+            <!-- =================================================
+                 ADMINISTRATOR FUNCTIONS
+            ================================================== -->
 
-    </main>
+            <section
+                class="functions-section"
+                aria-labelledby="functions-heading"
+            >
+
+                <div class="functions-header">
+
+                    <div class="page-eyebrow">
+                        <i class="bi bi-grid" aria-hidden="true"></i>
+                        Administration
+                    </div>
+
+                    <h2 class="section-title" id="functions-heading">
+                        Administrator Functions
+                    </h2>
+
+                    <p class="section-description">
+                        Access the tools you need to manage students,
+                        academic staff, risk monitoring and system reports.
+                    </p>
+
+                </div>
+
+                <div class="row g-3 g-xl-4">
+
+                    <!-- =========================================
+                         STUDENT MANAGEMENT
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="student-management"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-people-fill"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-indigo">
+                                        Student Management
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Manage Students
+                                </h3>
+
+                                <p class="feature-description">
+                                    Add, update, view and manage student
+                                    personal information and basic
+                                    academic records.
+                                </p>
+
+                                <a
+                                    href="{% url 'student_list' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-people" aria-hidden="true"></i>
+                                    <span>Manage Students</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         TEACHER MANAGEMENT
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="staff-management"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-green"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-person-workspace"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-green">
+                                        Staff Management
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Manage Teachers
+                                </h3>
+
+                                <p class="feature-description">
+                                    Manage teacher information and maintain
+                                    the teaching staff records used
+                                    throughout the system.
+                                </p>
+
+                                <a
+                                    href="{% url 'teacher_list' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-person-lines-fill" aria-hidden="true"></i>
+                                    <span>Manage Teachers</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         MENTOR MANAGEMENT
+                    ========================================== -->
+
+                    <div class="col-md-6 col-xl-4">
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-violet"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-person-hearts"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-violet">
+                                        Staff Management
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Manage Mentors
+                                </h3>
+
+                                <p class="feature-description">
+                                    Manage mentor information and mentor
+                                    staff records supporting student
+                                    guidance and intervention.
+                                </p>
+
+                                <a
+                                    href="{% url 'mentor_list' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-person-badge" aria-hidden="true"></i>
+                                    <span>Manage Mentors</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         DEPARTMENTS
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="academic-management"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-slate"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-building"></i>
+                                    </div>
+
+                                    <span class="feature-tag">
+                                        Academic Structure
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Courses &amp; Departments
+                                </h3>
+
+                                <p class="feature-description">
+                                    Manage departments and the academic
+                                    structure used by the application.
+                                </p>
+
+                                <a
+                                    href="{% url 'department_list' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-building" aria-hidden="true"></i>
+                                    <span>Manage Departments</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         RISK MONITORING
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="risk-monitoring"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-warning"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-graph-up-arrow"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-warning">
+                                        Risk Analysis
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Monitor Risk Scores
+                                </h3>
+
+                                <p class="feature-description">
+                                    Review student dropout risk scores and
+                                    risk levels to identify students who
+                                    may need intervention.
+                                </p>
+
+                                <a
+                                    href="{% url 'admin_risk_scores' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                                    <span>Monitor Risk Scores</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         RISK ALERTS
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="alerts"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-danger"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-bell-fill"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-danger">
+                                        Early Warning
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    View Alerts
+                                </h3>
+
+                                <p class="feature-description">
+                                    Review generated alerts for students
+                                    with High and Very High dropout risk
+                                    who may require attention.
+                                </p>
+
+                                <a
+                                    href="{% url 'admin_alerts' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-bell" aria-hidden="true"></i>
+                                    <span>View Alerts</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                    <!-- =========================================
+                         REPORTS AND ANALYTICS
+                    ========================================== -->
+
+                    <div
+                        class="col-md-6 col-xl-4"
+                        id="reports"
+                    >
+
+                        <article class="card feature-card">
+
+                            <div class="card-body">
+
+                                <div class="feature-top">
+
+                                    <div
+                                        class="feature-icon feature-icon-blue"
+                                        aria-hidden="true"
+                                    >
+                                        <i class="bi bi-bar-chart-line-fill"></i>
+                                    </div>
+
+                                    <span class="feature-tag tag-blue">
+                                        Analytics
+                                    </span>
+
+                                </div>
+
+                                <h3 class="feature-title">
+                                    Reports &amp; Analytics
+                                </h3>
+
+                                <p class="feature-description">
+                                    Review student performance, dropout risk
+                                    and intervention results through
+                                    system reports and analytics.
+                                </p>
+
+                                <a
+                                    href="{% url 'admin_reports' %}"
+                                    class="btn-admin-primary"
+                                >
+                                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                                    <span>View Reports &amp; Analytics</span>
+                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <footer class="dashboard-footer">
+
+                <span>
+                    Student Dropout Risk Management System
+                </span>
+
+                <span class="footer-brand">
+                    Administrator Portal
+                </span>
+
+            </footer>
+
+        </main>
+
+    </div>
 
 </div>
 
-
-</div>
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+<!-- Existing Bootstrap JavaScript dependency -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
