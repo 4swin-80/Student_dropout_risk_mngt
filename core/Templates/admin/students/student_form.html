@@ -1,14 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>{{ page_title }} | Student Risk Management</title>
 
@@ -16,109 +11,804 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
+    <style>
+        :root {
+            --navy-950: #10182f;
+            --navy-900: #172442;
+            --navy-800: #24365b;
+            --indigo-700: #4338ca;
+            --indigo-600: #4f46e5;
+            --indigo-100: #e0e7ff;
+            --indigo-50: #eef2ff;
+            --surface: #ffffff;
+            --page-bg: #f4f6fc;
+            --text-primary: #19233b;
+            --text-secondary: #707b91;
+            --border: #e3e8f2;
+            --success: #15803d;
+            --danger: #dc2626;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow-card: 0 8px 30px rgba(24, 39, 75, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(16, 24, 47, 0.97);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 18px rgba(16, 24, 47, 0.12);
+            backdrop-filter: blur(14px);
+        }
+
+        .topbar-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .brand:hover {
+            color: #fff;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 13px;
+            color: white;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            box-shadow: 0 5px 14px rgba(79, 70, 229, 0.30);
+            font-size: 19px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: #aebbd4;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .role-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            color: #dbe4f6;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-label i {
+            color: #a5b4fc;
+            font-size: 15px;
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            color: #fff;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        /* Main layout */
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 38px 24px 56px;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--indigo-700);
+            font-weight: 600;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--indigo-600);
+        }
+
+        .breadcrumb-nav i {
+            color: #a1aabe;
+            font-size: 11px;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 27px;
+        }
+
+        .heading-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .heading-icon {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dfe4ff;
+            border-radius: 16px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 23px;
+        }
+
+        .page-title {
+            margin: 1px 0 8px;
+            color: var(--navy-950);
+            font-size: clamp(23px, 3vw, 30px);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.25;
+        }
+
+        .page-description {
+            max-width: 600px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-shrink: 0;
+            padding: 11px 15px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            color: #34415b;
+            background: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover {
+            border-color: #c7d2fe;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+        }
+
+        /* Form card */
+
+        .form-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+        }
+
+        .form-card-top {
+            height: 4px;
+            background: linear-gradient(90deg, var(--navy-900), var(--indigo-600), #818cf8);
+        }
+
+        .form-card-content {
+            padding: 30px;
+        }
+
+        .section-block + .section-block {
+            margin-top: 32px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .section-icon {
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 18px;
+        }
+
+        .section-title {
+            margin: 0 0 4px;
+            color: var(--navy-950);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.25px;
+        }
+
+        .section-description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .field-grid {
+            row-gap: 21px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34415b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .required-indicator {
+            margin-left: 3px;
+            color: var(--danger);
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            min-height: 45px;
+            padding: 11px 13px;
+            border: 1px solid #dce2ee;
+            border-radius: 10px;
+            color: var(--text-primary);
+            background-color: #fff;
+            font-family: inherit;
+            font-size: 13px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        textarea.form-control {
+            min-height: 105px;
+            resize: vertical;
+        }
+
+        .form-control::placeholder {
+            color: #a0a9ba;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #818cf8;
+            outline: 0;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.11);
+        }
+
+        .form-control:disabled,
+        .form-select:disabled {
+            color: #7c879c;
+            background-color: #f3f5f9;
+        }
+
+        /* Mentor assignment feedback */
+
+        .mentor-info {
+            margin-top: 9px;
+            padding: 10px 12px;
+            border: 1px solid #e1e7f2;
+            border-radius: 10px;
+            color: #69768d;
+            background: #f8faff;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        #mentor-status {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        #mentor-status:empty {
+            display: none;
+        }
+
+        #mentor-status.text-success {
+            color: var(--success) !important;
+        }
+
+        #mentor-status.text-danger {
+            color: var(--danger) !important;
+        }
+
+        .help-text,
+        .form-text {
+            display: block;
+            margin-top: 7px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.65;
+        }
+
+        .field-error {
+            margin-top: 7px;
+            color: var(--danger);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .field-error ul,
+        .non-field-errors ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .non-field-errors {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-bottom: 25px;
+            padding: 14px 16px;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            color: #991b1b;
+            background: #fef2f2;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .non-field-errors > i {
+            margin-top: 1px;
+            font-size: 17px;
+        }
+
+        /* Password information */
+
+        .password-field-wrap {
+            padding: 14px;
+            border: 1px solid #dfe4ff;
+            border-radius: 13px;
+            background: #f8f9ff;
+        }
+
+        .password-field-wrap .form-control {
+            background: #fff;
+        }
+
+        .password-caption {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            margin-top: 9px;
+            color: #626e88;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .password-caption i {
+            margin-top: 1px;
+            color: var(--indigo-700);
+        }
+
+        /* Form footer */
+
+        .form-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 34px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            max-width: 350px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .footer-note i {
+            margin-top: 1px;
+            color: var(--indigo-700);
+            font-size: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-cancel,
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 43px;
+            padding: 11px 17px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel {
+            border: 1px solid #dce2ee;
+            color: #47536b;
+            background: #fff;
+        }
+
+        .btn-cancel:hover {
+            border-color: #c5ccda;
+            color: var(--navy-950);
+            background: #f8faff;
+        }
+
+        .btn-submit {
+            border: 1px solid var(--indigo-700);
+            color: #fff;
+            background: var(--indigo-700);
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.18);
+        }
+
+        .btn-submit:hover {
+            border-color: #3730a3;
+            color: #fff;
+            background: #3730a3;
+            box-shadow: 0 6px 16px rgba(67, 56, 202, 0.24);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit:focus-visible,
+        .btn-cancel:focus-visible,
+        .btn-back:focus-visible,
+        .btn-logout:focus-visible {
+            outline: 3px solid rgba(99, 102, 241, 0.30);
+            outline-offset: 3px;
+        }
+
+        .page-bottom {
+            margin-top: 24px;
+            color: #929cb0;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 767.98px) {
+            .topbar-inner {
+                min-height: 66px;
+            }
+
+            .brand {
+                font-size: 13px;
+            }
+
+            .brand-mark {
+                width: 36px;
+                height: 36px;
+            }
+
+            .brand-subtitle,
+            .role-label {
+                display: none;
+            }
+
+            .page-wrapper {
+                padding: 25px 16px 38px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 18px;
+            }
+
+            .heading-icon {
+                width: 45px;
+                height: 45px;
+                border-radius: 13px;
+                font-size: 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .btn-back {
+                align-self: flex-start;
+            }
+
+            .form-card-content {
+                padding: 22px 18px;
+            }
+
+            .section-block + .section-block {
+                margin-top: 27px;
+                padding-top: 25px;
+            }
+
+            .form-footer {
+                align-items: stretch;
+            }
+
+            .footer-note {
+                max-width: none;
+            }
+
+            .form-actions {
+                width: 100%;
+            }
+
+            .form-actions > * {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .brand {
+                gap: 8px;
+                font-size: 12px;
+            }
+
+            .btn-logout {
+                padding: 8px 10px;
+            }
+
+            .page-wrapper {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .form-card-content {
+                padding: 19px 14px;
+            }
+
+            .section-heading {
+                gap: 10px;
+            }
+
+            .section-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions > * {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <div class="container-fluid px-3 px-md-4">
+            <div class="topbar-inner">
 
-<nav class="navbar navbar-dark bg-dark">
+                <a href="{% url 'admin_dashboard' %}" class="brand">
+                    <span class="brand-mark">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
 
-    <div class="container-fluid px-4">
+                    <span>
+                        Student Risk Management
+                        <span class="brand-subtitle">
+                            Dropout Risk Monitoring System
+                        </span>
+                    </span>
+                </a>
 
-        <a
-            href="{% url 'admin_dashboard' %}"
-            class="navbar-brand fw-bold"
-        >
-            Student Risk Management
-        </a>
+                <div class="topbar-actions">
+                    <span class="role-label">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        Administrator
+                    </span>
 
-        <a
-            href="{% url 'logout' %}"
-            class="btn btn-outline-light btn-sm"
-        >
-            Logout
-        </a>
-
-    </div>
-
-</nav>
-
-
-<div class="container py-5">
-
-
-    <div class="row justify-content-center">
-
-        <div class="col-lg-9">
-
-
-            <div class="d-flex justify-content-between
-                        align-items-center mb-4">
-
-                <div>
-
-                    <h2 class="fw-bold mb-1">
-                        {{ page_title }}
-                    </h2>
-
-                    <p class="text-secondary mb-0">
-                        Enter student information below.
-                    </p>
-
+                    <a href="{% url 'logout' %}" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
                 </div>
 
+            </div>
+        </div>
+    </nav>
 
-                <a
-                    href="{% url 'student_list' %}"
-                    class="btn btn-outline-secondary"
-                >
-                    Back to Students
-                </a>
+    <!-- Main Content -->
+    <main class="page-wrapper">
+
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="{% url 'admin_dashboard' %}">
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'student_list' %}">
+                Students
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>{{ page_title }}</span>
+        </nav>
+
+        <!-- Page Heading -->
+        <header class="page-heading">
+            <div class="heading-content">
+
+                <div class="heading-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
+
+                <div>
+                    <h1 class="page-title">{{ page_title }}</h1>
+
+                    <p class="page-description">
+                        Enter and maintain the student's personal, contact
+                        and academic information. Student login credentials
+                        can also be configured here.
+                    </p>
+                </div>
 
             </div>
 
+            <a href="{% url 'student_list' %}" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Back to Students
+            </a>
+        </header>
 
-            <div class="card border-0 shadow-sm">
+        <!-- Student Form -->
+        <section class="form-card">
+            <div class="form-card-top"></div>
 
-                <div class="card-body p-4 p-md-5">
+            <div class="form-card-content">
 
+                <form method="POST">
+                    {% csrf_token %}
 
-                    <form method="POST">
+                    {% if form.non_field_errors %}
+                        <div class="non-field-errors" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
 
-                        {% csrf_token %}
-
-
-                        {% if form.non_field_errors %}
-
-                            <div class="alert alert-danger">
+                            <div>
+                                <strong class="d-block mb-1">
+                                    Please review the following
+                                </strong>
 
                                 {{ form.non_field_errors }}
+                            </div>
+                        </div>
+                    {% endif %}
 
+                    <!-- Personal Information -->
+                    <section class="section-block">
+
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="bi bi-person"></i>
                             </div>
 
-                        {% endif %}
+                            <div>
+                                <h2 class="section-title">
+                                    Personal Information
+                                </h2>
 
+                                <p class="section-description">
+                                    Student identification and basic details.
+                                </p>
+                            </div>
+                        </div>
 
-                        <!-- ==========================
-                             PERSONAL INFORMATION
-                        =========================== -->
-
-                        <h5 class="fw-bold mb-3">
-                            Personal Information
-                        </h5>
-
-                        <hr>
-
-
-                        <div class="row g-3 mb-4">
-
+                        <div class="row g-3 field-grid">
 
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.student_id.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Student ID
                                 </label>
@@ -126,69 +816,50 @@
                                 {{ form.student_id }}
 
                                 {% for error in form.student_id.errors %}
-
-                                    <div class="text-danger small mt-1">
+                                    <div class="field-error">
                                         {{ error }}
                                     </div>
-
                                 {% endfor %}
-
                             </div>
 
-                            
-<div class="col-md-6">
-    <label
-        for="{{ form.student_password.id_for_label }}"
-        class="form-label fw-semibold"
-    >
-        Student Login Password
-    </label>
-
-    {{ form.student_password }}
-
-    {% if form.student_password.help_text %}
-        <div class="form-text">
-            {{ form.student_password.help_text }}
-        </div>
-    {% endif %}
-
-    {% for error in form.student_password.errors %}
-        <div class="text-danger small mt-1">
-            {{ error }}
-        </div>
-    {% endfor %}
-</div>
-
-
-
-
                             <div class="col-md-6">
+                                <div class="password-field-wrap">
+                                    <label
+                                        for="{{ form.student_password.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        Student Login Password
+                                    </label>
 
-                                <label
-                                    for="{{ form.gender.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Gender
-                                </label>
+                                    {{ form.student_password }}
 
-                                {{ form.gender }}
+                                    {% if form.student_password.help_text %}
+                                        <div class="help-text">
+                                            {{ form.student_password.help_text }}
+                                        </div>
+                                    {% endif %}
 
-                                {% for error in form.gender.errors %}
+                                    {% for error in form.student_password.errors %}
+                                        <div class="field-error">
+                                            {{ error }}
+                                        </div>
+                                    {% endfor %}
 
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
+                                    <div class="password-caption">
+                                        <i class="bi bi-shield-lock"></i>
+                                        <span>
+                                            The student uses their Student ID
+                                            as the username to access the
+                                            student dashboard.
+                                        </span>
                                     </div>
-
-                                {% endfor %}
-
+                                </div>
                             </div>
 
-
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.first_name.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     First Name
                                 </label>
@@ -196,21 +867,16 @@
                                 {{ form.first_name }}
 
                                 {% for error in form.first_name.errors %}
-
-                                    <div class="text-danger small mt-1">
+                                    <div class="field-error">
                                         {{ error }}
                                     </div>
-
                                 {% endfor %}
-
                             </div>
 
-
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.last_name.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Last Name
                                 </label>
@@ -218,343 +884,380 @@
                                 {{ form.last_name }}
 
                                 {% for error in form.last_name.errors %}
-
-                                    <div class="text-danger small mt-1">
+                                    <div class="field-error">
                                         {{ error }}
                                     </div>
-
                                 {% endfor %}
-
                             </div>
 
+                            <div class="col-md-6">
+                                <label
+                                    for="{{ form.gender.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Gender
+                                </label>
+
+                                {{ form.gender }}
+
+                                {% for error in form.gender.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
 
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.date_of_birth.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Date of Birth
                                 </label>
 
                                 {{ form.date_of_birth }}
 
+                                {% for error in form.date_of_birth.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
 
-
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.admission_date.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Admission Date
                                 </label>
 
                                 {{ form.admission_date }}
 
+                                {% for error in form.admission_date.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
 
+                        </div>
+                    </section>
 
+                    <!-- Contact Information -->
+                    <section class="section-block">
+
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+
+                            <div>
+                                <h2 class="section-title">
+                                    Contact Information
+                                </h2>
+
+                                <p class="section-description">
+                                    Contact details for student communication.
+                                </p>
+                            </div>
                         </div>
 
-
-                        <!-- ==========================
-                             CONTACT
-                        =========================== -->
-
-                        <h5 class="fw-bold mb-3">
-                            Contact Information
-                        </h5>
-
-                        <hr>
-
-
-                        <div class="row g-3 mb-4">
-
+                        <div class="row g-3 field-grid">
 
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.email.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Email Address
                                 </label>
 
                                 {{ form.email }}
 
+                                {% for error in form.email.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
 
-
                             <div class="col-md-6">
-
                                 <label
                                     for="{{ form.phone.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Phone Number
                                 </label>
 
                                 {{ form.phone }}
 
+                                {% for error in form.phone.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
 
-
                             <div class="col-12">
-
                                 <label
                                     for="{{ form.address.id_for_label }}"
-                                    class="form-label fw-semibold"
+                                    class="form-label"
                                 >
                                     Address
                                 </label>
 
                                 {{ form.address }}
 
+                                {% for error in form.address.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
                             </div>
 
+                        </div>
+                    </section>
 
+                    <!-- Academic Information -->
+                    <section class="section-block">
+
+                        <div class="section-heading">
+                            <div class="section-icon">
+                                <i class="bi bi-journal-bookmark"></i>
+                            </div>
+
+                            <div>
+                                <h2 class="section-title">
+                                    Academic Information
+                                </h2>
+
+                                <p class="section-description">
+                                    Department, course, semester and mentor assignment.
+                                </p>
+                            </div>
                         </div>
 
+                        <div class="row g-3 field-grid">
 
-                        <!-- ==========================
-     ACADEMIC INFORMATION
-=========================== -->
+                            <div class="col-md-6">
+                                <label
+                                    for="{{ form.department.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Department
+                                </label>
 
-<h5 class="fw-bold mb-3">
-    Academic Information
-</h5>
+                                {{ form.department }}
 
-<hr>
+                                {% for error in form.department.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-<div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label
+                                    for="{{ form.course.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Course
+                                </label>
 
-    <!-- DEPARTMENT -->
-    <div class="col-md-6">
+                                {{ form.course }}
 
-        <label
-            for="{{ form.department.id_for_label }}"
-            class="form-label fw-semibold"
-        >
-            Department
-        </label>
+                                {% for error in form.course.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-        {{ form.department }}
+                            <div class="col-md-6">
+                                <label
+                                    for="{{ form.semester.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Semester
+                                </label>
 
-        {% for error in form.department.errors %}
-            <div class="text-danger small mt-1">
-                {{ error }}
-            </div>
-        {% endfor %}
+                                {{ form.semester }}
 
-    </div>
+                                {% for error in form.semester.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-    <!-- COURSE -->
-    <div class="col-md-6">
+                            <!-- Assigned Mentor -->
+                            <div class="col-md-6">
+                                <label
+                                    for="{{ form.mentor.id_for_label }}"
+                                    class="form-label"
+                                >
+                                    Assigned Mentor
+                                </label>
 
-        <label
-            for="{{ form.course.id_for_label }}"
-            class="form-label fw-semibold"
-        >
-            Course
-        </label>
+                                {{ form.mentor }}
 
-        {{ form.course }}
+                                <div id="mentor-help" class="mentor-info">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Select a department to check its assigned mentor.
+                                </div>
 
-        {% for error in form.course.errors %}
-            <div class="text-danger small mt-1">
-                {{ error }}
-            </div>
-        {% endfor %}
+                                <div
+                                    id="mentor-status"
+                                    class="small"
+                                    aria-live="polite"
+                                ></div>
 
-    </div>
+                                {% for error in form.mentor.errors %}
+                                    <div class="field-error">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-    <!-- SEMESTER -->
-    <div class="col-md-6">
+                        </div>
+                    </section>
 
-        <label
-            for="{{ form.semester.id_for_label }}"
-            class="form-label fw-semibold"
-        >
-            Semester
-        </label>
+                    <!-- Form Actions -->
+                    <footer class="form-footer">
 
-        {{ form.semester }}
+                        <div class="footer-note">
+                            <i class="bi bi-info-circle-fill"></i>
 
-        {% for error in form.semester.errors %}
-            <div class="text-danger small mt-1">
-                {{ error }}
-            </div>
-        {% endfor %}
+                            <span>
+                                Review the information before submitting.
+                                Any field validation errors will appear beside
+                                the relevant field.
+                            </span>
+                        </div>
 
-    </div>
-
-    <!-- ASSIGNED MENTOR -->
-<div class="col-md-6">
-
-    <label
-        for="{{ form.mentor.id_for_label }}"
-        class="form-label fw-semibold"
-    >
-        Assigned Mentor
-    </label>
-
-    {{ form.mentor }}
-
-    <div id="mentor-help" class="form-text">
-        Select a department to check its assigned mentor.
-    </div>
-
-    <div
-        id="mentor-status"
-        class="small mt-1"
-        aria-live="polite"
-    ></div>
-
-    {% for error in form.mentor.errors %}
-        <div class="text-danger small mt-1">
-            {{ error }}
-        </div>
-    {% endfor %}
-
-</div>
-
-</div>
-
-
-                        <!-- Buttons -->
-
-                        <div class="d-flex justify-content-end gap-2">
-
+                        <div class="form-actions">
                             <a
                                 href="{% url 'student_list' %}"
-                                class="btn btn-outline-secondary"
+                                class="btn-cancel"
                             >
+                                <i class="bi bi-x-lg"></i>
                                 Cancel
                             </a>
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
+                            <button type="submit" class="btn-submit">
+                                <i class="bi bi-check2-circle"></i>
                                 {{ submit_text }}
                             </button>
-
                         </div>
 
+                    </footer>
 
-                    </form>
-
-
-                </div>
-
+                </form>
             </div>
+        </section>
 
-
+        <div class="page-bottom">
+            Student Dropout Risk Management System
         </div>
 
-    </div>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-</div>
+    <!-- Department-specific mentor options supplied by Django -->
+    {{ mentor_options|json_script:"mentor-options-data" }}
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const departmentField = document.getElementById(
+                "{{ form.department.id_for_label }}"
+            );
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+            const mentorField = document.getElementById(
+                "{{ form.mentor.id_for_label }}"
+            );
 
+            const mentorHelp = document.getElementById("mentor-help");
+            const mentorStatus = document.getElementById("mentor-status");
 
-{{ mentor_options|json_script:"mentor-options-data" }}
+            const mentorOptions = JSON.parse(
+                document.getElementById("mentor-options-data").textContent
+            );
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const departmentField = document.getElementById(
-        "{{ form.department.id_for_label }}"
-    );
+            function updateMentor() {
+                const departmentId = departmentField.value;
+                const mentors = mentorOptions[departmentId] || [];
 
-    const mentorField = document.getElementById(
-        "{{ form.mentor.id_for_label }}"
-    );
+                mentorField.innerHTML = "";
 
-    const mentorHelp = document.getElementById("mentor-help");
-    const mentorStatus = document.getElementById("mentor-status");
+                const placeholder = document.createElement("option");
+                placeholder.value = "";
 
-    const mentorOptions = JSON.parse(
-        document.getElementById("mentor-options-data").textContent
-    );
+                if (!departmentId) {
+                    placeholder.textContent = "Select a department first";
+                } else if (mentors.length === 0) {
+                    placeholder.textContent = "No mentor available";
+                } else if (mentors.length > 1) {
+                    placeholder.textContent = "Multiple mentors found";
+                } else {
+                    placeholder.textContent = "Mentor assigned automatically";
+                }
 
-    function updateMentor() {
-        const departmentId = departmentField.value;
-        const mentors = mentorOptions[departmentId] || [];
+                mentorField.appendChild(placeholder);
 
-        mentorField.innerHTML = "";
+                if (mentors.length === 1) {
+                    const option = document.createElement("option");
 
-        const placeholder = document.createElement("option");
-        placeholder.value = "";
+                    option.value = mentors[0].id;
+                    option.textContent = mentors[0].label;
+                    option.selected = true;
 
-        if (!departmentId) {
-            placeholder.textContent = "Select a department first";
-        } else if (mentors.length === 0) {
-            placeholder.textContent = "No mentor available";
-        } else if (mentors.length > 1) {
-            placeholder.textContent = "Multiple mentors found";
-        } else {
-            placeholder.textContent = "Mentor assigned automatically";
-        }
+                    mentorField.appendChild(option);
 
-        mentorField.appendChild(placeholder);
+                    mentorHelp.innerHTML =
+                        '<i class="bi bi-info-circle me-1"></i>' +
+                        "The mentor is assigned automatically based on the department.";
 
-        if (mentors.length === 1) {
-            const option = document.createElement("option");
+                    mentorStatus.textContent =
+                        "Mentor assigned successfully.";
 
-            option.value = mentors[0].id;
-            option.textContent = mentors[0].label;
-            option.selected = true;
+                    mentorStatus.className =
+                        "text-success small";
+                } else if (mentors.length === 0 && departmentId) {
+                    mentorHelp.innerHTML =
+                        '<i class="bi bi-info-circle me-1"></i>' +
+                        "Assign a mentor to this department before adding the student.";
 
-            mentorField.appendChild(option);
+                    mentorStatus.textContent =
+                        "Cannot add a student without an assigned mentor.";
 
-            mentorHelp.textContent =
-                "The mentor is assigned automatically based on the department.";
+                    mentorStatus.className =
+                        "text-danger small";
+                } else if (mentors.length > 1) {
+                    mentorHelp.innerHTML =
+                        '<i class="bi bi-info-circle me-1"></i>' +
+                        "Only one mentor should be assigned to this department.";
 
-            mentorStatus.textContent =
-                "Mentor assigned successfully.";
+                    mentorStatus.textContent =
+                        "Multiple mentors found. Resolve the assignment before continuing.";
 
-            mentorStatus.className =
-                "text-success small mt-1";
-        } else if (mentors.length === 0 && departmentId) {
-            mentorHelp.textContent =
-                "Assign a mentor to this department before adding the student.";
+                    mentorStatus.className =
+                        "text-danger small";
+                } else {
+                    mentorHelp.innerHTML =
+                        '<i class="bi bi-info-circle me-1"></i>' +
+                        "Choose a department to find its assigned mentor.";
 
-            mentorStatus.textContent =
-                "Cannot add a student without an assigned mentor.";
+                    mentorStatus.textContent = "";
+                }
+            }
 
-            mentorStatus.className =
-                "text-danger small mt-1";
-        } else if (mentors.length > 1) {
-            mentorHelp.textContent =
-                "Only one mentor should be assigned to this department.";
+            departmentField.addEventListener("change", updateMentor);
 
-            mentorStatus.textContent =
-                "Multiple mentors found. Resolve the assignment before continuing.";
-
-            mentorStatus.className =
-                "text-danger small mt-1";
-        } else {
-            mentorHelp.textContent =
-                "Choose a department to find its assigned mentor.";
-
-            mentorStatus.textContent = "";
-        }
-    }
-
-    departmentField.addEventListener("change", updateMentor);
-
-    updateMentor();
-});
-</script>
-
+            updateMentor();
+        });
+    </script>
 
 </body>
-
 </html>

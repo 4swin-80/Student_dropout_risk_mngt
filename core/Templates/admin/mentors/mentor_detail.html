@@ -1,176 +1,1067 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mentor Details</title>
+    <title>Mentor Details | Administrator</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <!-- Bootstrap 5.3.2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
+
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #1b2a50;
+
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+
+            --admin-text: #172033;
+            --admin-muted: #718096;
+
+            --admin-green: #16834a;
+            --admin-green-soft: #e9f8ef;
+
+            --admin-amber: #986500;
+            --admin-amber-soft: #fff5df;
+
+            --admin-red: #c93645;
+            --admin-red-soft: #fff0f1;
+
+            --admin-radius: 18px;
+            --admin-radius-sm: 11px;
+
+            --admin-shadow:
+                0 8px 32px rgba(22, 34, 67, 0.055);
+
+            --admin-hover-shadow:
+                0 14px 36px rgba(22, 34, 67, 0.09);
+        }
+
+        /* =====================================================
+           BASE STYLES
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.93rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           PAGE LAYOUT
+        ===================================================== */
+
+        .mentor-details-page {
+            width: 100%;
+            max-width: 1350px;
+            margin: 0 auto;
+            padding: 38px 30px 34px;
+        }
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .page-heading {
+            min-width: 0;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 11px;
+            color: var(--admin-indigo);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow i {
+            font-size: 0.95rem;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.7vw, 2.15rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.3;
+        }
+
+        .page-description {
+            max-width: 680px;
+            margin: 10px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.9rem;
+            line-height: 1.75;
+        }
+
+        /* =====================================================
+           NAVIGATION BUTTON
+        ===================================================== */
+
+        .btn-admin-back {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 43px;
+            flex-shrink: 0;
+            padding: 11px 16px;
+            border: 1px solid #dce2ed;
+            border-radius: var(--admin-radius-sm);
+            background: var(--admin-surface);
+            color: #34415a;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-align: center;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .btn-admin-back:hover {
+            border-color: #c7d2fe;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo-dark);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.07);
+        }
+
+        /* =====================================================
+           MENTOR DETAILS CARD
+        ===================================================== */
+
+        .mentor-details-wrapper {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .mentor-details-card {
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .mentor-details-card:hover {
+            box-shadow: var(--admin-hover-shadow);
+        }
+
+        /* =====================================================
+           CARD HEADER
+        ===================================================== */
+
+        .details-card-header {
+            position: relative;
+            padding: 26px 30px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #fff;
+        }
+
+        .details-card-header::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--admin-indigo);
+            content: "";
+        }
+
+        .details-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .details-heading-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 12px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.15rem;
+        }
+
+        .details-heading-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 0.98rem;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+        }
+
+        .details-heading-description {
+            margin: 5px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.77rem;
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           MENTOR PROFILE
+        ===================================================== */
+
+        .mentor-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 37px 28px 33px;
+            border-bottom: 1px solid var(--admin-border);
+            background:
+                radial-gradient(
+                    ellipse at top,
+                    rgba(79, 70, 229, 0.055),
+                    transparent 67%
+                ),
+                #fff;
+            text-align: center;
+        }
+
+        .mentor-avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 92px;
+            height: 92px;
+            margin-bottom: 19px;
+            border: 1px solid #dfe3ff;
+            border-radius: 27px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 2.6rem;
+            box-shadow: 0 8px 22px rgba(79, 70, 229, 0.07);
+        }
+
+        .profile-eyebrow {
+            margin-bottom: 9px;
+            color: #8390a4;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .mentor-name {
+            max-width: 100%;
+            margin: 0;
+            color: var(--admin-navy);
+            font-size: clamp(1.45rem, 3vw, 1.9rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .mentor-role-badge {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 8px 13px;
+            border: 1px solid #dfe3ff;
+            border-radius: 9px;
+            background: #f4f5ff;
+            color: #4f46a5;
+            font-size: 0.76rem;
+            font-weight: 750;
+        }
+
+        .mentor-role-badge i {
+            font-size: 0.88rem;
+        }
+
+        /* =====================================================
+           DETAIL INFORMATION SECTION
+        ===================================================== */
+
+        .details-card-body {
+            padding: 29px 30px 31px;
+        }
+
+        .section-heading {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1rem;
+            font-weight: 750;
+            letter-spacing: -0.015em;
+        }
+
+        .section-description {
+            margin: 6px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.79rem;
+            line-height: 1.65;
+        }
+
+        /* =====================================================
+           INFORMATION CARDS
+        ===================================================== */
+
+        .information-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            height: 100%;
+            min-height: 108px;
+            padding: 19px;
+            border: 1px solid var(--admin-border);
+            border-radius: 13px;
+            background: #fff;
+            transition:
+                border-color 0.18s ease,
+                background 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .information-card:hover {
+            border-color: #d8ddf4;
+            background: #fdfdff;
+            box-shadow: 0 5px 15px rgba(22, 34, 67, 0.035);
+        }
+
+        .information-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            border: 1px solid #e0e7ff;
+            border-radius: 11px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.05rem;
+        }
+
+        .information-content {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .information-label {
+            display: block;
+            margin-bottom: 7px;
+            color: #7b879b;
+            font-size: 0.73rem;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            line-height: 1.5;
+        }
+
+        .information-value {
+            color: var(--admin-text);
+            font-size: 0.85rem;
+            font-weight: 750;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+        }
+
+        .information-value--secondary {
+            color: #8490a4;
+            font-weight: 600;
+        }
+
+        .information-value--identifier {
+            color: #4945a5;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .information-value--email {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .information-meta {
+            display: block;
+            margin-top: 5px;
+            color: #929db0;
+            font-size: 0.71rem;
+            line-height: 1.55;
+        }
+
+        /* Department assignment states */
+
+        .department-value {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 7px;
+        }
+
+        .department-assigned {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--admin-text);
+            font-size: 0.85rem;
+            font-weight: 750;
+            line-height: 1.65;
+            overflow-wrap: anywhere;
+        }
+
+        .department-assigned i {
+            flex-shrink: 0;
+            color: var(--admin-indigo);
+        }
+
+        .department-unassigned {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 8px;
+            border: 1px solid #e4e8ef;
+            border-radius: 7px;
+            background: #f7f8fb;
+            color: #7a869a;
+            font-size: 0.72rem;
+            font-weight: 650;
+        }
+
+        /* =====================================================
+           ACTION BUTTONS
+        ===================================================== */
+
+        .details-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 11px;
+            margin-top: 29px;
+            padding-top: 25px;
+            border-top: 1px solid #edf0f6;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 44px;
+            padding: 11px 17px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.81rem;
+            font-weight: 750;
+            line-height: 1.4;
+            text-align: center;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .btn-action i {
+            font-size: 0.95rem;
+        }
+
+        .btn-edit {
+            border-color: #dfe3ff;
+            background: #f4f5ff;
+            color: var(--admin-indigo-dark);
+        }
+
+        .btn-edit:hover {
+            border-color: var(--admin-indigo);
+            background: var(--admin-indigo);
+            color: #fff;
+            box-shadow: 0 5px 13px rgba(79, 70, 229, 0.17);
+        }
+
+        .btn-delete {
+            border-color: #f2d5d9;
+            background: #fff;
+            color: var(--admin-red);
+        }
+
+        .btn-delete:hover {
+            border-color: var(--admin-red);
+            background: var(--admin-red);
+            color: #fff;
+            box-shadow: 0 5px 13px rgba(201, 54, 69, 0.13);
+        }
+
+        /* =====================================================
+           BACK LINK
+        ===================================================== */
+
+        .back-link-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 18px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #68768d;
+            font-size: 0.81rem;
+            font-weight: 650;
+            transition:
+                background 0.18s ease,
+                color 0.18s ease;
+        }
+
+        .back-link:hover {
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo-dark);
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 21px;
+            border-top: 1px solid var(--admin-border);
+            color: #8994a8;
+            font-size: 0.74rem;
+            line-height: 1.6;
+        }
+
+        .footer-brand {
+            color: #657289;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 767.98px) {
+            .mentor-details-page {
+                padding: 28px 18px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 18px;
+                margin-bottom: 24px;
+            }
+
+            .btn-admin-back {
+                width: 100%;
+            }
+
+            .details-card-header {
+                padding: 23px;
+            }
+
+            .mentor-profile {
+                padding: 31px 21px 27px;
+            }
+
+            .mentor-avatar {
+                width: 79px;
+                height: 79px;
+                border-radius: 22px;
+                font-size: 2.1rem;
+            }
+
+            .details-card-body {
+                padding: 24px 23px 27px;
+            }
+
+            .details-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+
+            .page-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 399.98px) {
+            .mentor-details-page {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .page-title {
+                font-size: 1.55rem;
+            }
+
+            .page-description {
+                font-size: 0.84rem;
+            }
+
+            .details-card-header {
+                padding: 19px;
+            }
+
+            .mentor-profile {
+                padding: 27px 17px 23px;
+            }
+
+            .mentor-name {
+                font-size: 1.4rem;
+            }
+
+            .details-card-body {
+                padding: 20px 17px 23px;
+            }
+
+            .information-card {
+                min-height: 95px;
+                gap: 11px;
+                padding: 15px;
+            }
+
+            .information-icon {
+                width: 36px;
+                height: 36px;
+                border-radius: 9px;
+                font-size: 0.94rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container py-5">
+    <main class="mentor-details-page">
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
 
-        <div>
-            <h2 class="fw-bold mb-1">
-                <i class="bi bi-person-badge"></i>
-                Mentor Details
-            </h2>
+        <header class="page-header">
 
-            <p class="text-secondary mb-0">
-                View mentor account and employee information.
-            </p>
-        </div>
+            <div class="page-heading">
 
-        <a href="{% url 'mentor_list' %}"
-           class="btn btn-outline-secondary">
+                <div class="page-eyebrow">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    Administrator Portal
+                </div>
 
-            <i class="bi bi-arrow-left"></i>
-            Back to Mentors
+                <h1 class="page-title">
+                    Mentor Details
+                </h1>
 
-        </a>
+                <p class="page-description">
+                    View mentor account information, employee identification,
+                    department assignment and contact details.
+                </p>
 
-    </div>
+            </div>
 
+            <a
+                href="{% url 'mentor_list' %}"
+                class="btn-admin-back"
+            >
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                Back to Mentors
+            </a>
 
-    <!-- Mentor Details Card -->
-    <div class="row justify-content-center">
+        </header>
 
-        <div class="col-md-9 col-lg-8">
+        <!-- =================================================
+             MENTOR DETAILS CARD
+        ================================================== -->
 
-            <div class="card border-0 shadow-sm">
+        <section
+            class="mentor-details-wrapper"
+            aria-labelledby="mentor-profile-heading"
+        >
 
-                <div class="card-body p-4">
+            <article class="mentor-details-card">
 
-                    <!-- Mentor Header -->
-                    <div class="text-center mb-4">
+                <!-- Card Header -->
 
-                        <div class="mb-3">
-                            <i class="bi bi-person-circle text-primary"
-                               style="font-size: 4rem;">
-                            </i>
+                <div class="details-card-header">
+
+                    <div class="details-heading">
+
+                        <div
+                            class="details-heading-icon"
+                            aria-hidden="true"
+                        >
+                            <i class="bi bi-person-badge-fill"></i>
                         </div>
 
-                        <h3 class="fw-bold mb-1">
+                        <div>
 
-                            {% if mentor.user.get_full_name %}
-                                {{ mentor.user.get_full_name }}
-                            {% else %}
-                                {{ mentor.user.username }}
-                            {% endif %}
+                            <h2 class="details-heading-title">
+                                Mentor Account Information
+                            </h2>
 
-                        </h3>
+                            <p class="details-heading-description">
+                                Overview of the selected mentor's account and employee record.
+                            </p>
 
-                        <span class="badge bg-info">
-                            Mentor
-                        </span>
+                        </div>
 
                     </div>
 
+                </div>
 
-                    <!-- Information -->
+                <!-- =================================================
+                     MENTOR PROFILE
+                ================================================== -->
+
+                <div class="mentor-profile">
+
+                    <div
+                        class="mentor-avatar"
+                        aria-hidden="true"
+                    >
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+
+                    <div class="profile-eyebrow">
+                        Staff Profile
+                    </div>
+
+                    <h2
+                        class="mentor-name"
+                        id="mentor-profile-heading"
+                    >
+
+                        {% if mentor.user.get_full_name %}
+                            {{ mentor.user.get_full_name }}
+                        {% else %}
+                            {{ mentor.user.username }}
+                        {% endif %}
+
+                    </h2>
+
+                    <span class="mentor-role-badge">
+                        <i class="bi bi-person-check-fill" aria-hidden="true"></i>
+                        Mentor
+                    </span>
+
+                </div>
+
+                <!-- =================================================
+                     MENTOR INFORMATION
+                ================================================== -->
+
+                <div class="details-card-body">
+
+                    <div class="section-heading">
+
+                        <h3 class="section-title">
+                            Employee Information
+                        </h3>
+
+                        <p class="section-description">
+                            Account, department and contact information currently available in the system.
+                        </p>
+
+                    </div>
+
                     <div class="row g-3">
 
                         <!-- Username -->
+
                         <div class="col-md-6">
 
-                            <div class="border rounded p-3 h-100">
+                            <div class="information-card">
 
-                                <small class="text-secondary">
-                                    Username
-                                </small>
+                                <div
+                                    class="information-icon"
+                                    aria-hidden="true"
+                                >
+                                    <i class="bi bi-person"></i>
+                                </div>
 
-                                <div class="fw-semibold mt-1">
-                                    {{ mentor.user.username }}
+                                <div class="information-content">
+
+                                    <span class="information-label">
+                                        Username
+                                    </span>
+
+                                    <div class="information-value">
+                                        {{ mentor.user.username }}
+                                    </div>
+
+                                    <span class="information-meta">
+                                        Mentor login account
+                                    </span>
+
                                 </div>
 
                             </div>
 
                         </div>
-
 
                         <!-- Employee ID -->
+
                         <div class="col-md-6">
 
-                            <div class="border rounded p-3 h-100">
+                            <div class="information-card">
 
-                                <small class="text-secondary">
-                                    Employee ID
-                                </small>
+                                <div
+                                    class="information-icon"
+                                    aria-hidden="true"
+                                >
+                                    <i class="bi bi-person-vcard"></i>
+                                </div>
 
-                                <div class="fw-semibold mt-1">
-                                    {{ mentor.employee_id }}
+                                <div class="information-content">
+
+                                    <span class="information-label">
+                                        Employee ID
+                                    </span>
+
+                                    <div class="information-value information-value--identifier">
+                                        {{ mentor.employee_id }}
+                                    </div>
+
+                                    <span class="information-meta">
+                                        Employee identification
+                                    </span>
+
                                 </div>
 
                             </div>
 
                         </div>
-
 
                         <!-- Department -->
+
                         <div class="col-md-6">
 
-                            <div class="border rounded p-3 h-100">
+                            <div class="information-card">
 
-                                <small class="text-secondary">
-                                    Department
-                                </small>
+                                <div
+                                    class="information-icon"
+                                    aria-hidden="true"
+                                >
+                                    <i class="bi bi-building"></i>
+                                </div>
 
-                                <div class="fw-semibold mt-1">
+                                <div class="information-content">
 
-                                    {% if mentor.department %}
-                                        {{ mentor.department.name }}
-                                    {% else %}
-                                        <span class="text-secondary">
-                                            Not Assigned
-                                        </span>
-                                    {% endif %}
+                                    <span class="information-label">
+                                        Department
+                                    </span>
+
+                                    <div class="department-value">
+
+                                        {% if mentor.department %}
+
+                                            <span class="department-assigned">
+                                                <i
+                                                    class="bi bi-building-fill"
+                                                    aria-hidden="true"
+                                                ></i>
+                                                {{ mentor.department.name }}
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="department-unassigned">
+                                                <i
+                                                    class="bi bi-dash-circle"
+                                                    aria-hidden="true"
+                                                ></i>
+                                                Not Assigned
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <span class="information-meta">
+                                        Academic department assignment
+                                    </span>
 
                                 </div>
 
                             </div>
 
                         </div>
-
 
                         <!-- Phone -->
+
                         <div class="col-md-6">
 
-                            <div class="border rounded p-3 h-100">
+                            <div class="information-card">
 
-                                <small class="text-secondary">
-                                    Phone Number
-                                </small>
+                                <div
+                                    class="information-icon"
+                                    aria-hidden="true"
+                                >
+                                    <i class="bi bi-telephone"></i>
+                                </div>
 
-                                <div class="fw-semibold mt-1">
-                                    {{ mentor.phone|default:"Not Provided" }}
+                                <div class="information-content">
+
+                                    <span class="information-label">
+                                        Phone Number
+                                    </span>
+
+                                    <div class="information-value">
+
+                                        {% if mentor.phone %}
+                                            {{ mentor.phone }}
+                                        {% else %}
+                                            <span class="information-value--secondary">
+                                                Not Provided
+                                            </span>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <span class="information-meta">
+                                        Mentor contact information
+                                    </span>
+
                                 </div>
 
                             </div>
 
                         </div>
-
 
                         <!-- Email -->
+
                         <div class="col-12">
 
-                            <div class="border rounded p-3">
+                            <div class="information-card">
 
-                                <small class="text-secondary">
-                                    Email Address
-                                </small>
+                                <div
+                                    class="information-icon"
+                                    aria-hidden="true"
+                                >
+                                    <i class="bi bi-envelope"></i>
+                                </div>
 
-                                <div class="fw-semibold mt-1">
-                                    {{ mentor.user.email|default:"Not Provided" }}
+                                <div class="information-content">
+
+                                    <span class="information-label">
+                                        Email Address
+                                    </span>
+
+                                    <div class="information-value information-value--email">
+
+                                        {% if mentor.user.email %}
+                                            {{ mentor.user.email }}
+                                        {% else %}
+                                            <span class="information-value--secondary">
+                                                Not Provided
+                                            </span>
+                                        {% endif %}
+
+                                    </div>
+
+                                    <span class="information-meta">
+                                        Email associated with the mentor account
+                                    </span>
+
                                 </div>
 
                             </div>
@@ -179,51 +1070,74 @@
 
                     </div>
 
+                    <!-- =================================================
+                         ACTIONS
+                    ================================================== -->
 
-                    <!-- Actions -->
-                    <div class="d-flex justify-content-center gap-2 mt-4">
+                    <div class="details-actions">
 
-                        <a href="{% url 'mentor_update' mentor.id %}"
-                           class="btn btn-warning">
-
-                            <i class="bi bi-pencil"></i>
+                        <a
+                            href="{% url 'mentor_update' mentor.id %}"
+                            class="btn-action btn-edit"
+                        >
+                            <i
+                                class="bi bi-pencil-square"
+                                aria-hidden="true"
+                            ></i>
                             Edit Mentor
-
                         </a>
 
-                        <a href="{% url 'mentor_delete' mentor.id %}"
-                           class="btn btn-danger">
-
-                            <i class="bi bi-trash"></i>
+                        <a
+                            href="{% url 'mentor_delete' mentor.id %}"
+                            class="btn-action btn-delete"
+                        >
+                            <i
+                                class="bi bi-trash3"
+                                aria-hidden="true"
+                            ></i>
                             Delete Mentor
-
                         </a>
 
                     </div>
 
+                    <!-- Back to Mentor List -->
 
-                    <!-- Back -->
-                    <div class="text-center mt-3">
+                    <div class="back-link-wrapper">
 
-                        <a href="{% url 'mentor_list' %}"
-                           class="text-decoration-none">
-
-                            <i class="bi bi-arrow-left"></i>
+                        <a
+                            href="{% url 'mentor_list' %}"
+                            class="back-link"
+                        >
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i>
                             Back to Mentor List
-
                         </a>
 
                     </div>
 
                 </div>
 
-            </div>
+            </article>
 
-        </div>
+        </section>
 
-    </div>
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
 
-</div>
+        <footer class="page-footer">
+
+            <span>
+                Student Dropout Risk Management System
+            </span>
+
+            <span class="footer-brand">
+                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                Administrator Portal
+            </span>
+
+        </footer>
+
+    </main>
 
 </body>
 </html>

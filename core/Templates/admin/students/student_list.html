@@ -1,333 +1,1526 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>Student Management | Administrator</title>
 
-    <title>Students | Administrator</title>
-
+    <!-- Bootstrap 5.3.3 -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <!-- Bootstrap Icons -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
+
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #1b2a50;
+            --admin-navy-hover: #24345f;
+
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+
+            --admin-text: #172033;
+            --admin-muted: #718096;
+
+            --admin-green: #16834a;
+            --admin-green-soft: #e9f8ef;
+
+            --admin-blue: #176da6;
+            --admin-blue-soft: #e8f5ff;
+
+            --admin-amber: #986500;
+            --admin-amber-soft: #fff5df;
+
+            --admin-red: #c93645;
+            --admin-red-soft: #fff0f1;
+
+            --admin-radius: 17px;
+            --admin-radius-sm: 11px;
+
+            --admin-shadow:
+                0 5px 24px rgba(22, 34, 67, 0.045);
+
+            --admin-hover-shadow:
+                0 12px 30px rgba(22, 34, 67, 0.085);
+        }
+
+        /* =====================================================
+           BASE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.93rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a,
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           TOP NAVIGATION
+        ===================================================== */
+
+        .admin-navbar {
+            position: relative;
+            z-index: 10;
+            padding: 15px 0;
+            background: var(--admin-navy);
+            box-shadow: 0 3px 16px rgba(17, 27, 58, 0.12);
+        }
+
+        .admin-navbar-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .brand-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .brand-link:hover {
+            color: #fff;
+        }
+
+        .brand-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            background: rgba(129, 140, 248, 0.17);
+            color: #c7d2fe;
+            font-size: 1.22rem;
+        }
+
+        .brand-name {
+            display: block;
+            color: #fff;
+            font-size: 0.92rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.4;
+        }
+
+        .brand-caption {
+            display: block;
+            margin-top: 3px;
+            color: #aebbe0;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .admin-role {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.055);
+            color: #e2e8f0;
+            font-size: 0.77rem;
+            font-weight: 650;
+        }
+
+        .admin-role i {
+            color: #a5b4fc;
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            min-height: 37px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255, 255, 255, 0.23);
+            border-radius: 9px;
+            background: transparent;
+            color: #fff;
+            font-size: 0.77rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease;
+        }
+
+        .btn-logout:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* =====================================================
+           MAIN PAGE LAYOUT
+        ===================================================== */
+
+        .students-page {
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 34px 32px 40px;
+        }
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .page-heading {
+            min-width: 0;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: var(--admin-indigo);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow i {
+            font-size: 0.95rem;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.7vw, 2.15rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.3;
+        }
+
+        .page-description {
+            max-width: 700px;
+            margin: 10px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.9rem;
+            line-height: 1.75;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 10px;
+        }
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .btn-admin {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 43px;
+            padding: 11px 15px;
+            border: 1px solid transparent;
+            border-radius: var(--admin-radius-sm);
+            font-family: inherit;
+            font-size: 0.81rem;
+            font-weight: 700;
+            line-height: 1.4;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .btn-admin i {
+            flex-shrink: 0;
+            font-size: 0.98rem;
+        }
+
+        .btn-admin-back {
+            border-color: #dce2ed;
+            background: var(--admin-surface);
+            color: #34415a;
+        }
+
+        .btn-admin-back:hover {
+            border-color: #c7d2fe;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo-dark);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.07);
+        }
+
+        .btn-admin-primary {
+            border-color: var(--admin-indigo);
+            background: var(--admin-indigo);
+            color: #fff;
+            box-shadow: 0 4px 11px rgba(79, 70, 229, 0.15);
+        }
+
+        .btn-admin-primary:hover {
+            border-color: var(--admin-indigo-dark);
+            background: var(--admin-indigo-dark);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.22);
+        }
+
+        /* =====================================================
+           DJANGO MESSAGES
+        ===================================================== */
+
+        .message-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-bottom: 13px;
+            padding: 14px 16px;
+            border: 1px solid #ccebd8;
+            border-radius: 11px;
+            background: var(--admin-green-soft);
+            color: #176f40;
+            font-size: 0.82rem;
+            line-height: 1.65;
+            box-shadow: 0 2px 8px rgba(22, 34, 67, 0.025);
+        }
+
+        .message-alert .message-icon {
+            flex-shrink: 0;
+            margin-top: 1px;
+            color: var(--admin-green);
+            font-size: 1rem;
+        }
+
+        .message-alert .btn-close {
+            flex-shrink: 0;
+            margin-left: auto;
+            font-size: 0.73rem;
+        }
+
+        /* =====================================================
+           STUDENT DIRECTORY CARD
+        ===================================================== */
+
+        .students-card {
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .students-card:hover {
+            box-shadow: var(--admin-hover-shadow);
+        }
+
+        .students-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 23px 25px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #fff;
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .card-heading-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 12px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.15rem;
+        }
+
+        .card-heading-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 0.98rem;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+        }
+
+        .card-heading-description {
+            margin: 5px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.77rem;
+            line-height: 1.6;
+        }
+
+        .directory-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border: 1px solid #e0e7ff;
+            border-radius: 9px;
+            background: #f5f7ff;
+            color: #4f46a5;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .student-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .student-table {
+            width: 100%;
+            min-width: 1120px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            vertical-align: middle;
+        }
+
+        .student-table thead th {
+            padding: 16px 16px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #f8f9fd;
+            color: #69768c;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.055em;
+            line-height: 1.5;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .student-table thead th:first-child,
+        .student-table tbody td:first-child {
+            padding-left: 25px;
+        }
+
+        .student-table thead th:last-child,
+        .student-table tbody td:last-child {
+            padding-right: 25px;
+        }
+
+        .student-table tbody td {
+            padding: 17px 16px;
+            border-bottom: 1px solid #edf0f6;
+            background: #fff;
+            color: #445169;
+            font-size: 0.81rem;
+            transition: background 0.15s ease;
+        }
+
+        .student-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .student-table tbody tr:hover td {
+            background: #fafbff;
+        }
+
+        /* =====================================================
+           STUDENT ID
+        ===================================================== */
+
+        .student-id {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border: 1px solid #e0e7ff;
+            border-radius: 7px;
+            background: #f4f6ff;
+            color: #4945a5;
+            font-size: 0.75rem;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+           STUDENT NAME
+        ===================================================== */
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 180px;
+        }
+
+        .student-avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 39px;
+            height: 39px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 11px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 0.98rem;
+        }
+
+        .student-name {
+            display: block;
+            color: var(--admin-text);
+            font-size: 0.82rem;
+            font-weight: 750;
+            line-height: 1.55;
+            overflow-wrap: anywhere;
+        }
+
+        .student-name-label {
+            display: block;
+            margin-top: 3px;
+            color: #8994a8;
+            font-size: 0.7rem;
+        }
+
+        /* =====================================================
+           DEPARTMENT
+        ===================================================== */
+
+        .student-department {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #445169;
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .student-department i {
+            flex-shrink: 0;
+            color: #8994a8;
+            font-size: 0.89rem;
+        }
+
+        .unassigned-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 8px;
+            border: 1px solid #e4e8ef;
+            border-radius: 7px;
+            background: #f7f8fb;
+            color: #7a869a;
+            font-size: 0.7rem;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+           COURSE AND SEMESTER
+        ===================================================== */
+
+        .student-course {
+            color: #445169;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .semester-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border: 1px solid #cce7fb;
+            border-radius: 7px;
+            background: var(--admin-blue-soft);
+            color: #17629d;
+            font-size: 0.71rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .value-placeholder {
+            color: #9aa4b5;
+            font-size: 0.85rem;
+        }
+
+        /* =====================================================
+           MENTOR
+        ===================================================== */
+
+        .mentor-assignment {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #445169;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .mentor-assignment i {
+            flex-shrink: 0;
+            color: #8994a8;
+            font-size: 0.91rem;
+        }
+
+        /* =====================================================
+           ACTION BUTTONS
+        ===================================================== */
+
+        .student-actions {
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            min-width: 36px;
+            min-height: 35px;
+            padding: 7px 9px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            background: #fff;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1.4;
+            text-decoration: none;
+            white-space: nowrap;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+
+        .action-view {
+            border-color: #dfe4ff;
+            background: #f4f5ff;
+            color: var(--admin-indigo);
+        }
+
+        .action-view:hover {
+            border-color: var(--admin-indigo);
+            background: var(--admin-indigo);
+            color: #fff;
+        }
+
+        .action-edit {
+            border-color: #dce2ed;
+            background: #fff;
+            color: #526078;
+        }
+
+        .action-edit:hover {
+            border-color: #aab4c6;
+            background: #eef1f6;
+            color: #253149;
+        }
+
+        .action-delete {
+            border-color: #f6d8dc;
+            background: var(--admin-red-soft);
+            color: var(--admin-red);
+        }
+
+        .action-delete:hover {
+            border-color: var(--admin-red);
+            background: var(--admin-red);
+            color: #fff;
+        }
+
+        .action-btn:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 65px 24px;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 78px;
+            height: 78px;
+            margin-bottom: 20px;
+            border: 1px solid #dfe3ff;
+            border-radius: 23px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 2rem;
+        }
+
+        .empty-state-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1.13rem;
+            font-weight: 780;
+            letter-spacing: -0.025em;
+        }
+
+        .empty-state-description {
+            max-width: 430px;
+            margin: 10px 0 22px;
+            color: var(--admin-muted);
+            font-size: 0.84rem;
+            line-height: 1.8;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 27px;
+            padding-top: 21px;
+            border-top: 1px solid var(--admin-border);
+            color: #8994a8;
+            font-size: 0.74rem;
+            line-height: 1.6;
+        }
+
+        .footer-brand {
+            color: #657289;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           RESPONSIVE DESIGN
+        ===================================================== */
+
+        @media (min-width: 1600px) {
+            .students-page {
+                padding-right: 40px;
+                padding-left: 40px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .admin-navbar-inner {
+                padding-right: 22px;
+                padding-left: 22px;
+            }
+
+            .students-page {
+                padding-right: 22px;
+                padding-left: 22px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .admin-navbar {
+                padding: 13px 0;
+            }
+
+            .admin-navbar-inner {
+                padding-right: 18px;
+                padding-left: 18px;
+            }
+
+            .brand-icon {
+                width: 39px;
+                height: 39px;
+                font-size: 1.1rem;
+            }
+
+            .brand-name {
+                font-size: 0.84rem;
+            }
+
+            .brand-caption {
+                font-size: 0.66rem;
+            }
+
+            .admin-role {
+                display: none;
+            }
+
+            .students-page {
+                padding: 27px 18px 30px;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .page-description {
+                font-size: 0.85rem;
+            }
+
+            .header-actions {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 9px;
+            }
+
+            .btn-admin {
+                min-width: 0;
+                padding: 10px 11px;
+                white-space: normal;
+            }
+
+            .students-card-header {
+                align-items: flex-start;
+                padding: 19px;
+            }
+
+            .card-heading-icon {
+                width: 39px;
+                height: 39px;
+            }
+
+            .directory-badge {
+                display: none;
+            }
+
+            .student-table thead th:first-child,
+            .student-table tbody td:first-child {
+                padding-left: 19px;
+            }
+
+            .student-table thead th:last-child,
+            .student-table tbody td:last-child {
+                padding-right: 19px;
+            }
+
+            .empty-state {
+                padding: 48px 19px;
+            }
+
+            .page-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 479.98px) {
+            .admin-navbar-inner {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .brand-link {
+                gap: 9px;
+            }
+
+            .brand-icon {
+                width: 35px;
+                height: 35px;
+                border-radius: 10px;
+                font-size: 0.98rem;
+            }
+
+            .brand-name {
+                font-size: 0.77rem;
+            }
+
+            .brand-caption {
+                font-size: 0.61rem;
+            }
+
+            .btn-logout {
+                min-height: 34px;
+                padding: 8px 10px;
+                font-size: 0.72rem;
+            }
+
+            .students-page {
+                padding: 23px 13px 26px;
+            }
+
+            .page-title {
+                font-size: 1.55rem;
+            }
+
+            .page-description {
+                font-size: 0.82rem;
+            }
+
+            .header-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .students-card-header {
+                padding: 16px;
+            }
+
+            .card-heading {
+                gap: 10px;
+            }
+
+            .card-heading-description {
+                font-size: 0.73rem;
+            }
+
+            .student-actions {
+                gap: 5px;
+            }
+
+            .action-btn {
+                min-width: 34px;
+                min-height: 34px;
+                padding: 6px 8px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
+    <!-- =====================================================
+         ADMINISTRATOR NAVIGATION
+    ====================================================== -->
 
-<nav class="navbar navbar-dark bg-dark">
+    <nav class="admin-navbar" aria-label="Administrator navigation">
 
-    <div class="container-fluid px-4">
-
-        <a
-            href="{% url 'admin_dashboard' %}"
-            class="navbar-brand fw-bold"
-        >
-            Student Risk Management
-        </a>
-
-        <div class="d-flex align-items-center gap-3">
-
-            <span class="text-white">
-                Administrator
-            </span>
+        <div class="admin-navbar-inner">
 
             <a
-                href="{% url 'logout' %}"
-                class="btn btn-outline-light btn-sm"
+                href="{% url 'admin_dashboard' %}"
+                class="brand-link"
             >
-                Logout
+
+                <span class="brand-icon" aria-hidden="true">
+                    <i class="bi bi-shield-check"></i>
+                </span>
+
+                <span>
+                    <span class="brand-name">
+                        Student Risk Management
+                    </span>
+
+                    <span class="brand-caption">
+                        Student Dropout Risk Management System
+                    </span>
+                </span>
+
             </a>
 
-        </div>
+            <div class="navbar-actions">
 
-    </div>
+                <span class="admin-role">
+                    <i class="bi bi-person-badge-fill" aria-hidden="true"></i>
+                    Administrator
+                </span>
 
-</nav>
-
-
-<div class="container-fluid px-4 py-4">
-
-
-    <!-- Header -->
-
-<div class="d-flex justify-content-between
-            align-items-center mb-4">
-
-    <div>
-
-        <h2 class="fw-bold mb-1">
-            Student Management
-        </h2>
-
-        <p class="text-secondary mb-0">
-            Manage student personal and academic information.
-        </p>
-
-    </div>
-
-
-    <div class="d-flex gap-2">
-
-        <!-- Back to Dashboard -->
-
-        <a
-            href="{% url 'admin_dashboard' %}"
-            class="btn btn-outline-secondary"
-        >
-            ← Back to Dashboard
-        </a>
-
-
-        <!-- Add Student -->
-
-        <a
-            href="{% url 'student_create' %}"
-            class="btn btn-primary"
-        >
-            + Add Student
-        </a>
-
-    </div>
-
-</div>
-
-
-    <!-- Messages -->
-
-    {% if messages %}
-
-        {% for message in messages %}
-
-            <div
-                class="alert alert-success
-                       alert-dismissible fade show"
-                role="alert"
-            >
-
-                {{ message }}
-
-                <button
-                    type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                ></button>
+                <a
+                    href="{% url 'logout' %}"
+                    class="btn-logout"
+                >
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    Logout
+                </a>
 
             </div>
 
-        {% endfor %}
-
-    {% endif %}
-
-
-    <!-- Student Table -->
-
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-body p-0">
-
-
-            {% if students %}
-
-                <div class="table-responsive">
-
-                    <table class="table table-hover
-                                  align-middle mb-0">
-
-                        <thead class="table-dark">
-
-                            <tr>
-
-                                <th class="px-4">
-                                    Student ID
-                                </th>
-
-                                <th>
-                                    Student Name
-                                </th>
-
-                                <th>
-                                    Department
-                                </th>
-
-                                <th>
-                                    Course
-                                </th>
-
-                                <th>
-                                    Semester
-                                </th>
-
-                                <th>
-                                    Mentor
-                                </th>
-
-                                <th class="text-end px-4">
-                                    Actions
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            {% for student in students %}
-
-                                <tr>
-
-                                    <td class="px-4 fw-semibold">
-                                        {{ student.student_id }}
-                                    </td>
-
-
-                                    <td>
-
-                                        {{ student.first_name }}
-
-                                        {{ student.last_name }}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {% if student.department %}
-                                            {{ student.department.name }}
-                                        {% else %}
-                                            <span class="text-secondary">
-                                                Not assigned
-                                            </span>
-                                        {% endif %}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {% if student.course %}
-                                            {{ student.course }}
-                                        {% else %}
-                                            —
-                                        {% endif %}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {% if student.semester %}
-                                            Semester {{ student.semester }}
-                                        {% else %}
-                                            —
-                                        {% endif %}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        {% if student.mentor %}
-
-                                            {{ student.mentor }}
-
-                                        {% else %}
-
-                                            <span class="text-secondary">
-                                                Not assigned
-                                            </span>
-
-                                        {% endif %}
-
-                                    </td>
-
-
-                                    <td class="text-end px-4">
-
-                                        <div
-                                            class="btn-group"
-                                            role="group"
-                                        >
-
-                                            <a
-                                                href="{% url 'student_detail' student.id %}"
-                                                class="btn btn-sm btn-outline-primary"
-                                            >
-                                                View
-                                            </a>
-
-                                            <a
-                                                href="{% url 'student_update' student.id %}"
-                                                class="btn btn-sm btn-outline-secondary"
-                                            >
-                                                Edit
-                                            </a>
-
-                                            <a
-                                                href="{% url 'student_delete' student.id %}"
-                                                class="btn btn-sm btn-outline-danger"
-                                            >
-                                                Delete
-                                            </a>
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            {% else %}
-
-                <div class="text-center py-5">
-
-                    <h5 class="fw-bold">
-                        No Students Found
-                    </h5>
-
-                    <p class="text-secondary">
-                        There are currently no student records.
-                    </p>
-
-                    <a
-                        href="{% url 'student_create' %}"
-                        class="btn btn-primary"
-                    >
-                        Add First Student
-                    </a>
-
-                </div>
-
-            {% endif %}
-
-
         </div>
 
-    </div>
+    </nav>
 
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
 
-</div>
+    <main class="students-page">
 
+        <!-- Page Header -->
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+        <header class="page-header">
+
+            <div class="page-heading">
+
+                <div class="page-eyebrow">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    Administrator Portal
+                </div>
+
+                <h1 class="page-title">
+                    Student Management
+                </h1>
+
+                <p class="page-description">
+                    Manage student personal and academic information,
+                    review department and mentor assignments, and
+                    maintain student records.
+                </p>
+
+            </div>
+
+            <div class="header-actions">
+
+                <a
+                    href="{% url 'admin_dashboard' %}"
+                    class="btn-admin btn-admin-back"
+                >
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    Back to Dashboard
+                </a>
+
+                <a
+                    href="{% url 'student_create' %}"
+                    class="btn-admin btn-admin-primary"
+                >
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                    Add Student
+                </a>
+
+            </div>
+
+        </header>
+
+        <!-- =================================================
+             DJANGO MESSAGES
+        ================================================== -->
+
+        {% if messages %}
+
+            <section
+                class="mb-4"
+                aria-label="Notification messages"
+            >
+
+                {% for message in messages %}
+
+                    <div
+                        class="alert alert-success alert-dismissible fade show message-alert"
+                        role="alert"
+                    >
+
+                        <i
+                            class="bi bi-check-circle-fill message-icon"
+                            aria-hidden="true"
+                        ></i>
+
+                        <div class="flex-grow-1">
+                            {{ message }}
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Dismiss notification"
+                        ></button>
+
+                    </div>
+
+                {% endfor %}
+
+            </section>
+
+        {% endif %}
+
+        <!-- =================================================
+             STUDENT DIRECTORY
+        ================================================== -->
+
+        <section aria-labelledby="student-directory-heading">
+
+            <div class="students-card">
+
+                <!-- Card Header -->
+
+                <div class="students-card-header">
+
+                    <div class="card-heading">
+
+                        <div
+                            class="card-heading-icon"
+                            aria-hidden="true"
+                        >
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h2
+                                class="card-heading-title"
+                                id="student-directory-heading"
+                            >
+                                Student Records
+                            </h2>
+
+                            <p class="card-heading-description">
+                                View student identifiers, academic details
+                                and current mentor assignments.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="directory-badge">
+                        <i class="bi bi-list-check" aria-hidden="true"></i>
+                        Student Directory
+                    </div>
+
+                </div>
+
+                <!-- Table Content -->
+
+                <div class="card-body p-0">
+
+                    {% if students %}
+
+                        <div class="student-table-wrapper">
+
+                            <table class="table student-table">
+
+                                <caption class="visually-hidden">
+                                    Student management directory containing
+                                    student ID, name, department, course,
+                                    semester, mentor and available actions.
+                                </caption>
+
+                                <thead>
+                                    <tr>
+
+                                        <th scope="col">
+                                            Student ID
+                                        </th>
+
+                                        <th scope="col">
+                                            Student Name
+                                        </th>
+
+                                        <th scope="col">
+                                            Department
+                                        </th>
+
+                                        <th scope="col">
+                                            Course
+                                        </th>
+
+                                        <th scope="col">
+                                            Semester
+                                        </th>
+
+                                        <th scope="col">
+                                            Mentor
+                                        </th>
+
+                                        <th scope="col" class="text-end">
+                                            Actions
+                                        </th>
+
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for student in students %}
+
+                                        <tr>
+
+                                            <!-- Student ID -->
+
+                                            <td>
+                                                <span class="student-id">
+                                                    {{ student.student_id }}
+                                                </span>
+                                            </td>
+
+                                            <!-- Student Name -->
+
+                                            <td>
+
+                                                <div class="student-profile">
+
+                                                    <div
+                                                        class="student-avatar"
+                                                        aria-hidden="true"
+                                                    >
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+
+                                                    <div>
+
+                                                        <span class="student-name">
+                                                            {{ student.first_name }}
+                                                            {{ student.last_name }}
+                                                        </span>
+
+                                                        <span class="student-name-label">
+                                                            Student record
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+                                            <!-- Department -->
+
+                                            <td>
+
+                                                {% if student.department %}
+
+                                                    <span class="student-department">
+                                                        <i
+                                                            class="bi bi-building"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        {{ student.department.name }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="unassigned-badge">
+                                                        <i
+                                                            class="bi bi-dash-circle"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Not assigned
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <!-- Course -->
+
+                                            <td>
+
+                                                {% if student.course %}
+
+                                                    <span class="student-course">
+                                                        {{ student.course }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="value-placeholder">
+                                                        —
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <!-- Semester -->
+
+                                            <td>
+
+                                                {% if student.semester %}
+
+                                                    <span class="semester-badge">
+                                                        <i
+                                                            class="bi bi-calendar3"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Semester {{ student.semester }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="value-placeholder">
+                                                        —
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <!-- Mentor -->
+
+                                            <td>
+
+                                                {% if student.mentor %}
+
+                                                    <span class="mentor-assignment">
+                                                        <i
+                                                            class="bi bi-person-badge"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        {{ student.mentor }}
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="unassigned-badge">
+                                                        <i
+                                                            class="bi bi-person-dash"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Not assigned
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <!-- Actions -->
+
+                                            <td class="text-end">
+
+                                                <div
+                                                    class="student-actions"
+                                                    role="group"
+                                                    aria-label="Actions for student {{ student.student_id }}"
+                                                >
+
+                                                    <a
+                                                        href="{% url 'student_detail' student.id %}"
+                                                        class="action-btn action-view"
+                                                        title="View Student"
+                                                        aria-label="View student {{ student.student_id }}"
+                                                    >
+                                                        <i
+                                                            class="bi bi-eye"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        <span>View</span>
+                                                    </a>
+
+                                                    <a
+                                                        href="{% url 'student_update' student.id %}"
+                                                        class="action-btn action-edit"
+                                                        title="Edit Student"
+                                                        aria-label="Edit student {{ student.student_id }}"
+                                                    >
+                                                        <i
+                                                            class="bi bi-pencil"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        <span>Edit</span>
+                                                    </a>
+
+                                                    <a
+                                                        href="{% url 'student_delete' student.id %}"
+                                                        class="action-btn action-delete"
+                                                        title="Delete Student"
+                                                        aria-label="Delete student {{ student.student_id }}"
+                                                    >
+                                                        <i
+                                                            class="bi bi-trash"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        <span>Delete</span>
+                                                    </a>
+
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <!-- Empty State -->
+
+                        <div class="empty-state">
+
+                            <div
+                                class="empty-state-icon"
+                                aria-hidden="true"
+                            >
+                                <i class="bi bi-people"></i>
+                            </div>
+
+                            <h3 class="empty-state-title">
+                                No Students Found
+                            </h3>
+
+                            <p class="empty-state-description">
+                                There are currently no student records.
+                                Add your first student to begin managing
+                                student personal and academic information.
+                            </p>
+
+                            <a
+                                href="{% url 'student_create' %}"
+                                class="btn-admin btn-admin-primary"
+                            >
+                                <i
+                                    class="bi bi-plus-lg"
+                                    aria-hidden="true"
+                                ></i>
+                                Add First Student
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer class="page-footer">
+
+            <span>
+                Student Dropout Risk Management System
+            </span>
+
+            <span class="footer-brand">
+                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                Administrator Portal
+            </span>
+
+        </footer>
+
+    </main>
+
+    <!-- Bootstrap JavaScript: required for dismissible messages -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

@@ -1,238 +1,1347 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <title>Teacher Details | Student Risk Management</title>
 
-    <title>Teacher Details</title>
-
-    <!-- Bootstrap 5 -->
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
-
-    <!-- Bootstrap Icons -->
     <link
-        rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
     >
 
+    <style>
+        :root {
+            --navy-950: #10182f;
+            --navy-900: #172442;
+            --navy-800: #24365b;
+            --indigo-700: #4338ca;
+            --indigo-600: #4f46e5;
+            --indigo-100: #e0e7ff;
+            --indigo-50: #eef2ff;
+            --page-bg: #f4f6fc;
+            --surface: #ffffff;
+            --text-primary: #19233b;
+            --text-secondary: #707b91;
+            --border: #e3e8f2;
+            --success: #15803d;
+            --success-bg: #f0fdf4;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --danger-bg: #fef2f2;
+            --radius-lg: 18px;
+            --shadow-card: 0 8px 30px rgba(24, 39, 75, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(16, 24, 47, 0.97);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 18px rgba(16, 24, 47, 0.12);
+            backdrop-filter: blur(14px);
+        }
+
+        .topbar-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .brand:hover {
+            color: #ffffff;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 13px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            box-shadow: 0 5px 14px rgba(79, 70, 229, 0.30);
+            font-size: 19px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: #aebbd4;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .role-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            color: #dbe4f6;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-label i {
+            color: #a5b4fc;
+            font-size: 15px;
+        }
+
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 13px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 10px;
+            color: #ffffff;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-logout:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.10);
+        }
+
+        /* Main Layout */
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 35px 26px 48px;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 25px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--indigo-700);
+            font-weight: 600;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--indigo-600);
+        }
+
+        .breadcrumb-nav i {
+            color: #a1aabe;
+            font-size: 11px;
+        }
+
+        .page-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 22px;
+            margin-bottom: 27px;
+        }
+
+        .heading-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .heading-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 1px solid #dfe4ff;
+            border-radius: 15px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 22px;
+        }
+
+        .page-title {
+            margin: 1px 0 7px;
+            color: var(--navy-950);
+            font-size: clamp(23px, 3vw, 30px);
+            font-weight: 800;
+            letter-spacing: -0.9px;
+        }
+
+        .page-description {
+            max-width: 600px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .heading-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .btn-action {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit {
+            border-color: var(--indigo-700);
+            color: #ffffff;
+            background: var(--indigo-700);
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.16);
+        }
+
+        .btn-edit:hover {
+            border-color: #3730a3;
+            color: #ffffff;
+            background: #3730a3;
+            box-shadow: 0 6px 16px rgba(67, 56, 202, 0.23);
+            transform: translateY(-1px);
+        }
+
+        .btn-back {
+            border-color: var(--border);
+            color: #47536b;
+            background: #ffffff;
+        }
+
+        .btn-back:hover {
+            border-color: #c7d2fe;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+        }
+
+        /* Teacher Profile Header */
+
+        .profile-card {
+            overflow: hidden;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+        }
+
+        .profile-accent {
+            height: 5px;
+            background: linear-gradient(
+                90deg,
+                var(--navy-900),
+                var(--indigo-600),
+                #818cf8
+            );
+        }
+
+        .profile-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 22px;
+            padding: 27px 28px;
+        }
+
+        .profile-main {
+            display: flex;
+            align-items: center;
+            gap: 17px;
+            min-width: 0;
+        }
+
+        .teacher-avatar {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 3px solid #e4e7ff;
+            border-radius: 20px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6366f1, #3730a3);
+            box-shadow: 0 6px 17px rgba(79, 70, 229, 0.20);
+            font-size: 28px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .teacher-name {
+            margin: 0 0 10px;
+            color: var(--navy-950);
+            font-size: clamp(19px, 2.5vw, 25px);
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-badges {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            color: #166534;
+            background: #f0fdf4;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .role-badge i {
+            font-size: 12px;
+        }
+
+        .employee-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border: 1px solid #e0e7ff;
+            border-radius: 8px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 11px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-side {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 12px 15px;
+            border: 1px solid #e0e7ff;
+            border-radius: 12px;
+            background: #f8f9ff;
+        }
+
+        .profile-side-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 11px;
+            color: var(--indigo-700);
+            background: var(--indigo-100);
+            font-size: 18px;
+        }
+
+        .profile-side-label {
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .profile-side-value {
+            color: var(--navy-950);
+            font-size: 12px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        /* Detail Cards */
+
+        .details-grid {
+            row-gap: 20px;
+        }
+
+        .detail-card {
+            height: 100%;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .detail-card:hover {
+            border-color: #d7def0;
+            box-shadow: 0 12px 34px rgba(24, 39, 75, 0.075);
+        }
+
+        .detail-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 22px;
+            border-bottom: 1px solid #edf0f6;
+        }
+
+        .detail-section-icon {
+            width: 39px;
+            height: 39px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 18px;
+        }
+
+        .detail-section-title {
+            margin: 0 0 4px;
+            color: var(--navy-950);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+
+        .detail-section-subtitle {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .detail-card-body {
+            padding: 8px 22px 18px;
+        }
+
+        .detail-list {
+            margin: 0;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: minmax(105px, 0.85fr) minmax(0, 1.15fr);
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf0f6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+
+        .detail-value {
+            min-width: 0;
+            margin: 0;
+            color: #25324c;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-value a {
+            color: var(--indigo-700);
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .detail-value a:hover {
+            color: #3730a3;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .empty-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #929cb0;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .empty-value i {
+            font-size: 12px;
+        }
+
+        .department-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 9px;
+            border: 1px solid #e0e7ff;
+            border-radius: 7px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .department-value i {
+            font-size: 13px;
+        }
+
+        /* Account Information */
+
+        .account-card {
+            margin-top: 21px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: #ffffff;
+            box-shadow: var(--shadow-card);
+        }
+
+        .account-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            padding: 20px 22px;
+        }
+
+        .account-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+            font-size: 17px;
+        }
+
+        .account-title {
+            margin: 1px 0 5px;
+            color: var(--navy-950);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .account-description {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        /* Delete Section */
+
+        .danger-card {
+            margin-top: 22px;
+            overflow: hidden;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-lg);
+            background: #ffffff;
+            box-shadow: 0 6px 24px rgba(220, 38, 38, 0.035);
+        }
+
+        .danger-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 21px 23px;
+        }
+
+        .danger-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+        }
+
+        .danger-icon {
+            width: 41px;
+            height: 41px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 12px;
+            color: var(--danger);
+            background: var(--danger-bg);
+            font-size: 18px;
+        }
+
+        .danger-title {
+            margin: 1px 0 5px;
+            color: #991b1b;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .danger-description {
+            max-width: 600px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .btn-delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 41px;
+            flex-shrink: 0;
+            padding: 10px 14px;
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+            color: #b91c1c;
+            background: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            border-color: #dc2626;
+            color: #ffffff;
+            background: #dc2626;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+
+        .page-footer {
+            margin-top: 25px;
+            color: #929cb0;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .btn-action:focus-visible,
+        .btn-delete:focus-visible,
+        .btn-logout:focus-visible {
+            outline: 3px solid rgba(99, 102, 241, 0.30);
+            outline-offset: 3px;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 991.98px) {
+            .page-heading {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 18px;
+            }
+
+            .heading-actions {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .topbar-inner {
+                min-height: 66px;
+            }
+
+            .brand {
+                gap: 9px;
+                font-size: 13px;
+            }
+
+            .brand-mark {
+                width: 36px;
+                height: 36px;
+            }
+
+            .brand-subtitle,
+            .role-label {
+                display: none;
+            }
+
+            .page-wrapper {
+                padding: 25px 16px 38px;
+            }
+
+            .heading-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 13px;
+                font-size: 20px;
+            }
+
+            .profile-content {
+                align-items: flex-start;
+                padding: 21px;
+            }
+
+            .teacher-avatar {
+                width: 59px;
+                height: 59px;
+                border-radius: 17px;
+                font-size: 24px;
+            }
+
+            .profile-side {
+                width: 100%;
+            }
+
+            .detail-card-header {
+                padding: 18px;
+            }
+
+            .detail-card-body {
+                padding: 7px 18px 14px;
+            }
+
+            .danger-content {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 19px;
+            }
+
+            .btn-delete {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .page-wrapper {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .heading-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .heading-actions .btn-action {
+                width: 100%;
+            }
+
+            .profile-content {
+                padding: 17px;
+            }
+
+            .profile-main {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .teacher-avatar {
+                width: 49px;
+                height: 49px;
+                border-radius: 14px;
+                font-size: 21px;
+            }
+
+            .teacher-name {
+                font-size: 18px;
+            }
+
+            .detail-card-header {
+                padding: 16px;
+            }
+
+            .detail-card-body {
+                padding: 6px 16px 12px;
+            }
+
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: 3px;
+                padding: 12px 0;
+            }
+
+            .account-content {
+                padding: 17px;
+            }
+
+            .danger-content {
+                padding: 16px;
+            }
+
+            .btn-delete {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
+<body>
 
-<body class="bg-light">
+    <!-- Top Navigation -->
+    <nav class="topbar">
+        <div class="container-fluid px-3 px-md-4">
+            <div class="topbar-inner">
 
+                <a href="{% url 'admin_dashboard' %}" class="brand">
+                    <span class="brand-mark">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
 
-<div class="container py-5">
+                    <span>
+                        Student Risk Management
+                        <span class="brand-subtitle">
+                            Dropout Risk Monitoring System
+                        </span>
+                    </span>
+                </a>
 
-    <!-- Header -->
+                <div class="topbar-actions">
+                    <span class="role-label">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        Administrator
+                    </span>
 
-    <div class="mb-4">
-
-        <a
-            href="{% url 'teacher_list' %}"
-            class="btn btn-outline-secondary mb-3"
-        >
-            <i class="bi bi-arrow-left"></i>
-            Back to Teachers
-        </a>
-
-        <h2 class="fw-bold mb-1">
-            <i class="bi bi-person-vcard"></i>
-            Teacher Details
-        </h2>
-
-        <p class="text-muted">
-            View teacher information.
-        </p>
-
-    </div>
-
-
-    <!-- Teacher Details Card -->
-
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-body p-4">
-
-            <!-- Teacher Name -->
-
-            <div class="mb-4">
-
-                <h4 class="fw-bold mb-1">
-
-                    {% if teacher.user.get_full_name %}
-                        {{ teacher.user.get_full_name }}
-                    {% else %}
-                        {{ teacher.user.username }}
-                    {% endif %}
-
-                </h4>
-
-                <span class="badge bg-success">
-                    Teacher
-                </span>
-
-            </div>
-
-
-            <!-- Details -->
-
-            <div class="row g-4">
-
-                <!-- Username -->
-
-                <div class="col-md-6">
-
-                    <div class="text-muted small">
-                        Username
-                    </div>
-
-                    <div class="fw-semibold">
-                        {{ teacher.user.username }}
-                    </div>
-
-                </div>
-
-
-                <!-- Employee ID -->
-
-                <div class="col-md-6">
-
-                    <div class="text-muted small">
-                        Employee ID
-                    </div>
-
-                    <div class="fw-semibold">
-                        {{ teacher.employee_id }}
-                    </div>
-
-                </div>
-
-
-                <!-- Department -->
-
-                <div class="col-md-6">
-
-                    <div class="text-muted small">
-                        Department
-                    </div>
-
-                    <div class="fw-semibold">
-
-                        {% if teacher.department %}
-                            {{ teacher.department }}
-                        {% else %}
-                            <span class="text-muted">
-                                Not assigned
-                            </span>
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-
-                <!-- Phone -->
-
-                <div class="col-md-6">
-
-                    <div class="text-muted small">
-                        Phone Number
-                    </div>
-
-                    <div class="fw-semibold">
-
-                        {% if teacher.phone %}
-                            {{ teacher.phone }}
-                        {% else %}
-                            <span class="text-muted">
-                                Not provided
-                            </span>
-                        {% endif %}
-
-                    </div>
-
-                </div>
-
-
-                <!-- Email -->
-
-                <div class="col-md-6">
-
-                    <div class="text-muted small">
-                        Email
-                    </div>
-
-                    <div class="fw-semibold">
-
-                        {% if teacher.user.email %}
-                            {{ teacher.user.email }}
-                        {% else %}
-                            <span class="text-muted">
-                                Not provided
-                            </span>
-                        {% endif %}
-
-                    </div>
-
+                    <a href="{% url 'logout' %}" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Logout
+                    </a>
                 </div>
 
             </div>
+        </div>
+    </nav>
 
+    <!-- Main Content -->
+    <main class="page-wrapper">
 
-            <!-- Actions -->
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="{% url 'admin_dashboard' %}">
+                Dashboard
+            </a>
 
-            <hr class="my-4">
+            <i class="bi bi-chevron-right"></i>
 
-            <div class="d-flex gap-2">
+            <a href="{% url 'teacher_list' %}">
+                Teachers
+            </a>
 
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Teacher Details</span>
+        </nav>
+
+        <!-- Page Heading -->
+        <header class="page-heading">
+
+            <div class="heading-content">
+                <div class="heading-icon">
+                    <i class="bi bi-person-vcard"></i>
+                </div>
+
+                <div>
+                    <h1 class="page-title">Teacher Details</h1>
+
+                    <p class="page-description">
+                        View teacher account information, employee
+                        identification, department and contact details.
+                    </p>
+                </div>
+            </div>
+
+            <div class="heading-actions">
                 <a
                     href="{% url 'teacher_update' teacher.id %}"
-                    class="btn btn-warning"
+                    class="btn-action btn-edit"
                 >
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil-square"></i>
                     Edit Teacher
                 </a>
 
                 <a
-                    href="{% url 'teacher_delete' teacher.id %}"
-                    class="btn btn-outline-danger"
-                >
-                    <i class="bi bi-trash"></i>
-                    Delete Teacher
-                </a>
-
-                <a
                     href="{% url 'teacher_list' %}"
-                    class="btn btn-outline-secondary"
+                    class="btn-action btn-back"
                 >
-                    Back to List
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Teachers
                 </a>
+            </div>
 
+        </header>
+
+        <!-- Teacher Profile -->
+        <section class="profile-card">
+
+            <div class="profile-accent"></div>
+
+            <div class="profile-content">
+
+                <div class="profile-main">
+
+                    <div class="teacher-avatar" aria-hidden="true">
+                        {% if teacher.user.get_full_name %}
+                            {{ teacher.user.get_full_name|first|upper }}
+                        {% else %}
+                            {{ teacher.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h2 class="teacher-name">
+                            {% if teacher.user.get_full_name %}
+                                {{ teacher.user.get_full_name }}
+                            {% else %}
+                                {{ teacher.user.username }}
+                            {% endif %}
+                        </h2>
+
+                        <div class="profile-badges">
+                            <span class="role-badge">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Teacher
+                            </span>
+
+                            <span class="employee-badge">
+                                <i class="bi bi-person-badge"></i>
+                                {{ teacher.employee_id }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="profile-side">
+                    <div class="profile-side-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+
+                    <div>
+                        <div class="profile-side-label">
+                            Department
+                        </div>
+
+                        <div class="profile-side-value">
+                            {% if teacher.department %}
+                                {{ teacher.department }}
+                            {% else %}
+                                Not assigned
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Teacher Details -->
+        <div class="row g-4 details-grid">
+
+            <!-- Account Information -->
+            <div class="col-lg-6">
+                <section class="detail-card">
+
+                    <div class="detail-card-header">
+                        <div class="detail-section-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="detail-section-title">
+                                Account Information
+                            </h3>
+
+                            <p class="detail-section-subtitle">
+                                Associated user account details
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card-body">
+                        <dl class="detail-list">
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Full Name</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.user.get_full_name %}
+                                        {{ teacher.user.get_full_name }}
+                                    {% else %}
+                                        {{ teacher.user.username }}
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Username</dt>
+
+                                <dd class="detail-value">
+                                    <span>
+                                        <i class="bi bi-at me-1"></i>
+                                        {{ teacher.user.username }}
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Application Role</dt>
+
+                                <dd class="detail-value">
+                                    <span class="role-badge">
+                                        <i class="bi bi-person-check-fill"></i>
+                                        Teacher
+                                    </span>
+                                </dd>
+                            </div>
+
+                        </dl>
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- Employment Information -->
+            <div class="col-lg-6">
+                <section class="detail-card">
+
+                    <div class="detail-card-header">
+                        <div class="detail-section-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="detail-section-title">
+                                Employment Information
+                            </h3>
+
+                            <p class="detail-section-subtitle">
+                                Employee identification and department
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card-body">
+                        <dl class="detail-list">
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Employee ID</dt>
+
+                                <dd class="detail-value">
+                                    <span class="employee-badge">
+                                        <i class="bi bi-person-badge"></i>
+                                        {{ teacher.employee_id }}
+                                    </span>
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Department</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.department %}
+                                        <span class="department-value">
+                                            <i class="bi bi-building"></i>
+                                            {{ teacher.department }}
+                                        </span>
+                                    {% else %}
+                                        <span class="empty-value">
+                                            <i class="bi bi-dash-circle"></i>
+                                            Not assigned
+                                        </span>
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                        </dl>
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="col-lg-6">
+                <section class="detail-card">
+
+                    <div class="detail-card-header">
+                        <div class="detail-section-icon">
+                            <i class="bi bi-telephone"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="detail-section-title">
+                                Contact Information
+                            </h3>
+
+                            <p class="detail-section-subtitle">
+                                Teacher contact details
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card-body">
+                        <dl class="detail-list">
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Phone Number</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.phone %}
+                                        <span>
+                                            <i class="bi bi-telephone me-1"></i>
+                                            {{ teacher.phone }}
+                                        </span>
+                                    {% else %}
+                                        <span class="empty-value">
+                                            <i class="bi bi-dash-circle"></i>
+                                            Not provided
+                                        </span>
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Email Address</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.user.email %}
+                                        <a href="mailto:{{ teacher.user.email }}">
+                                            <i class="bi bi-envelope me-1"></i>
+                                            {{ teacher.user.email }}
+                                        </a>
+                                    {% else %}
+                                        <span class="empty-value">
+                                            <i class="bi bi-dash-circle"></i>
+                                            Not provided
+                                        </span>
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                        </dl>
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- Profile Summary -->
+            <div class="col-lg-6">
+                <section class="detail-card">
+
+                    <div class="detail-card-header">
+                        <div class="detail-section-icon">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="detail-section-title">
+                                Profile Summary
+                            </h3>
+
+                            <p class="detail-section-subtitle">
+                                Overview of the teacher profile
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card-body">
+                        <dl class="detail-list">
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Teacher Name</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.user.get_full_name %}
+                                        {{ teacher.user.get_full_name }}
+                                    {% else %}
+                                        {{ teacher.user.username }}
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Staff Identifier</dt>
+
+                                <dd class="detail-value">
+                                    {{ teacher.employee_id }}
+                                </dd>
+                            </div>
+
+                            <div class="detail-row">
+                                <dt class="detail-label">Assignment Status</dt>
+
+                                <dd class="detail-value">
+                                    {% if teacher.department %}
+                                        <span class="role-badge">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Department assigned
+                                        </span>
+                                    {% else %}
+                                        <span class="empty-value">
+                                            <i class="bi bi-exclamation-circle"></i>
+                                            Department not assigned
+                                        </span>
+                                    {% endif %}
+                                </dd>
+                            </div>
+
+                        </dl>
+                    </div>
+
+                </section>
             </div>
 
         </div>
 
-    </div>
+        <!-- Account Information Note -->
+        <section class="account-card">
+            <div class="account-content">
 
-</div>
+                <div class="account-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
 
+                <div>
+                    <h3 class="account-title">
+                        Teacher Account and Profile
+                    </h3>
 
-<!-- Bootstrap JS -->
+                    <p class="account-description">
+                        This page displays information associated with the
+                        teacher's existing user account and teacher profile.
+                        Account permissions and role assignments remain
+                        governed by your Django application.
+                    </p>
+                </div>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-</script>
+            </div>
+        </section>
 
+        <!-- Delete Teacher -->
+        <section class="danger-card">
+            <div class="danger-content">
+
+                <div class="danger-info">
+                    <div class="danger-icon">
+                        <i class="bi bi-trash3"></i>
+                    </div>
+
+                    <div>
+                        <h3 class="danger-title">
+                            Delete Teacher Profile
+                        </h3>
+
+                        <p class="danger-description">
+                            Continue to the deletion confirmation page if
+                            this teacher profile should be removed.
+                            The resulting effect on associated user accounts
+                            and records depends on your existing Django
+                            view and database relationships.
+                        </p>
+                    </div>
+                </div>
+
+                <a
+                    href="{% url 'teacher_delete' teacher.id %}"
+                    class="btn-delete"
+                >
+                    <i class="bi bi-trash3"></i>
+                    Delete Teacher
+                </a>
+
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            Student Dropout Risk Management System
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

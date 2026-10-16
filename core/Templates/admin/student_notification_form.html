@@ -1,32 +1,866 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Student Notification</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Student Notification | Administrator</title>
+
+    <!-- Bootstrap 5.3.3 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
+
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #1b2a50;
+
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+
+            --admin-text: #172033;
+            --admin-muted: #718096;
+
+            --admin-success: #16834a;
+            --admin-success-soft: #e9f8ef;
+
+            --admin-danger: #c93645;
+            --admin-danger-soft: #fff0f1;
+
+            --admin-radius: 18px;
+            --admin-radius-sm: 11px;
+
+            --admin-shadow:
+                0 8px 32px rgba(22, 34, 67, 0.055);
+
+            --admin-hover-shadow:
+                0 14px 36px rgba(22, 34, 67, 0.09);
+        }
+
+        /* =====================================================
+           BASE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.94rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a,
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           PAGE LAYOUT
+        ===================================================== */
+
+        .notification-page {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 55px 24px;
+        }
+
+        .notification-wrapper {
+            width: 100%;
+            max-width: 760px;
+        }
+
+        /* =====================================================
+           ADMINISTRATOR BRANDING
+        ===================================================== */
+
+        .page-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .brand-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 13px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.08rem;
+            font-weight: 800;
+        }
+
+        .brand-title {
+            margin: 0;
+            color: var(--admin-navy);
+            font-size: 0.94rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+            color: var(--admin-muted);
+            font-size: 0.74rem;
+        }
+
+        /* =====================================================
+           MAIN FORM CARD
+        ===================================================== */
+
+        .notification-card {
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .notification-card:hover {
+            box-shadow: var(--admin-hover-shadow);
+        }
+
+        .notification-card-header {
+            position: relative;
+            padding: 32px 36px 27px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #fff;
+        }
+
+        .notification-card-header::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--admin-indigo);
+            content: "";
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--admin-indigo);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow-mark {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--admin-indigo);
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.55rem, 3vw, 1.95rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.3;
+        }
+
+        .page-description {
+            max-width: 570px;
+            margin: 12px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.88rem;
+            line-height: 1.8;
+        }
+
+        /* =====================================================
+           FORM CARD BODY
+        ===================================================== */
+
+        .notification-card-body {
+            padding: 30px 36px 35px;
+        }
+
+        .form-section-heading {
+            margin-bottom: 24px;
+        }
+
+        .form-section-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 0.96rem;
+            font-weight: 750;
+            letter-spacing: -0.015em;
+        }
+
+        .form-section-description {
+            margin: 7px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.79rem;
+            line-height: 1.65;
+        }
+
+        /* =====================================================
+           DJANGO FORM FIELDS
+        ===================================================== */
+
+        .notification-form .mb-3 {
+            margin-bottom: 22px !important;
+        }
+
+        .notification-form .form-label {
+            display: block;
+            margin-bottom: 9px;
+            color: #34415a;
+            font-size: 0.81rem;
+            font-weight: 750;
+            line-height: 1.5;
+        }
+
+        .notification-form input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]),
+        .notification-form select,
+        .notification-form textarea {
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 11px 14px;
+            border: 1px solid #dce2ed;
+            border-radius: var(--admin-radius-sm);
+            background-color: #fff;
+            color: var(--admin-text);
+            font-family: inherit;
+            font-size: 0.86rem;
+            line-height: 1.55;
+            box-shadow: none;
+            transition:
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                background-color 0.18s ease;
+        }
+
+        .notification-form textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .notification-form input::placeholder,
+        .notification-form textarea::placeholder {
+            color: #9aa4b5;
+            opacity: 1;
+        }
+
+        .notification-form input:hover,
+        .notification-form select:hover,
+        .notification-form textarea:hover {
+            border-color: #c5cee0;
+        }
+
+        .notification-form input:focus,
+        .notification-form select:focus,
+        .notification-form textarea:focus {
+            border-color: #8986f0;
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.09);
+        }
+
+        .notification-form input[type="checkbox"],
+        .notification-form input[type="radio"] {
+            accent-color: var(--admin-indigo);
+        }
+
+        .notification-form select {
+            cursor: pointer;
+        }
+
+        .notification-form .form-text {
+            margin-top: 8px;
+            color: #8290a5;
+            font-size: 0.76rem;
+            line-height: 1.65;
+        }
+
+        /* Django field validation errors */
+
+        .notification-form .text-danger {
+            display: block;
+            margin-top: 7px;
+            color: var(--admin-danger) !important;
+            font-size: 0.77rem;
+            line-height: 1.6;
+        }
+
+        .notification-form .is-invalid,
+        .notification-form input[aria-invalid="true"],
+        .notification-form textarea[aria-invalid="true"],
+        .notification-form select[aria-invalid="true"] {
+            border-color: #e46772;
+        }
+
+        .notification-form .is-invalid:focus,
+        .notification-form input[aria-invalid="true"]:focus,
+        .notification-form textarea[aria-invalid="true"]:focus,
+        .notification-form select[aria-invalid="true"]:focus {
+            box-shadow: 0 0 0 4px rgba(201, 54, 69, 0.09);
+        }
+
+        /* =====================================================
+           INFORMATION NOTE
+        ===================================================== */
+
+        .notification-guidance {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin: 4px 0 25px;
+            padding: 15px 16px;
+            border: 1px solid #dfe5fb;
+            border-radius: 12px;
+            background: #f7f8ff;
+        }
+
+        .guidance-mark {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 25px;
+            height: 25px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 0.77rem;
+            font-weight: 800;
+        }
+
+        .guidance-title {
+            margin: 0 0 5px;
+            color: #36436a;
+            font-size: 0.78rem;
+            font-weight: 750;
+        }
+
+        .guidance-text {
+            margin: 0;
+            color: #687692;
+            font-size: 0.77rem;
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           SUCCESS AND ERROR MESSAGES
+        ===================================================== */
+
+        .notification-message {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-bottom: 22px;
+            padding: 14px 16px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            font-size: 0.82rem;
+            line-height: 1.65;
+        }
+
+        .notification-message-mark {
+            flex-shrink: 0;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .notification-message--success {
+            border-color: #ccebd8;
+            background: var(--admin-success-soft);
+            color: #176f40;
+        }
+
+        .notification-message--success .notification-message-mark {
+            color: var(--admin-success);
+        }
+
+        .notification-message--error {
+            border-color: #f5ccd0;
+            background: var(--admin-danger-soft);
+            color: #a52c39;
+        }
+
+        .notification-message--error .notification-message-mark {
+            color: var(--admin-danger);
+        }
+
+        .non-field-errors {
+            margin-bottom: 22px;
+        }
+
+        /* =====================================================
+           FORM ACTIONS
+        ===================================================== */
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            margin-top: 29px;
+            padding-top: 23px;
+            border-top: 1px solid #edf0f6;
+        }
+
+        .btn-send {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            min-height: 47px;
+            padding: 12px 22px;
+            border: 1px solid var(--admin-indigo);
+            border-radius: 11px;
+            background: var(--admin-indigo);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.84rem;
+            font-weight: 750;
+            line-height: 1.4;
+            cursor: pointer;
+            box-shadow: 0 5px 13px rgba(79, 70, 229, 0.16);
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                box-shadow 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .btn-send:hover {
+            border-color: var(--admin-indigo-dark);
+            background: var(--admin-indigo-dark);
+            box-shadow: 0 7px 17px rgba(79, 70, 229, 0.22);
+            color: #fff;
+        }
+
+        .btn-send:active {
+            transform: translateY(1px);
+        }
+
+        .btn-send:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        .btn-send:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            margin-top: 22px;
+            color: #8a95a8;
+            font-size: 0.72rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .form-footer-mark {
+            color: #718096;
+            font-weight: 800;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 767.98px) {
+            .notification-page {
+                padding: 32px 18px;
+            }
+
+            .notification-card-header {
+                padding: 27px 24px 23px;
+            }
+
+            .notification-card-body {
+                padding: 25px 24px 28px;
+            }
+
+            .page-title {
+                font-size: 1.65rem;
+            }
+
+            .page-description {
+                font-size: 0.84rem;
+            }
+
+            .notification-form .mb-3 {
+                margin-bottom: 20px !important;
+            }
+
+            .notification-form textarea {
+                min-height: 135px;
+            }
+        }
+
+        @media (max-width: 479.98px) {
+            .notification-page {
+                padding: 23px 13px;
+            }
+
+            .page-brand {
+                margin-bottom: 19px;
+            }
+
+            .brand-icon {
+                width: 41px;
+                height: 41px;
+            }
+
+            .notification-card {
+                border-radius: 15px;
+            }
+
+            .notification-card-header {
+                padding: 24px 19px 21px;
+            }
+
+            .notification-card-body {
+                padding: 22px 19px 24px;
+            }
+
+            .page-title {
+                font-size: 1.48rem;
+            }
+
+            .notification-guidance {
+                padding: 13px;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .btn-send {
+                width: 100%;
+            }
+
+            .form-footer {
+                font-size: 0.69rem;
+            }
+        }
+
+        /* Respect user motion preferences. */
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
-<body class="bg-light">
-<main class="container py-5" style="max-width: 760px">
-    <section class="bg-white border rounded-4 shadow-sm p-4 p-md-5">
-        <p class="text-primary fw-semibold mb-1">Administrator</p>
-        <h1 class="h2 fw-bold mb-2">Create Student Notification</h1>
-        <p class="text-secondary">Only the title and message entered here are shown to the selected student.</p>
-        {% if messages %}{% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}{% endif %}
-        <form method="post" novalidate>
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
-                    {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+
+<body>
+
+    <main class="notification-page">
+
+        <div class="notification-wrapper">
+
+            <!-- =============================================
+                 ADMINISTRATOR BRAND
+            ============================================== -->
+
+            <div class="page-brand">
+
+                <div class="brand-icon" aria-hidden="true">
+                    N
                 </div>
-            {% endfor %}
-            {% for error in form.non_field_errors %}<div class="alert alert-danger">{{ error }}</div>{% endfor %}
-            <button class="btn btn-primary" type="submit">Send Notification</button>
-        </form>
-    </section>
-</main>
+
+                <div>
+                    <p class="brand-title">
+                        Student Risk
+                    </p>
+
+                    <p class="brand-subtitle mb-0">
+                        Management System · Administrator Portal
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- =============================================
+                 NOTIFICATION FORM CARD
+            ============================================== -->
+
+            <section
+                class="notification-card"
+                aria-labelledby="notification-heading"
+            >
+
+                <!-- Card Header -->
+
+                <div class="notification-card-header">
+
+                    <div class="page-eyebrow">
+                        <span
+                            class="page-eyebrow-mark"
+                            aria-hidden="true"
+                        ></span>
+                        Administrator
+                    </div>
+
+                    <h1
+                        class="page-title"
+                        id="notification-heading"
+                    >
+                        Create Student Notification
+                    </h1>
+
+                    <p class="page-description">
+                        Send an important message directly to a selected
+                        student. Only the title and message entered here
+                        are shown to the student.
+                    </p>
+
+                </div>
+
+                <!-- Card Body -->
+
+                <div class="notification-card-body">
+
+                    <!-- Existing Django success messages -->
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div
+                                class="notification-message notification-message--success"
+                                role="status"
+                            >
+
+                                <span
+                                    class="notification-message-mark"
+                                    aria-hidden="true"
+                                >&#10003;</span>
+
+                                <div>
+                                    {{ message }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+                    <!-- Form Introduction -->
+
+                    <div class="form-section-heading">
+
+                        <h2 class="form-section-title">
+                            Notification Details
+                        </h2>
+
+                        <p class="form-section-description">
+                            Complete the fields below and review the details
+                            before sending the notification.
+                        </p>
+
+                    </div>
+
+                    <!-- Information Note -->
+
+                    <div class="notification-guidance">
+
+                        <span
+                            class="guidance-mark"
+                            aria-hidden="true"
+                        >i</span>
+
+                        <div>
+
+                            <p class="guidance-title">
+                                Before you send
+                            </p>
+
+                            <p class="guidance-text">
+                                Make sure the notification is relevant to
+                                the selected student. Keep the title clear
+                                and the message easy to understand.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================
+                         EXISTING DJANGO FORM
+                    ====================================== -->
+
+                    <form
+                        method="post"
+                        novalidate
+                        class="notification-form"
+                    >
+
+                        {% csrf_token %}
+
+                        {% for field in form %}
+
+                            <div class="mb-3">
+
+                                <label
+                                    class="form-label"
+                                    for="{{ field.id_for_label }}"
+                                >
+                                    {{ field.label }}
+
+                                </label>
+
+                                {{ field }}
+
+                                {% if field.help_text %}
+
+                                    <div class="form-text">
+                                        {{ field.help_text }}
+                                    </div>
+
+                                {% endif %}
+
+                                {% for error in field.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% endfor %}
+
+                        <!-- Form-wide validation errors -->
+
+                        {% for error in form.non_field_errors %}
+
+                            <div
+                                class="notification-message notification-message--error non-field-errors"
+                                role="alert"
+                            >
+
+                                <span
+                                    class="notification-message-mark"
+                                    aria-hidden="true"
+                                >!</span>
+
+                                <div>
+                                    {{ error }}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                        <!-- Submit Action -->
+
+                        <div class="form-actions">
+
+                            <button
+                                class="btn-send"
+                                type="submit"
+                            >
+                                <span>Send Notification</span>
+
+                                <span aria-hidden="true">
+                                    &rarr;
+                                </span>
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- =============================================
+                 PAGE FOOTER
+            ============================================== -->
+
+            <footer class="form-footer">
+
+                <span
+                    class="form-footer-mark"
+                    aria-hidden="true"
+                >N</span>
+
+                <span>
+                    Student Dropout Risk Management System
+                </span>
+
+            </footer>
+
+        </div>
+
+    </main>
+
 </body>
 </html>

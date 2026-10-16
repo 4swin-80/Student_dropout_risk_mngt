@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -6,167 +7,1188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Monitor Risk Scores | Admin Dashboard</title>
+    <title>Monitor Risk Scores | Administrator Dashboard</title>
 
+    <!-- Bootstrap 5.3.3 -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
 
+    <!-- Bootstrap Icons -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
         rel="stylesheet"
     >
+
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
+
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #1b2a50;
+
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+
+            --admin-text: #172033;
+            --admin-muted: #718096;
+
+            --admin-green: #16834a;
+            --admin-green-soft: #e9f8ef;
+
+            --admin-blue: #176da6;
+            --admin-blue-soft: #e8f5ff;
+
+            --admin-amber: #986500;
+            --admin-amber-soft: #fff5df;
+
+            --admin-red: #c93645;
+            --admin-red-soft: #fff0f1;
+
+            --admin-radius: 17px;
+            --admin-radius-sm: 11px;
+
+            --admin-shadow:
+                0 5px 24px rgba(22, 34, 67, 0.045);
+
+            --admin-hover-shadow:
+                0 12px 30px rgba(22, 34, 67, 0.085);
+        }
+
+        /* =====================================================
+           BASE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.93rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           PAGE LAYOUT
+        ===================================================== */
+
+        .risk-dashboard {
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 38px 30px 32px;
+        }
+
+        /* =====================================================
+           PAGE HEADER
+        ===================================================== */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .page-heading {
+            min-width: 0;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 11px;
+            color: var(--admin-indigo);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow i {
+            font-size: 0.95rem;
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.7vw, 2.15rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.3;
+        }
+
+        .page-description {
+            max-width: 650px;
+            margin: 10px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.9rem;
+            line-height: 1.75;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-shrink: 0;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-back {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 43px;
+            padding: 11px 16px;
+            border: 1px solid #dce2ed;
+            border-radius: var(--admin-radius-sm);
+            background: var(--admin-surface);
+            color: #34415a;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease;
+        }
+
+        .btn-back:hover {
+            border-color: #c7d2fe;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo-dark);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.07);
+        }
+
+        .btn-back i {
+            font-size: 1rem;
+        }
+
+        /* =====================================================
+           SUMMARY CARD
+        ===================================================== */
+
+        .summary-section {
+            margin-bottom: 31px;
+        }
+
+        .summary-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .summary-card:hover {
+            box-shadow: var(--admin-hover-shadow);
+        }
+
+        .summary-card::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--admin-indigo);
+            content: "";
+        }
+
+        .summary-card .card-body {
+            padding: 25px 27px;
+        }
+
+        .summary-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .summary-info {
+            display: flex;
+            align-items: center;
+            gap: 19px;
+            min-width: 0;
+        }
+
+        .summary-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 17px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.55rem;
+        }
+
+        .summary-label {
+            margin: 0 0 7px;
+            color: var(--admin-muted);
+            font-size: 0.83rem;
+            font-weight: 650;
+            line-height: 1.5;
+        }
+
+        .summary-value {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(2rem, 3vw, 2.55rem);
+            font-weight: 800;
+            letter-spacing: -0.06em;
+            line-height: 1.12;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .summary-description {
+            margin: 9px 0 0;
+            color: #8390a4;
+            font-size: 0.77rem;
+            line-height: 1.6;
+        }
+
+        .summary-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+            padding: 9px 12px;
+            border: 1px solid #dce7fb;
+            border-radius: 9px;
+            background: #f3f7ff;
+            color: #405c9d;
+            font-size: 0.75rem;
+            font-weight: 750;
+        }
+
+        .summary-status i {
+            font-size: 0.9rem;
+        }
+
+        /* =====================================================
+           SECTION HEADING
+        ===================================================== */
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            margin-bottom: 17px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1.13rem;
+            font-weight: 780;
+            letter-spacing: -0.025em;
+        }
+
+        .section-description {
+            margin: 7px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.83rem;
+            line-height: 1.65;
+        }
+
+        .section-label {
+            color: #8994a8;
+            font-size: 0.69rem;
+            font-weight: 750;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* =====================================================
+           RISK TABLE CARD
+        ===================================================== */
+
+        .risk-table-card {
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+        }
+
+        .risk-table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            padding: 23px 25px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #fff;
+        }
+
+        .risk-table-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .table-heading-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.15rem;
+        }
+
+        .risk-table-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 0.99rem;
+            font-weight: 750;
+        }
+
+        .risk-table-subtitle {
+            margin: 5px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.77rem;
+            line-height: 1.5;
+        }
+
+        .record-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0;
+            padding: 8px 11px;
+            border: 1px solid #e0e7ff;
+            border-radius: 9px;
+            background: #f5f7ff;
+            color: #4f46a5;
+            font-size: 0.73rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .record-label i {
+            font-size: 0.9rem;
+        }
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .risk-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .risk-table {
+            width: 100%;
+            min-width: 740px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            vertical-align: middle;
+        }
+
+        .risk-table thead th {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #f8f9fd;
+            color: #69768c;
+            font-size: 0.69rem;
+            font-weight: 800;
+            letter-spacing: 0.055em;
+            line-height: 1.5;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .risk-table thead th:first-child,
+        .risk-table tbody td:first-child {
+            padding-left: 25px;
+        }
+
+        .risk-table thead th:last-child,
+        .risk-table tbody td:last-child {
+            padding-right: 25px;
+        }
+
+        .risk-table tbody td {
+            padding: 19px 20px;
+            border-bottom: 1px solid #edf0f6;
+            background: #fff;
+            color: #445169;
+            font-size: 0.83rem;
+            transition: background 0.15s ease;
+        }
+
+        .risk-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .risk-table tbody tr:hover td {
+            background: #fafbff;
+        }
+
+        /* Student ID */
+
+        .student-id {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border: 1px solid #e0e7ff;
+            border-radius: 7px;
+            background: #f4f6ff;
+            color: #4945a5;
+            font-size: 0.75rem;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        /* Student name */
+
+        .student-name {
+            display: block;
+            color: var(--admin-text);
+            font-size: 0.85rem;
+            font-weight: 750;
+            overflow-wrap: anywhere;
+        }
+
+        /* Risk score */
+
+        .risk-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--admin-text);
+            font-size: 0.87rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .score-icon {
+            color: #8390a4;
+            font-size: 0.88rem;
+        }
+
+        /* =====================================================
+           RISK LEVEL BADGES
+        ===================================================== */
+
+        .risk-badge {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 10px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            line-height: 1.4;
+            white-space: nowrap;
+        }
+
+        .risk-badge i {
+            font-size: 0.75rem;
+        }
+
+        .risk-badge--very-high {
+            border-color: #d8dce4;
+            background: #30394c;
+            color: #fff;
+        }
+
+        .risk-badge--high {
+            border-color: #ffdadd;
+            background: var(--admin-red-soft);
+            color: #be2938;
+        }
+
+        .risk-badge--medium {
+            border-color: #f3dfb2;
+            background: var(--admin-amber-soft);
+            color: #926000;
+        }
+
+        .risk-badge--low {
+            border-color: #cce7fb;
+            background: var(--admin-blue-soft);
+            color: #17629d;
+        }
+
+        .risk-badge--very-low {
+            border-color: #ccebd8;
+            background: var(--admin-green-soft);
+            color: #187343;
+        }
+
+        /* Prediction date */
+
+        .prediction-date {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            color: #657289;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            white-space: nowrap;
+        }
+
+        .prediction-date i {
+            margin-top: 2px;
+            color: #8b97aa;
+            font-size: 0.93rem;
+        }
+
+        /* =====================================================
+           EMPTY STATE
+        ===================================================== */
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 65px 24px;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 78px;
+            height: 78px;
+            margin-bottom: 20px;
+            border: 1px solid #dce3f7;
+            border-radius: 23px;
+            background: #f0f3ff;
+            color: #6771c5;
+            font-size: 2rem;
+        }
+
+        .empty-state-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1.13rem;
+            font-weight: 780;
+            letter-spacing: -0.025em;
+        }
+
+        .empty-state-description {
+            max-width: 420px;
+            margin: 10px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        .empty-state-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 21px;
+            padding: 9px 12px;
+            border: 1px solid #e4e9f1;
+            border-radius: 9px;
+            background: #fafbfe;
+            color: #69768c;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .empty-state-note i {
+            color: var(--admin-indigo);
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 26px;
+            padding-top: 21px;
+            border-top: 1px solid var(--admin-border);
+            color: #8994a8;
+            font-size: 0.74rem;
+            line-height: 1.6;
+        }
+
+        .footer-brand {
+            color: #657289;
+            font-weight: 700;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 767.98px) {
+            .risk-dashboard {
+                padding: 28px 18px;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 19px;
+                margin-bottom: 25px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn-back {
+                width: 100%;
+            }
+
+            .summary-card .card-body {
+                padding: 21px;
+            }
+
+            .summary-info {
+                gap: 14px;
+            }
+
+            .summary-icon {
+                width: 49px;
+                height: 49px;
+                border-radius: 14px;
+                font-size: 1.3rem;
+            }
+
+            .summary-content {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 17px;
+            }
+
+            .summary-status {
+                align-self: flex-start;
+            }
+
+            .section-header {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .risk-table-header {
+                align-items: flex-start;
+                padding: 19px;
+            }
+
+            .table-heading-icon {
+                width: 39px;
+                height: 39px;
+            }
+
+            .record-label {
+                display: none;
+            }
+
+            .empty-state {
+                padding: 48px 19px;
+            }
+
+            .page-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 399.98px) {
+            .risk-dashboard {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .page-title {
+                font-size: 1.55rem;
+            }
+
+            .page-description {
+                font-size: 0.85rem;
+            }
+
+            .summary-card .card-body {
+                padding: 18px;
+            }
+
+            .summary-value {
+                font-size: 2rem;
+            }
+
+            .summary-label {
+                font-size: 0.79rem;
+            }
+
+            .risk-table-header {
+                padding: 16px;
+            }
+
+            .risk-table-subtitle {
+                font-size: 0.72rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-    <div class="container py-5">
+    <main class="risk-dashboard">
 
-        <!-- PAGE HEADER -->
-        <div class="d-flex flex-wrap justify-content-between
-                    align-items-center gap-3 mb-4">
+        <!-- =================================================
+             PAGE HEADER
+        ================================================== -->
 
-            <div>
-                <h2 class="fw-bold mb-1">
-                    <i class="bi bi-graph-up-arrow text-warning me-2"></i>
+        <header class="page-header">
+
+            <div class="page-heading">
+
+                <div class="page-eyebrow">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    Administrator Portal
+                </div>
+
+                <h1 class="page-title">
                     Monitor Risk Scores
-                </h2>
+                </h1>
 
-                <p class="text-secondary mb-0">
-                    Monitor saved student dropout risk scores and risk levels.
+                <p class="page-description">
+                    Review saved student dropout risk predictions,
+                    understand their risk classifications and monitor
+                    students who may require additional attention.
                 </p>
+
             </div>
 
-            <a
-                href="{% url 'admin_dashboard' %}"
-                class="btn btn-outline-secondary"
-            >
-                <i class="bi bi-arrow-left me-1"></i>
-                Back to Dashboard
-            </a>
+            <div class="header-actions">
 
-        </div>
+                <a
+                    href="{% url 'admin_dashboard' %}"
+                    class="btn-back"
+                >
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    Back to Dashboard
+                </a>
 
-        <!-- SUMMARY -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body d-flex align-items-center gap-3">
+            </div>
 
-                <div class="bg-warning bg-opacity-25 text-dark
-                            rounded-3 p-3">
-                    <i class="bi bi-people-fill fs-3"></i>
+        </header>
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        <section
+            class="summary-section"
+            aria-labelledby="summary-heading"
+        >
+
+            <div class="card summary-card">
+
+                <div class="card-body">
+
+                    <div class="summary-content">
+
+                        <div class="summary-info">
+
+                            <div
+                                class="summary-icon"
+                                aria-hidden="true"
+                            >
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <p class="summary-label" id="summary-heading">
+                                    Students with Saved Risk Predictions
+                                </p>
+
+                                <h2 class="summary-value">
+                                    {{ total_students }}
+                                </h2>
+
+                                <p class="summary-description">
+                                    Total saved risk prediction records
+                                    returned by the system.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <div class="summary-status">
+                            <i class="bi bi-database-check" aria-hidden="true"></i>
+                            Saved Predictions
+                        </div>
+
+                    </div>
+
                 </div>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+             STUDENT RISK SCORE DETAILS
+        ================================================== -->
+
+        <section aria-labelledby="risk-details-heading">
+
+            <div class="section-header">
 
                 <div>
-                    <h6 class="text-secondary mb-1">
-                        Students with Saved Risk Predictions
-                    </h6>
 
-                    <h2 class="fw-bold mb-0">
-                        {{ total_students }}
+                    <h2 class="section-title" id="risk-details-heading">
+                        Student Risk Score Details
                     </h2>
+
+                    <p class="section-description">
+                        Review student identifiers, calculated risk scores,
+                        risk levels and prediction timestamps.
+                    </p>
+
+                </div>
+
+                <span class="section-label">
+                    Risk Monitoring
+                </span>
+
+            </div>
+
+            <div class="card risk-table-card">
+
+                <!-- Table heading -->
+
+                <div class="risk-table-header">
+
+                    <div class="risk-table-heading">
+
+                        <div
+                            class="table-heading-icon"
+                            aria-hidden="true"
+                        >
+                            <i class="bi bi-clipboard2-data-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h3 class="risk-table-title">
+                                Saved Risk Predictions
+                            </h3>
+
+                            <p class="risk-table-subtitle">
+                                Student-level risk scores and classification details.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="record-label">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        Risk Assessment Records
+                    </div>
+
+                </div>
+
+                <!-- Table content -->
+
+                <div class="card-body p-0">
+
+                    {% if risk_results %}
+
+                        <div class="risk-table-wrapper">
+
+                            <table class="table risk-table">
+
+                                <caption class="visually-hidden">
+                                    Saved student risk predictions showing
+                                    student ID, student name, risk score,
+                                    risk level and prediction date.
+                                </caption>
+
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            Student ID
+                                        </th>
+
+                                        <th scope="col">
+                                            Student Name
+                                        </th>
+
+                                        <th scope="col">
+                                            Risk Score
+                                        </th>
+
+                                        <th scope="col">
+                                            Risk Level
+                                        </th>
+
+                                        <th scope="col">
+                                            Prediction Date
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for prediction in risk_results %}
+
+                                        <tr>
+
+                                            <!-- Student ID -->
+
+                                            <td>
+                                                <span class="student-id">
+                                                    {{ prediction.student.student_id }}
+                                                </span>
+                                            </td>
+
+                                            <!-- Student Name -->
+
+                                            <td>
+                                                <span class="student-name">
+                                                    {{ prediction.student }}
+                                                </span>
+                                            </td>
+
+                                            <!-- Risk Score -->
+
+                                            <td>
+                                                <span class="risk-score">
+                                                    <i
+                                                        class="bi bi-activity score-icon"
+                                                        aria-hidden="true"
+                                                    ></i>
+                                                    {{ prediction.risk_score }}%
+                                                </span>
+                                            </td>
+
+                                            <!-- Risk Level -->
+
+                                            <td>
+
+                                                {% if prediction.risk_level == "Very High" %}
+
+                                                    <span class="risk-badge risk-badge--very-high">
+                                                        <i
+                                                            class="bi bi-exclamation-octagon-fill"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Very High
+                                                    </span>
+
+                                                {% elif prediction.risk_level == "High" %}
+
+                                                    <span class="risk-badge risk-badge--high">
+                                                        <i
+                                                            class="bi bi-exclamation-triangle-fill"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        High
+                                                    </span>
+
+                                                {% elif prediction.risk_level == "Medium" %}
+
+                                                    <span class="risk-badge risk-badge--medium">
+                                                        <i
+                                                            class="bi bi-dash-circle-fill"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Medium
+                                                    </span>
+
+                                                {% elif prediction.risk_level == "Low" %}
+
+                                                    <span class="risk-badge risk-badge--low">
+                                                        <i
+                                                            class="bi bi-arrow-down-circle-fill"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        Low
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="risk-badge risk-badge--very-low">
+                                                        <i
+                                                            class="bi bi-check-circle-fill"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                        {{ prediction.risk_level }}
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <!-- Prediction Date -->
+
+                                            <td>
+
+                                                <div class="prediction-date">
+
+                                                    <i
+                                                        class="bi bi-calendar3"
+                                                        aria-hidden="true"
+                                                    ></i>
+
+                                                    <span>
+                                                        {{ prediction.prediction_date|date:"d M Y, h:i A" }}
+                                                    </span>
+
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <!-- Empty state -->
+
+                        <div class="empty-state">
+
+                            <div
+                                class="empty-state-icon"
+                                aria-hidden="true"
+                            >
+                                <i class="bi bi-clipboard-data"></i>
+                            </div>
+
+                            <h3 class="empty-state-title">
+                                No Risk Scores Available
+                            </h3>
+
+                            <p class="empty-state-description">
+                                No saved student risk predictions were found.
+                                Once risk prediction records are available,
+                                they will appear here for administrative review.
+                            </p>
+
+                            <div class="empty-state-note">
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                <span>
+                                    This page displays saved prediction records.
+                                </span>
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
                 </div>
 
             </div>
-        </div>
 
-        <!-- RISK SCORES TABLE -->
-        <div class="card border-0 shadow-sm">
+        </section>
 
-            <div class="card-header bg-white py-3">
-                <h5 class="fw-bold mb-0">Student Risk Score Details</h5>
-            </div>
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
 
-            <div class="card-body p-0">
+        <footer class="page-footer">
 
-                {% if risk_results %}
+            <span>
+                Student Dropout Risk Management System
+            </span>
 
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+            <span class="footer-brand">
+                <i class="bi bi-shield-check me-1" aria-hidden="true"></i>
+                Administrator Portal
+            </span>
 
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="px-3">Student ID</th>
-                                    <th>Student Name</th>
-                                    <th>Risk Score</th>
-                                    <th>Risk Level</th>
-                                    <th>Prediction Date</th>
-                                </tr>
-                            </thead>
+        </footer>
 
-                            <tbody>
-                                {% for prediction in risk_results %}
-                                    <tr>
-                                        <td class="px-3">
-                                            {{ prediction.student.student_id }}
-                                        </td>
+    </main>
 
-                                        <td class="fw-semibold">
-                                            {{ prediction.student }}
-                                        </td>
-
-                                        <td>
-                                            {{ prediction.risk_score }}%
-                                        </td>
-
-                                        <td>
-                                            {% if prediction.risk_level == "Very High" %}
-                                                <span class="badge bg-dark">
-                                                    Very High
-                                                </span>
-                                            {% elif prediction.risk_level == "High" %}
-                                                <span class="badge bg-danger">
-                                                    High
-                                                </span>
-                                            {% elif prediction.risk_level == "Medium" %}
-                                                <span class="badge bg-warning text-dark">
-                                                    Medium
-                                                </span>
-                                            {% elif prediction.risk_level == "Low" %}
-                                                <span class="badge bg-info text-dark">
-                                                    Low
-                                                </span>
-                                            {% else %}
-                                                <span class="badge bg-success">
-                                                    {{ prediction.risk_level }}
-                                                </span>
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {{ prediction.prediction_date|date:"d M Y, h:i A" }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-
-                        </table>
-                    </div>
-
-                {% else %}
-
-                    <div class="text-center py-5 px-3">
-                        <i class="bi bi-clipboard-data text-secondary fs-1"></i>
-
-                        <h5 class="fw-bold mt-3">
-                            No Risk Scores Available
-                        </h5>
-
-                        <p class="text-secondary mb-0">
-                            No saved student risk predictions were found.
-                        </p>
-                    </div>
-
-                {% endif %}
-
-            </div>
-        </div>
-
-    </div>
-
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

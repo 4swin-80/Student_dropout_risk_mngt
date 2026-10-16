@@ -1,14 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Delete Student | Student Risk Management</title>
 
@@ -16,130 +11,702 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
+    <style>
+        :root {
+            --navy-950: #10182f;
+            --navy-900: #172442;
+            --navy-800: #24365b;
+            --indigo-700: #4338ca;
+            --indigo-600: #4f46e5;
+            --indigo-50: #eef2ff;
+            --page-bg: #f4f6fc;
+            --surface: #ffffff;
+            --text-primary: #19233b;
+            --text-secondary: #707b91;
+            --border: #e3e8f2;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --radius-lg: 20px;
+            --shadow-card: 0 12px 40px rgba(24, 39, 75, 0.075);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--page-bg);
+            color: var(--text-primary);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+
+        .topbar {
+            background: var(--navy-950);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 18px rgba(16, 24, 47, 0.12);
+        }
+
+        .topbar-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.35px;
+        }
+
+        .brand:hover {
+            color: #ffffff;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 13px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
+            box-shadow: 0 5px 14px rgba(79, 70, 229, 0.30);
+            font-size: 19px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: #aebbd4;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .admin-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 10px;
+            color: #dbe4f6;
+            background: rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .admin-label i {
+            color: #a5b4fc;
+            font-size: 15px;
+        }
+
+        /* Page layout */
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 1050px;
+            flex: 1;
+            margin: 0 auto;
+            padding: 35px 24px 45px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .breadcrumb-nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-bottom: 28px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .breadcrumb-nav a {
+            color: var(--indigo-700);
+            font-weight: 600;
+        }
+
+        .breadcrumb-nav a:hover {
+            color: var(--indigo-600);
+        }
+
+        .breadcrumb-nav i {
+            color: #a1aabe;
+            font-size: 11px;
+        }
+
+        .page-intro {
+            margin-bottom: 26px;
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 10px;
+            color: var(--danger-dark);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.1px;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow i {
+            font-size: 14px;
+        }
+
+        .page-title {
+            margin: 0 0 9px;
+            color: var(--navy-950);
+            font-size: clamp(25px, 4vw, 33px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .page-description {
+            max-width: 600px;
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* Confirmation card */
+
+        .confirmation-card {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: var(--shadow-card);
+        }
+
+        .danger-accent {
+            height: 5px;
+            background: linear-gradient(90deg, #b91c1c, #ef4444, #fca5a5);
+        }
+
+        .confirmation-content {
+            padding: 34px;
+            text-align: center;
+        }
+
+        .warning-icon {
+            width: 74px;
+            height: 74px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 22px;
+            border: 1px solid var(--danger-border);
+            border-radius: 22px;
+            color: var(--danger);
+            background: var(--danger-bg);
+            box-shadow: 0 6px 18px rgba(220, 38, 38, 0.08);
+            font-size: 30px;
+        }
+
+        .confirmation-title {
+            margin: 0 0 12px;
+            color: var(--navy-950);
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.65px;
+        }
+
+        .confirmation-description {
+            max-width: 440px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* Student identity */
+
+        .student-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 27px 0 21px;
+            padding: 19px;
+            border: 1px solid #e3e8f3;
+            border-radius: 15px;
+            background: #f8faff;
+            text-align: left;
+        }
+
+        .student-avatar {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid #e0e7ff;
+            border-radius: 15px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6366f1, #3730a3);
+            font-size: 21px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .student-details {
+            min-width: 0;
+        }
+
+        .student-name {
+            margin: 0 0 7px;
+            color: var(--navy-950);
+            font-size: 16px;
+            font-weight: 800;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .student-id {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .student-id strong {
+            color: var(--indigo-700);
+            font-weight: 800;
+            letter-spacing: 0.25px;
+            overflow-wrap: anywhere;
+        }
+
+        /* Deletion warning */
+
+        .warning-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin-bottom: 26px;
+            padding: 14px 15px;
+            border: 1px solid var(--danger-border);
+            border-radius: 12px;
+            color: #991b1b;
+            background: #fff7f7;
+            text-align: left;
+        }
+
+        .warning-notice > i {
+            flex-shrink: 0;
+            margin-top: 2px;
+            font-size: 16px;
+        }
+
+        .warning-notice strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .warning-notice p {
+            margin: 0;
+            color: #8c4242;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        /* Actions */
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 11px;
+        }
+
+        .btn-action {
+            min-height: 45px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 18px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            transition: background 0.2s ease,
+                        border-color 0.2s ease,
+                        box-shadow 0.2s ease,
+                        transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            border-color: #dce2ee;
+            color: #47536b;
+            background: #ffffff;
+        }
+
+        .btn-cancel:hover {
+            border-color: #c7d2fe;
+            color: var(--indigo-700);
+            background: var(--indigo-50);
+        }
+
+        .btn-confirm-delete {
+            border-color: var(--danger);
+            color: #ffffff;
+            background: var(--danger);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.16);
+        }
+
+        .btn-confirm-delete:hover {
+            border-color: var(--danger-dark);
+            color: #ffffff;
+            background: var(--danger-dark);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .btn-action:focus-visible {
+            outline: 3px solid rgba(99, 102, 241, 0.30);
+            outline-offset: 3px;
+        }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 25px;
+            color: #8993a7;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .secure-note i {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            margin-top: auto;
+            padding-top: 30px;
+            color: #929cb0;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        /* Responsive */
+
+        @media (max-width: 767.98px) {
+            .topbar-inner {
+                min-height: 66px;
+            }
+
+            .brand {
+                gap: 9px;
+                font-size: 13px;
+            }
+
+            .brand-mark {
+                width: 36px;
+                height: 36px;
+            }
+
+            .brand-subtitle,
+            .admin-label {
+                display: none;
+            }
+
+            .page-wrapper {
+                padding: 25px 16px 35px;
+            }
+
+            .breadcrumb-nav {
+                margin-bottom: 23px;
+            }
+
+            .confirmation-content {
+                padding: 27px 22px;
+            }
+
+            .confirmation-title {
+                font-size: 23px;
+            }
+
+            .warning-icon {
+                width: 65px;
+                height: 65px;
+                border-radius: 19px;
+                font-size: 27px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .page-wrapper {
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            .confirmation-content {
+                padding: 23px 16px;
+            }
+
+            .student-preview {
+                padding: 14px;
+                gap: 11px;
+            }
+
+            .student-avatar {
+                width: 46px;
+                height: 46px;
+                border-radius: 13px;
+                font-size: 19px;
+            }
+
+            .student-name {
+                font-size: 14px;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .form-actions .btn-action {
+                width: 100%;
+            }
+
+            .secure-note {
+                align-items: flex-start;
+                text-align: left;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+    </style>
 </head>
 
+<body>
 
-<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="topbar">
+        <div class="container">
+            <div class="topbar-inner">
 
+                <a href="{% url 'admin_dashboard' %}" class="brand">
+                    <span class="brand-mark">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
 
-<nav class="navbar navbar-dark bg-dark">
+                    <span>
+                        Student Risk Management
+                        <span class="brand-subtitle">
+                            Dropout Risk Monitoring System
+                        </span>
+                    </span>
+                </a>
 
-    <div class="container">
+                <span class="admin-label">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    Administrator
+                </span>
 
-        <a
-            href="{% url 'admin_dashboard' %}"
-            class="navbar-brand fw-bold"
-        >
-            Student Risk Management
-        </a>
+            </div>
+        </div>
+    </nav>
 
-    </div>
+    <!-- Main Content -->
+    <main class="page-wrapper">
 
-</nav>
+        <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+            <a href="{% url 'admin_dashboard' %}">
+                Dashboard
+            </a>
 
+            <i class="bi bi-chevron-right"></i>
 
-<div class="container py-5">
+            <a href="{% url 'student_list' %}">
+                Students
+            </a>
 
+            <i class="bi bi-chevron-right"></i>
 
-    <div class="row justify-content-center">
+            <span>Delete Student</span>
+        </nav>
 
-        <div class="col-md-6">
+        <header class="page-intro">
+            <div class="page-eyebrow">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Destructive action
+            </div>
 
+            <h1 class="page-title">Delete Student</h1>
 
-            <div class="card border-danger shadow-sm">
+            <p class="page-description">
+                Review the student record carefully before confirming.
+                This action may not be reversible.
+            </p>
+        </header>
 
-                <div class="card-body p-4 p-md-5 text-center">
+        <!-- Confirmation Card -->
+        <section class="confirmation-card" aria-labelledby="confirmation-title">
 
+            <div class="danger-accent"></div>
 
-                    <div
-                        class="bg-danger-subtle text-danger
-                               rounded-circle mx-auto mb-4
-                               d-flex align-items-center
-                               justify-content-center"
-                        style="width:65px;height:65px;"
-                    >
-                        !
+            <div class="confirmation-content">
+
+                <div class="warning-icon" aria-hidden="true">
+                    <i class="bi bi-trash3-fill"></i>
+                </div>
+
+                <h2 id="confirmation-title" class="confirmation-title">
+                    Delete this student?
+                </h2>
+
+                <p class="confirmation-description">
+                    Are you sure you want to permanently delete the following
+                    student record? Please verify the student's identity
+                    before proceeding.
+                </p>
+
+                <!-- Student Identity -->
+                <div class="student-preview">
+
+                    <div class="student-avatar" aria-hidden="true">
+                        {{ student.first_name|first|upper }}
                     </div>
 
+                    <div class="student-details">
 
-                    <h3 class="fw-bold">
-                        Delete Student?
-                    </h3>
-
-
-                    <p class="text-secondary">
-
-                        Are you sure you want to permanently
-                        delete the following student?
-
-                    </p>
-
-
-                    <div class="bg-light rounded p-3 mb-4">
-
-                        <h5 class="fw-bold mb-1">
-
+                        <h3 class="student-name">
                             {{ student.first_name }}
                             {{ student.last_name }}
+                        </h3>
 
-                        </h5>
-
-                        <small class="text-secondary">
-
+                        <div class="student-id">
+                            <i class="bi bi-person-badge"></i>
                             Student ID:
-                            {{ student.student_id }}
 
-                        </small>
-
-                    </div>
-
-
-                    <form method="POST">
-
-                        {% csrf_token %}
-
-
-                        <div class="d-flex justify-content-center gap-2">
-
-                            <a
-                                href="{% url 'student_detail' student.id %}"
-                                class="btn btn-outline-secondary"
-                            >
-                                Cancel
-                            </a>
-
-
-                            <button
-                                type="submit"
-                                class="btn btn-danger"
-                            >
-                                Yes, Delete Student
-                            </button>
-
+                            <strong>{{ student.student_id }}</strong>
                         </div>
 
-
-                    </form>
-
+                    </div>
 
                 </div>
 
+                <!-- Warning Message -->
+                <div class="warning-notice" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+
+                    <div>
+                        <strong>This action requires careful consideration</strong>
+
+                        <p>
+                            Deleting a student may affect related attendance,
+                            academic, assignment and examination records,
+                            depending on your database relationships.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Delete Form -->
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-actions">
+
+                        <a
+                            href="{% url 'student_detail' student.id %}"
+                            class="btn-action btn-cancel"
+                        >
+                            <i class="bi bi-arrow-left"></i>
+                            Cancel
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn-action btn-confirm-delete"
+                        >
+                            <i class="bi bi-trash3-fill"></i>
+                            Yes, Delete Student
+                        </button>
+
+                    </div>
+                </form>
+
+                <div class="secure-note">
+                    <i class="bi bi-shield-lock-fill"></i>
+                    <span>
+                        This confirmation submits a POST request protected
+                        by Django CSRF verification.
+                    </span>
+                </div>
+
             </div>
+        </section>
 
+        <footer class="page-footer">
+            Student Dropout Risk Management System
+        </footer>
 
-        </div>
+    </main>
 
-    </div>
-
-
-</div>
-
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>

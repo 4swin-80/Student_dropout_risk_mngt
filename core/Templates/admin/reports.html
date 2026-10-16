@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -14,92 +15,538 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
     <style>
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        /* =====================================================
+           ADMINISTRATOR REPORTS & ANALYTICS
+           Distinctive navy + indigo theme
+        ===================================================== */
+        :root {
+            --admin-navy: #111b3a;
+            --admin-navy-light: #1b2a50;
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+            --admin-page-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+            --admin-text: #172033;
+            --admin-muted: #718096;
+            --admin-soft-shadow: 0 5px 24px rgba(22, 34, 67, .045);
+            --admin-hover-shadow: 0 12px 30px rgba(22, 34, 67, .085);
+            --bs-primary: #4f46e5;
+            --bs-primary-rgb: 79, 70, 229;
+            --bs-secondary-color: #718096;
+            --bs-light: #f8f9fd;
+            --bs-light-rgb: 248, 249, 253;
         }
-        .metric-card {
-            border: 0;
+
+        * { box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px;
+        }
+
+        body.admin-analytics-page {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-page-bg);
+            color: var(--admin-text);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-size: .92rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .admin-analytics-page a { text-decoration: none; }
+        .admin-analytics-page a:focus-visible,
+        .admin-analytics-page button:focus-visible,
+        .admin-analytics-page select:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        .admin-analytics-shell {
+            max-width: 1760px;
+            margin-inline: auto;
+            padding-top: 31px !important;
+            padding-bottom: 42px !important;
+        }
+
+        /* Typography and page heading */
+        .admin-analytics-page .breadcrumb {
+            align-items: center;
+            gap: 2px;
+            margin-bottom: 11px !important;
+        }
+        .admin-analytics-page .breadcrumb-item,
+        .admin-analytics-page .breadcrumb-item a {
+            color: #7b879b !important;
+            font-size: .76rem;
+        }
+        .admin-analytics-page .breadcrumb-item.active { color: #4e5b73; }
+        .admin-analytics-page .breadcrumb-item + .breadcrumb-item::before { color: #a8b1c1; }
+
+        .admin-analytics-page header {
+            padding: 0 0 23px;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        .admin-analytics-page header h2 {
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.5vw, 2.12rem);
+            font-weight: 800 !important;
+            letter-spacing: -.045em;
+        }
+        .admin-analytics-page header h2 .bi { color: var(--admin-indigo) !important; }
+        .admin-analytics-page header p {
+            max-width: 780px;
+            color: var(--admin-muted) !important;
+            font-size: .9rem;
+            line-height: 1.7;
+        }
+        #lastRefreshedBadge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border-color: #e2e7f0 !important;
+            border-radius: 9px;
+            background: #fff !important;
+            color: #68758c !important;
+            font-size: .74rem;
+            font-weight: 650;
+        }
+        #lastRefreshedBadge .bi { color: var(--admin-indigo); }
+
+        /* Consistent buttons and primary theme */
+        .admin-analytics-page .btn {
+            min-height: 38px;
+            border-radius: 9px;
+            font-size: .82rem;
+            font-weight: 650;
+            transition: background-color .18s ease, border-color .18s ease,
+                        color .18s ease, box-shadow .18s ease, transform .18s ease;
+        }
+        .admin-analytics-page .btn-primary {
+            --bs-btn-bg: var(--admin-indigo);
+            --bs-btn-border-color: var(--admin-indigo);
+            --bs-btn-hover-bg: var(--admin-indigo-dark);
+            --bs-btn-hover-border-color: var(--admin-indigo-dark);
+            --bs-btn-active-bg: var(--admin-indigo-dark);
+            --bs-btn-active-border-color: var(--admin-indigo-dark);
+            --bs-btn-disabled-bg: var(--admin-indigo);
+            --bs-btn-disabled-border-color: var(--admin-indigo);
+            box-shadow: 0 4px 10px rgba(79, 70, 229, .12);
+        }
+        .admin-analytics-page .btn-primary:hover { box-shadow: 0 6px 14px rgba(79, 70, 229, .2); }
+        .admin-analytics-page .btn-outline-primary {
+            --bs-btn-color: var(--admin-indigo);
+            --bs-btn-border-color: #cfd3fb;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: var(--admin-indigo);
+            --bs-btn-hover-border-color: var(--admin-indigo);
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: var(--admin-indigo-dark);
+            --bs-btn-active-border-color: var(--admin-indigo-dark);
+        }
+        .admin-analytics-page .btn-outline-secondary {
+            --bs-btn-color: #526078;
+            --bs-btn-border-color: #dce2ed;
+            --bs-btn-hover-color: #29354d;
+            --bs-btn-hover-bg: #f1f4fa;
+            --bs-btn-hover-border-color: #c9d2e1;
+        }
+        .admin-analytics-page .btn-success {
+            --bs-btn-bg: #16834a;
+            --bs-btn-border-color: #16834a;
+            --bs-btn-hover-bg: #116a3b;
+            --bs-btn-hover-border-color: #116a3b;
+            --bs-btn-active-bg: #116a3b;
+            --bs-btn-active-border-color: #116a3b;
+        }
+        .admin-analytics-page .btn-outline-success {
+            --bs-btn-color: #16834a;
+            --bs-btn-border-color: #a8d9bb;
+            --bs-btn-hover-bg: #16834a;
+            --bs-btn-hover-border-color: #16834a;
+        }
+        .admin-analytics-page .text-primary { color: var(--admin-indigo) !important; }
+        .admin-analytics-page .text-muted { color: var(--admin-muted) !important; }
+        .admin-analytics-page .bg-primary-subtle { background-color: var(--admin-indigo-soft) !important; }
+        .admin-analytics-page .border-primary-subtle { border-color: #d9ddff !important; }
+        .admin-analytics-page .badge { font-weight: 650; letter-spacing: .005em; }
+
+        /* Global cohort filters */
+        .admin-analytics-page .filter-panel {
+            border: 1px solid var(--admin-border) !important;
+            border-radius: 16px;
+            background: var(--admin-surface);
+            box-shadow: var(--admin-soft-shadow);
+        }
+        .admin-analytics-page .filter-panel h6 {
+            color: var(--admin-text);
+            font-size: .94rem;
+            letter-spacing: -.015em;
+        }
+        .admin-analytics-page .filter-panel h6 .bi { color: var(--admin-indigo) !important; }
+        #activeFilterPill {
+            max-width: 100%;
+            overflow-wrap: anywhere;
+            padding: .46rem .75rem;
+            font-size: .72rem;
+            font-weight: 700;
+        }
+        .admin-analytics-page .form-label {
+            color: #58657d !important;
+            font-size: .76rem !important;
+            letter-spacing: .01em;
+        }
+        .admin-analytics-page .form-select {
+            min-height: 39px;
+            border-color: #dce2ed;
+            border-radius: 9px;
+            background-color: #fff;
+            color: #27334b;
+            font-size: .82rem;
+            box-shadow: none;
+        }
+        .admin-analytics-page .form-select:hover { border-color: #b9c3d5; }
+        .admin-analytics-page .form-select:focus {
+            border-color: #9593f5;
+            box-shadow: 0 0 0 .22rem rgba(79, 70, 229, .11);
+        }
+        #filterForm .btn { min-height: 39px; white-space: nowrap; }
+
+        /* Empty filtered cohort notice */
+        #emptyCohortAlert {
+            border: 1px solid #f4d99b;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            background: #fff9e9;
+            color: #795817;
+            padding: 15px 18px;
+            font-size: .84rem;
+            line-height: 1.65;
         }
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        #emptyCohortAlert .bi { color: #b77908; }
+
+        /* Summary metric cards */
+        .admin-analytics-page .metric-card {
+            min-height: 150px;
+            border: 1px solid var(--admin-border);
+            border-radius: 15px;
+            background: var(--admin-surface) !important;
+            box-shadow: var(--admin-soft-shadow);
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
         }
-        .metric-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
+        .admin-analytics-page .metric-card:hover {
+            transform: translateY(-3px);
+            border-color: #d5dafa;
+            box-shadow: var(--admin-hover-shadow);
+        }
+        .admin-analytics-page .metric-card .card-body { padding: 20px; }
+        .admin-analytics-page .metric-card .small {
+            color: #67748a !important;
+            font-size: .76rem;
+            font-weight: 700 !important;
+            line-height: 1.45;
+        }
+        .admin-analytics-page .metric-card h3 {
+            margin-top: 8px !important;
+            color: var(--admin-text);
+            font-size: clamp(1.65rem, 2.2vw, 2rem);
+            font-weight: 800 !important;
+            letter-spacing: -.05em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .admin-analytics-page .metric-card small {
+            display: block;
+            margin-top: 9px !important;
+            color: #8994a8 !important;
+            font-size: .7rem;
+            line-height: 1.55;
+        }
+        .admin-analytics-page .metric-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.35rem;
-        }
-        .chart-card {
-            border: 0;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
             border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 1.2rem;
+        }
+        .admin-analytics-page .metric-card .text-warning { color: #a56b00 !important; }
+        .admin-analytics-page .metric-card .text-danger { color: #c93645 !important; }
+        .admin-analytics-page .metric-card .bg-warning-subtle { background: #fff5df !important; }
+        .admin-analytics-page .metric-card .bg-danger-subtle { background: #fff0f1 !important; }
+        .admin-analytics-page .metric-card .bg-info-subtle { background: #e8f5ff !important; }
+        .admin-analytics-page .metric-card .bg-success-subtle { background: #e9f8ef !important; }
+        .admin-analytics-page .metric-card .bg-secondary-subtle { background: #eef1f6 !important; }
+
+        /* Analytics and chart cards */
+        .admin-analytics-page .chart-card {
+            min-width: 0;
             height: 100%;
+            border: 1px solid var(--admin-border) !important;
+            border-radius: 16px;
+            background: var(--admin-surface) !important;
+            box-shadow: var(--admin-soft-shadow);
+            transition: box-shadow .2s ease, border-color .2s ease;
         }
-        .chart-container {
-            position: relative;
-            min-height: 260px;
-            width: 100%;
+        .admin-analytics-page .chart-card:hover {
+            border-color: #dce2f2 !important;
+            box-shadow: 0 8px 26px rgba(22, 34, 67, .06);
         }
-        .empty-chart-placeholder {
-            min-height: 240px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #94a3b8;
-            font-size: 0.95rem;
+        .admin-analytics-page .chart-card > .d-flex h6,
+        .admin-analytics-page .chart-card h5 {
+            color: var(--admin-text);
+            font-size: .91rem;
+            font-weight: 750 !important;
+            line-height: 1.55;
+            letter-spacing: -.015em;
+        }
+        .admin-analytics-page .chart-card h5 { font-size: 1.04rem; }
+        .admin-analytics-page .chart-card small {
+            display: inline-block;
+            margin-top: 4px;
+            color: var(--admin-muted) !important;
+            font-size: .73rem;
+            line-height: 1.55;
+        }
+        .admin-analytics-page .chart-card .badge {
+            border-radius: 7px;
+            padding: .46em .68em;
+            font-size: .68rem;
+            line-height: 1.45;
+            white-space: normal;
             text-align: center;
+        }
+        .admin-analytics-page .chart-card .bg-light {
+            background: #f7f8fc !important;
+        }
+        .admin-analytics-page .chart-card .border { border-color: #e5e9f2 !important; }
+        .admin-analytics-page .chart-card .text-success { color: #16834a !important; }
+        .admin-analytics-page .chart-card .bg-success-subtle { background: #e9f8ef !important; }
+        .admin-analytics-page .chart-card .border-success-subtle { border-color: #ccebd8 !important; }
+        .admin-analytics-page .chart-card .text-info { color: #176da6 !important; }
+        .admin-analytics-page .chart-card .bg-info-subtle { background: #e8f5ff !important; }
+        .admin-analytics-page .chart-card .border-info-subtle { border-color: #cce7fb !important; }
+
+        .admin-analytics-page .chart-container {
+            position: relative;
+            width: 100%;
+            min-height: 270px;
+        }
+        .admin-analytics-page .chart-container canvas {
+            max-width: 100%;
+        }
+        .admin-analytics-page .empty-chart-placeholder {
+            display: flex;
             flex-direction: column;
-            gap: 0.5rem;
-        }
-        .filter-panel {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        .badge-kpi {
-            font-weight: 500;
-            font-size: 0.85rem;
-            padding: 0.4em 0.75em;
-        }
-        .table-responsive {
-            border-radius: 8px;
-        }
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.65);
-            display: none;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 260px;
+            padding: 20px;
+            color: #8994a8;
+            font-size: .82rem;
+            line-height: 1.65;
+            text-align: center;
+        }
+        .admin-analytics-page .empty-chart-placeholder .bi {
+            color: #a1abc0;
+            font-size: 1.8rem;
+        }
+
+        /* Follow-up mini KPIs */
+        .admin-analytics-page #referralStatusContainer { min-height: 260px; }
+        .admin-analytics-page .chart-card .p-2.border.rounded.text-center.bg-light {
+            min-height: 70px;
+            border-color: #e5e9f2 !important;
+            border-radius: 10px !important;
+            background: #f8f9fd !important;
+        }
+        .admin-analytics-page .chart-card .p-2 small {
+            margin: 0 0 5px;
+            font-size: .67rem;
+        }
+        .admin-analytics-page .chart-card .p-2 strong { font-size: 1.02rem; }
+
+        /* Department comparison table */
+        .admin-analytics-page .table-responsive {
+            overflow-x: auto;
+            border: 1px solid #e7ebf3;
+            border-radius: 11px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .admin-analytics-page .table {
+            margin-bottom: 0;
+            color: #435069;
+            font-size: .79rem;
+            vertical-align: middle;
+        }
+        .admin-analytics-page .table thead th {
+            padding: 14px 13px;
+            border-bottom: 1px solid #e2e7f0;
+            background: #f7f8fc !important;
+            color: #69768c;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: .035em;
+            line-height: 1.55;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .admin-analytics-page .table tbody td {
+            padding: 13px;
+            border-color: #edf0f6;
+            line-height: 1.55;
+        }
+        .admin-analytics-page .table-hover tbody tr:hover > * {
+            --bs-table-bg-state: #f8f9ff;
+            color: inherit;
+        }
+        .admin-analytics-page #depTableView table { min-width: 1050px; }
+        .admin-analytics-page #depTableBody td { font-variant-numeric: tabular-nums; }
+        .admin-analytics-page #depTableBody td:first-child {
+            min-width: 170px;
+            color: var(--admin-text);
+        }
+        .admin-analytics-page #depTableBody .badge {
+            border-radius: 7px;
+            font-size: .68rem;
+        }
+        .admin-analytics-page #depTableBody .table-primary > * {
+            --bs-table-bg: #f0f2ff;
+            --bs-table-color: var(--admin-text);
+        }
+        .admin-analytics-page #depTableView .spinner-border {
+            color: var(--admin-indigo) !important;
+        }
+
+        /* Table/chart toggle */
+        .admin-analytics-page .btn-group[role="group"] {
+            padding: 3px;
+            border: 1px solid #e2e7f0;
+            border-radius: 10px;
+            background: #f7f8fc;
+        }
+        .admin-analytics-page .btn-group[role="group"] .btn {
+            min-height: 34px;
+            border: 0;
+            border-radius: 7px !important;
+            padding: 7px 12px;
+            box-shadow: none;
+            font-size: .75rem;
+        }
+        .admin-analytics-page .btn-group[role="group"] .btn.active {
+            background: var(--admin-indigo);
+            color: #fff;
+            box-shadow: 0 2px 6px rgba(79, 70, 229, .16);
+        }
+        .admin-analytics-page .btn-group[role="group"] .btn:not(.active) {
+            color: #596780;
+            background: transparent;
+        }
+        .admin-analytics-page .btn-group[role="group"] .btn:not(.active):hover {
+            color: var(--admin-indigo);
+            background: #eceeff;
+        }
+
+        /* Loading overlay */
+        .admin-analytics-page .loading-overlay {
+            position: fixed;
+            inset: 0;
             z-index: 1050;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(245, 247, 252, .78);
+            backdrop-filter: blur(3px);
+        }
+        .admin-analytics-page .loading-overlay .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: .24em;
+            color: var(--admin-indigo) !important;
+        }
+
+        /* Keep layout usable at tablet and mobile widths */
+        @media (min-width: 1600px) {
+            .admin-analytics-page .chart-container { min-height: 290px; }
+        }
+        @media (max-width: 1199.98px) {
+            .admin-analytics-shell { padding-inline: 28px !important; }
+            .admin-analytics-page .metric-card { min-height: 145px; }
+        }
+        @media (max-width: 767.98px) {
+            .admin-analytics-shell { padding: 25px 18px 30px !important; }
+            .admin-analytics-page header {
+                align-items: flex-start !important;
+                flex-direction: column;
+                padding-bottom: 22px;
+            }
+            .admin-analytics-page header > div:last-child {
+                align-items: stretch !important;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+            #lastRefreshedBadge { flex: 1 1 auto; justify-content: center; }
+            .admin-analytics-page header > div:last-child > a { flex: 1 1 auto; }
+            .admin-analytics-page .filter-panel { padding: 18px !important; }
+            .admin-analytics-page .filter-panel > .d-flex:first-child {
+                align-items: flex-start !important;
+                flex-direction: column;
+            }
+            .admin-analytics-page .filter-panel > .d-flex:first-child > div:last-child {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+            }
+            .admin-analytics-page .filter-panel > .d-flex:first-child > div:last-child .btn { flex: 1 1 130px; }
+            #filterForm > div:last-child { align-items: stretch !important; }
+            .admin-analytics-page .chart-card { padding: 18px !important; }
+            .admin-analytics-page .chart-card > .d-flex:first-child { align-items: flex-start !important; gap: 10px; }
+            .admin-analytics-page .chart-container { min-height: 245px; }
+            .admin-analytics-page .empty-chart-placeholder { min-height: 235px; }
+            .admin-analytics-page #depChartView { min-height: 310px !important; }
+        }
+        @media (max-width: 479.98px) {
+            .admin-analytics-shell { padding-inline: 13px !important; }
+            .admin-analytics-page header h2 { font-size: 1.55rem; line-height: 1.35; }
+            .admin-analytics-page header p { font-size: .84rem; }
+            .admin-analytics-page .metric-card { padding: 15px !important; }
+            .admin-analytics-page .metric-card .small { font-size: .71rem; }
+            .admin-analytics-page .metric-card h3 { font-size: 1.55rem; }
+            .admin-analytics-page .metric-icon { width: 37px; height: 37px; font-size: 1.05rem; }
+            .admin-analytics-page .chart-card > .d-flex:first-child { flex-wrap: wrap; }
+            .admin-analytics-page .chart-card h6 { font-size: .84rem; }
+            .admin-analytics-page .chart-card .badge { font-size: .64rem; }
+            .admin-analytics-page .btn { font-size: .77rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
     </style>
 </head>
-<body>
+<body class="admin-analytics-page">
 
     <!-- Loading Spinner Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
+    <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite" aria-label="Loading analytics">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Loading analytics...</span>
         </div>
     </div>
 
-    <div class="container-fluid px-lg-5 py-4">
+    <div class="container-fluid px-lg-5 py-4 admin-analytics-shell">
 
         <!-- ================= SECTION A: PAGE HEADER ================= -->
-        <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 page-header">
             <div>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-1 small">
@@ -125,10 +572,10 @@
         </header>
 
         <!-- ================= SECTION B: GLOBAL FILTERS ================= -->
-        <section class="filter-panel p-3 p-md-4 mb-4 border">
+        <section class="filter-panel p-3 p-md-4 mb-4 border" aria-labelledby="cohort-filters-heading">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <h6 class="fw-bold mb-0"><i class="bi bi-funnel me-1 text-primary"></i>Global Cohort Filters</h6>
+                    <h6 class="fw-bold mb-0" id="cohort-filters-heading"><i class="bi bi-funnel me-1 text-primary" aria-hidden="true"></i>Global Cohort Filters</h6>
                     <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill" id="activeFilterPill">
                         All Students
                     </span>
@@ -195,7 +642,7 @@
         </div>
 
         <!-- ================= SECTION C: SUMMARY CARDS ================= -->
-        <section class="row g-3 mb-4">
+        <section class="row g-3 mb-4" aria-label="Filtered cohort summary metrics">
             <!-- Total Students -->
             <div class="col-xl-2 col-md-4 col-sm-6">
                 <div class="card metric-card h-100 bg-white p-3">
@@ -475,15 +922,15 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="px-3">Department</th>
-                            <th class="text-center">Total Students</th>
-                            <th class="text-center">High / Very High Risk</th>
-                            <th class="text-center">Avg Risk Score</th>
-                            <th class="text-center">Avg Attendance</th>
-                            <th class="text-center">Avg Academics</th>
-                            <th class="text-center">Referrals</th>
-                            <th class="text-center">Interventions</th>
-                            <th class="text-center">Completed Follow-ups</th>
+                            <th scope="col" class="px-3">Department</th>
+                            <th scope="col" class="text-center">Total Students</th>
+                            <th scope="col" class="text-center">High / Very High Risk</th>
+                            <th scope="col" class="text-center">Avg Risk Score</th>
+                            <th scope="col" class="text-center">Avg Attendance</th>
+                            <th scope="col" class="text-center">Avg Academics</th>
+                            <th scope="col" class="text-center">Referrals</th>
+                            <th scope="col" class="text-center">Interventions</th>
+                            <th scope="col" class="text-center">Completed Follow-ups</th>
                         </tr>
                     </thead>
                     <tbody id="depTableBody">
@@ -508,6 +955,12 @@
     <script>
         (function() {
             "use strict";
+
+            // Shared typography for all existing Chart.js visualizations.
+            Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif';
+            Chart.defaults.color = "#69768c";
+            Chart.defaults.plugins.legend.labels.usePointStyle = true;
+            Chart.defaults.plugins.legend.labels.boxWidth = 10;
 
             // Chart instances for proper lifecycle destruction
             let charts = {
@@ -827,6 +1280,7 @@
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
                         scales: {
+
                             y: {
                                 min: 0,
                                 max: 100,

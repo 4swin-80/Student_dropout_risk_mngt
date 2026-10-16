@@ -1,103 +1,819 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Delete Mentor</title>
+    <title>Delete Mentor | Administrator</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <!-- Bootstrap 5.3.2 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <style>
+        /* =====================================================
+           ADMINISTRATOR THEME
+           Navy + Indigo
+        ===================================================== */
+
+        :root {
+            --admin-navy: #111b3a;
+            --admin-indigo: #4f46e5;
+            --admin-indigo-dark: #4338ca;
+            --admin-indigo-soft: #eef2ff;
+
+            --admin-bg: #f5f7fc;
+            --admin-surface: #ffffff;
+            --admin-border: #e5e9f2;
+
+            --admin-text: #172033;
+            --admin-muted: #718096;
+
+            --admin-red: #c93645;
+            --admin-red-dark: #ae2938;
+            --admin-red-soft: #fff0f1;
+
+            --admin-amber: #986500;
+            --admin-amber-soft: #fff7e6;
+
+            --admin-radius: 18px;
+            --admin-radius-sm: 11px;
+
+            --admin-shadow:
+                0 10px 38px rgba(22, 34, 67, 0.065);
+
+            --admin-hover-shadow:
+                0 14px 40px rgba(22, 34, 67, 0.1);
+        }
+
+        /* =====================================================
+           BASE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-text);
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+            font-size: 0.94rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a,
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #a5b4fc;
+            outline-offset: 3px;
+        }
+
+        /* =====================================================
+           PAGE LAYOUT
+        ===================================================== */
+
+        .delete-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 22px;
+        }
+
+        .delete-wrapper {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        /* =====================================================
+           ADMINISTRATOR BRANDING
+        ===================================================== */
+
+        .page-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 27px;
+        }
+
+        .brand-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 13px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.1rem;
+        }
+
+        .brand-title {
+            margin: 0;
+            color: var(--admin-navy);
+            font-size: 0.94rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .brand-subtitle {
+            margin-top: 4px;
+            color: var(--admin-muted);
+            font-size: 0.73rem;
+        }
+
+        /* =====================================================
+           CONFIRMATION CARD
+        ===================================================== */
+
+        .delete-card {
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: var(--admin-radius);
+            background: var(--admin-surface);
+            box-shadow: var(--admin-shadow);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .delete-card:hover {
+            box-shadow: var(--admin-hover-shadow);
+        }
+
+        /* =====================================================
+           CARD HEADER
+        ===================================================== */
+
+        .delete-card-header {
+            position: relative;
+            padding: 29px 32px 26px;
+            border-bottom: 1px solid var(--admin-border);
+            background: #fff;
+        }
+
+        .delete-card-header::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--admin-indigo);
+            content: "";
+        }
+
+        .page-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 11px;
+            color: var(--admin-indigo);
+            font-size: 0.69rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .page-eyebrow-mark {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--admin-indigo);
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: clamp(1.5rem, 3vw, 1.9rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.35;
+        }
+
+        .page-description {
+            margin: 10px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.85rem;
+            line-height: 1.75;
+        }
+
+        /* =====================================================
+           CARD BODY
+        ===================================================== */
+
+        .delete-card-body {
+            padding: 30px 32px 32px;
+        }
+
+        /* =====================================================
+           WARNING PANEL
+        ===================================================== */
+
+        .warning-panel {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 26px;
+            padding: 17px;
+            border: 1px solid #f2dfb2;
+            border-radius: 13px;
+            background: var(--admin-amber-soft);
+        }
+
+        .warning-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border: 1px solid #f1dfb4;
+            border-radius: 12px;
+            background: #fff;
+            color: var(--admin-amber);
+            font-size: 1.18rem;
+        }
+
+        .warning-title {
+            margin: 0 0 5px;
+            color: #795510;
+            font-size: 0.84rem;
+            font-weight: 800;
+            line-height: 1.6;
+        }
+
+        .warning-description {
+            margin: 0;
+            color: #85672c;
+            font-size: 0.78rem;
+            line-height: 1.75;
+        }
+
+        /* =====================================================
+           CONFIRMATION TEXT
+        ===================================================== */
+
+        .confirmation-heading {
+            margin: 0;
+            color: var(--admin-text);
+            font-size: 1rem;
+            font-weight: 750;
+            letter-spacing: -0.015em;
+            line-height: 1.6;
+        }
+
+        .confirmation-description {
+            margin: 7px 0 0;
+            color: var(--admin-muted);
+            font-size: 0.82rem;
+            line-height: 1.75;
+        }
+
+        /* =====================================================
+           MENTOR INFORMATION
+        ===================================================== */
+
+        .mentor-panel {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 22px 0 27px;
+            padding: 20px;
+            border: 1px solid var(--admin-border);
+            border-radius: 13px;
+            background: #fafbfe;
+        }
+
+        .mentor-avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 53px;
+            height: 53px;
+            flex-shrink: 0;
+            border: 1px solid #dfe3ff;
+            border-radius: 15px;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+            font-size: 1.5rem;
+        }
+
+        .mentor-information {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .mentor-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #7b879b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+        }
+
+        .mentor-name {
+            margin: 0;
+            color: var(--admin-navy);
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .mentor-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px 15px;
+            margin-top: 8px;
+        }
+
+        .mentor-meta-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #6e7b91;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .mentor-meta-item i {
+            flex-shrink: 0;
+            color: #8995aa;
+        }
+
+        .mentor-username {
+            color: #4f46a5;
+            font-weight: 650;
+        }
+
+        .employee-id {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 9px;
+            border: 1px solid #e0e7ff;
+            border-radius: 7px;
+            background: #f4f6ff;
+            color: #4945a5;
+            font-size: 0.74rem;
+            font-weight: 750;
+        }
+
+        /* =====================================================
+           DELETE FORM ACTIONS
+        ===================================================== */
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 11px;
+            padding-top: 23px;
+            border-top: 1px solid #edf0f6;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            min-height: 45px;
+            padding: 11px 18px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.81rem;
+            font-weight: 750;
+            line-height: 1.4;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition:
+                background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease,
+                transform 0.18s ease;
+        }
+
+        .btn-action i {
+            font-size: 0.95rem;
+        }
+
+        .btn-cancel {
+            border-color: #dce2ed;
+            background: #fff;
+            color: #4b5870;
+        }
+
+        .btn-cancel:hover {
+            border-color: #c7d0df;
+            background: #f5f7fb;
+            color: var(--admin-text);
+        }
+
+        .btn-delete {
+            border-color: var(--admin-red);
+            background: var(--admin-red);
+            color: #fff;
+            box-shadow: 0 4px 11px rgba(201, 54, 69, 0.14);
+        }
+
+        .btn-delete:hover {
+            border-color: var(--admin-red-dark);
+            background: var(--admin-red-dark);
+            color: #fff;
+            box-shadow: 0 6px 15px rgba(201, 54, 69, 0.2);
+        }
+
+        .btn-delete:active {
+            transform: translateY(1px);
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .page-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 22px;
+            color: #8994a8;
+            font-size: 0.72rem;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .footer-icon {
+            color: #657289;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 767.98px) {
+            .delete-page {
+                align-items: flex-start;
+                padding: 32px 18px;
+            }
+
+            .delete-card-header {
+                padding: 25px 24px 22px;
+            }
+
+            .delete-card-body {
+                padding: 25px 24px 27px;
+            }
+
+            .page-title {
+                font-size: 1.65rem;
+            }
+
+            .warning-panel {
+                padding: 15px;
+            }
+
+            .mentor-panel {
+                padding: 17px;
+            }
+
+            .form-actions {
+                align-items: stretch;
+            }
+
+            .btn-action {
+                flex: 1 1 0;
+            }
+        }
+
+        @media (max-width: 479.98px) {
+            .delete-page {
+                padding: 23px 13px;
+            }
+
+            .page-brand {
+                margin-bottom: 20px;
+            }
+
+            .brand-icon {
+                width: 41px;
+                height: 41px;
+            }
+
+            .delete-card {
+                border-radius: 15px;
+            }
+
+            .delete-card-header {
+                padding: 23px 19px 20px;
+            }
+
+            .delete-card-body {
+                padding: 21px 19px 23px;
+            }
+
+            .page-title {
+                font-size: 1.45rem;
+            }
+
+            .page-description {
+                font-size: 0.82rem;
+            }
+
+            .warning-panel {
+                gap: 11px;
+                padding: 13px;
+            }
+
+            .warning-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .mentor-panel {
+                align-items: flex-start;
+                gap: 12px;
+                padding: 15px;
+            }
+
+            .mentor-avatar {
+                width: 42px;
+                height: 42px;
+                border-radius: 11px;
+                font-size: 1.2rem;
+            }
+
+            .mentor-name {
+                font-size: 0.91rem;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container py-5">
+    <main class="delete-page">
 
-    <div class="row justify-content-center">
+        <div class="delete-wrapper">
 
-        <div class="col-md-7 col-lg-6">
+            <!-- =============================================
+                 ADMINISTRATOR BRAND
+            ============================================== -->
 
-            <div class="card shadow-sm border-0">
+            <div class="page-brand">
 
-                <div class="card-body p-4">
+                <div class="brand-icon" aria-hidden="true">
+                    <i class="bi bi-shield-check"></i>
+                </div>
 
-                    <!-- Header -->
-                    <div class="text-center mb-4">
-
-                        <i class="bi bi-exclamation-triangle-fill text-danger"
-                           style="font-size: 3rem;">
-                        </i>
-
-                        <h3 class="fw-bold mt-3">
-                            Delete Mentor
-                        </h3>
-
-                    </div>
-
-
-                    <!-- Warning -->
-                    <div class="alert alert-warning">
-
-                        <strong>Warning:</strong>
-                        This action cannot be undone.
-
-                    </div>
-
-
-                    <p class="text-center">
-                        Are you sure you want to delete this mentor?
+                <div>
+                    <p class="brand-title">
+                        Student Risk
                     </p>
 
+                    <p class="brand-subtitle mb-0">
+                        Management System · Administrator Portal
+                    </p>
+                </div>
 
-                    <!-- Mentor Information -->
-                    <div class="text-center mb-4">
+            </div>
 
-                        <h5 class="fw-bold">
+            <!-- =============================================
+                 DELETE CONFIRMATION CARD
+            ============================================== -->
 
-                            {% if mentor.user.get_full_name %}
-                                {{ mentor.user.get_full_name }}
-                            {% else %}
-                                {{ mentor.user.username }}
-                            {% endif %}
+            <section
+                class="delete-card"
+                aria-labelledby="delete-heading"
+            >
 
-                        </h5>
+                <!-- Card Header -->
 
-                        <p class="text-secondary mb-1">
-                            Employee ID: {{ mentor.employee_id }}
-                        </p>
+                <div class="delete-card-header">
 
-                        <p class="text-secondary">
-                            Username: {{ mentor.user.username }}
+                    <div class="page-eyebrow">
+                        <span
+                            class="page-eyebrow-mark"
+                            aria-hidden="true"
+                        ></span>
+                        Staff Administration
+                    </div>
+
+                    <h1
+                        class="page-title"
+                        id="delete-heading"
+                    >
+                        Delete Mentor
+                    </h1>
+
+                    <p class="page-description">
+                        Review the mentor account details before
+                        confirming this deletion.
+                    </p>
+
+                </div>
+
+                <!-- Card Body -->
+
+                <div class="delete-card-body">
+
+                    <!-- Warning -->
+
+                    <div
+                        class="warning-panel"
+                        role="alert"
+                        aria-labelledby="warning-heading"
+                    >
+
+                        <div
+                            class="warning-icon"
+                            aria-hidden="true"
+                        >
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <h2
+                                class="warning-title"
+                                id="warning-heading"
+                            >
+                                Warning: This action cannot be undone
+                            </h2>
+
+                            <p class="warning-description">
+                                You are about to delete this mentor record.
+                                Make sure the selected mentor is correct
+                                before proceeding.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Confirmation Question -->
+
+                    <div>
+
+                        <h2 class="confirmation-heading">
+                            Are you sure you want to delete this mentor?
+                        </h2>
+
+                        <p class="confirmation-description">
+                            Confirm the mentor's name, employee ID and
+                            username below before choosing Delete Mentor.
                         </p>
 
                     </div>
 
+                    <!-- Mentor Information -->
 
-                    <!-- Delete Form -->
+                    <div class="mentor-panel">
+
+                        <div
+                            class="mentor-avatar"
+                            aria-hidden="true"
+                        >
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+
+                        <div class="mentor-information">
+
+                            <span class="mentor-label">
+                                Selected Mentor
+                            </span>
+
+                            <h3 class="mentor-name">
+
+                                {% if mentor.user.get_full_name %}
+                                    {{ mentor.user.get_full_name }}
+                                {% else %}
+                                    {{ mentor.user.username }}
+                                {% endif %}
+
+                            </h3>
+
+                            <div class="mentor-meta">
+
+                                <span class="mentor-meta-item">
+                                    <i
+                                        class="bi bi-person"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                    <span class="mentor-username">
+                                        @{{ mentor.user.username }}
+                                    </span>
+                                </span>
+
+                                <span class="mentor-meta-item">
+                                    <i
+                                        class="bi bi-person-vcard"
+                                        aria-hidden="true"
+                                    ></i>
+
+                                    <span>
+                                        Employee ID:
+                                    </span>
+
+                                    <span class="employee-id">
+                                        {{ mentor.employee_id }}
+                                    </span>
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================
+                         EXISTING DELETE FORM
+                    ====================================== -->
+
                     <form method="post">
 
                         {% csrf_token %}
 
-                        <div class="d-flex justify-content-center gap-2">
+                        <div class="form-actions">
 
-                            <a href="{% url 'mentor_detail' mentor.id %}"
-                               class="btn btn-secondary">
-
-                                <i class="bi bi-arrow-left"></i>
+                            <a
+                                href="{% url 'mentor_detail' mentor.id %}"
+                                class="btn-action btn-cancel"
+                            >
+                                <i
+                                    class="bi bi-arrow-left"
+                                    aria-hidden="true"
+                                ></i>
                                 Cancel
-
                             </a>
 
-                            <button type="submit"
-                                    class="btn btn-danger">
-
-                                <i class="bi bi-trash"></i>
+                            <button
+                                type="submit"
+                                class="btn-action btn-delete"
+                            >
+                                <i
+                                    class="bi bi-trash3"
+                                    aria-hidden="true"
+                                ></i>
                                 Delete Mentor
-
                             </button>
 
                         </div>
@@ -106,13 +822,28 @@
 
                 </div>
 
-            </div>
+            </section>
+
+            <!-- =============================================
+                 FOOTER
+            ============================================== -->
+
+            <footer class="page-footer">
+
+                <i
+                    class="bi bi-shield-check footer-icon"
+                    aria-hidden="true"
+                ></i>
+
+                <span>
+                    Student Dropout Risk Management System
+                </span>
+
+            </footer>
 
         </div>
 
-    </div>
-
-</div>
+    </main>
 
 </body>
 </html>
