@@ -1,210 +1,1147 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+
+    <title>Student Dashboard | Student Portal</title>
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
 
     <style>
         :root {
-            --page-bg: #f5f7fb;
-            --surface: #ffffff;
-            --text-main: #202938;
-            --text-muted: #687386;
-            --border: #e5eaf2;
-            --primary: #2563eb;
-            --primary-soft: #eff6ff;
+            --student-primary: #2563eb;
+            --student-primary-dark: #1d4ed8;
+            --student-primary-light: #eff6ff;
+            --student-cyan: #0891b2;
+            --student-cyan-light: #ecfeff;
+            --student-bg: #f5f8fd;
+            --student-surface: #ffffff;
+            --student-text: #202938;
+            --student-muted: #687386;
+            --student-border: #e5eaf2;
+            --student-shadow: 0 8px 28px rgba(25, 42, 70, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
         }
 
         body {
-            background: var(--page-bg);
-            color: var(--text-main);
             min-height: 100vh;
+            margin: 0;
+            background: var(--student-bg);
+            color: var(--student-text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
         }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
 
         .student-navbar {
             position: sticky;
             top: 0;
             z-index: 1030;
-            background: rgba(255, 255, 255, 0.96);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--student-border);
+            backdrop-filter: blur(14px);
+        }
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 76px;
         }
 
         .student-brand {
             display: inline-flex;
             align-items: center;
-            gap: 0.7rem;
-            color: #1d4ed8;
-            text-decoration: none;
-            font-weight: 800;
-            letter-spacing: -0.35px;
+            gap: 11px;
+            flex-shrink: 0;
+            color: var(--student-text);
+        }
+
+        .student-brand:hover {
+            color: var(--student-primary);
         }
 
         .brand-mark {
-            display: inline-flex;
+            display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
-            flex: 0 0 40px;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
             color: #fff;
-            background: var(--primary);
-            border-radius: 12px;
+            font-size: 21px;
+            border-radius: 13px;
+            background: linear-gradient(
+                140deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+            box-shadow: 0 5px 13px rgba(37, 99, 235, 0.19);
+        }
+
+        .brand-name {
+            display: block;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.45px;
+            line-height: 1.4;
         }
 
         .brand-subtitle {
             display: block;
-            color: var(--text-muted);
-            font-size: 0.72rem;
+            margin-top: 3px;
+            color: var(--student-muted);
+            font-size: 10px;
             font-weight: 500;
-            letter-spacing: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .student-nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
         }
 
         .student-nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 12px;
             color: #526075;
-            text-decoration: none;
+            font-size: 11px;
             font-weight: 600;
-            padding: 0.65rem 0.9rem;
-            border-radius: 10px;
+            white-space: nowrap;
+            border-radius: 9px;
+            transition: color 0.2s ease, background 0.2s ease;
         }
 
         .student-nav-link:hover,
         .student-nav-link:focus-visible {
-            color: #1d4ed8;
-            background: var(--primary-soft);
+            color: var(--student-primary);
+            background: var(--student-primary-light);
+        }
+
+        .student-nav-link.active {
+            color: var(--student-primary);
+            background: var(--student-primary-light);
+            font-weight: 800;
         }
 
         .profile-icon-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 17px;
             border: 1px solid #dbe5f1;
-            border-radius: 50%;
-            background: #f1f5f9;
-            color: #1d4ed8;
+            border-radius: 12px;
+            background: #f8fbff;
             transition: background 0.2s ease, transform 0.2s ease;
         }
 
         .profile-icon-btn:hover {
+            color: var(--student-primary-dark);
+            border-color: #bfdbfe;
             background: #dbeafe;
             transform: translateY(-1px);
         }
 
         .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 41px;
+            padding: 9px 13px;
+            color: #c24150;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #f2d4dc;
             border-radius: 10px;
-            font-weight: 600;
-            padding: 0.6rem 0.9rem;
+            background: #fff;
+            transition: all 0.2s ease;
         }
 
-        .dashboard-header {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
+        .logout-btn:hover {
+            color: #a82e42;
+            border-color: #eab9c5;
+            background: #fff2f5;
         }
+
+        /* Main container */
+
+        .dashboard-main {
+            max-width: 1500px;
+            padding-top: 32px;
+            padding-bottom: 45px;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+        }
+
+        .section-eyebrow::before {
+            width: 7px;
+            height: 7px;
+            content: "";
+            border-radius: 50%;
+            background: var(--student-cyan);
+        }
+
+        /* Welcome panel */
+
+        .welcome-panel {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+            padding: 34px;
+            border: 1px solid #dce8fa;
+            border-radius: 21px;
+            background:
+                radial-gradient(
+                    circle at 100% 0,
+                    rgba(8, 145, 178, 0.11),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at 75% 100%,
+                    rgba(37, 99, 235, 0.07),
+                    transparent 32%
+                ),
+                #ffffff;
+            box-shadow: var(--student-shadow);
+        }
+
+        .welcome-layout {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 26px;
+        }
+
+        .welcome-copy {
+            min-width: 0;
+        }
+
+        .welcome-title {
+            margin: 14px 0 9px;
+            color: var(--student-text);
+            font-size: clamp(25px, 3vw, 35px);
+            font-weight: 800;
+            letter-spacing: -1.4px;
+            line-height: 1.3;
+            overflow-wrap: anywhere;
+        }
+
+        .welcome-title .student-name {
+            color: var(--student-primary);
+        }
+
+        .welcome-description {
+            max-width: 570px;
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        .student-id-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 9px 12px;
+            color: #35527f;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #dce8fa;
+            border-radius: 9px;
+            background: #f4f8ff;
+        }
+
+        .student-id-chip i {
+            color: var(--student-primary);
+        }
+
+        .course-overview {
+            min-width: 235px;
+            max-width: 290px;
+            padding: 20px;
+            border: 1px solid rgba(219, 229, 241, 0.95);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.83);
+        }
+
+        .course-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 39px;
+            height: 39px;
+            margin-bottom: 15px;
+            color: var(--student-primary);
+            font-size: 18px;
+            border-radius: 12px;
+            background: var(--student-primary-light);
+        }
+
+        .course-label {
+            margin-bottom: 5px;
+            color: var(--student-muted);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .course-value {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .course-meta {
+            margin-top: 7px;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+        }
+
+        /* Section titles */
+
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 17px;
+        }
+
+        .section-title {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .section-description {
+            margin: 5px 0 0;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        /* Summary cards */
 
         .summary-card {
+            position: relative;
             height: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
+            padding: 22px;
+            overflow: hidden;
+            border: 1px solid var(--student-border);
             border-radius: 16px;
+            background: var(--student-surface);
+            box-shadow: 0 4px 15px rgba(25, 42, 70, 0.025);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .summary-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(25, 42, 70, 0.07);
+            box-shadow: 0 9px 25px rgba(25, 42, 70, 0.07);
+        }
+
+        .summary-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            font-size: 19px;
+            border-radius: 12px;
+        }
+
+        .icon-blue {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .icon-cyan {
+            color: #0e7490;
+            background: #ecfeff;
+        }
+
+        .icon-green {
+            color: #16835e;
+            background: #ecfdf5;
+        }
+
+        .icon-indigo {
+            color: #4f46e5;
+            background: #eef2ff;
+        }
+
+        .summary-index {
+            color: #adb7c8;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
         }
 
         .summary-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
+            margin-bottom: 7px;
+            color: var(--student-muted);
+            font-size: 11px;
+            font-weight: 700;
         }
 
         .summary-value {
-            font-size: 1.8rem;
-            font-weight: 700;
+            margin: 0;
+            color: var(--student-text);
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.3;
             overflow-wrap: anywhere;
         }
 
-        .profile-detail {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .summary-description {
+            margin: 8px 0 0;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.8;
         }
 
-        .section-heading {
-            font-weight: 700;
+        .summary-card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 15px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
         }
+
+        .summary-card-action:hover {
+            color: var(--student-cyan);
+        }
+
+        .summary-progress {
+            height: 5px;
+            margin-top: 14px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #edf1f8;
+        }
+
+        .summary-progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(
+                90deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+        }
+
+        /* Common content panels */
 
         .content-panel {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-        }
-
-        .profile-modal-content {
-            border: 0;
-            border-radius: 18px;
+            margin-bottom: 25px;
             overflow: hidden;
+            border: 1px solid var(--student-border);
+            border-radius: 18px;
+            background: var(--student-surface);
+            box-shadow: var(--student-shadow);
         }
 
-        .profile-modal-content .modal-header {
-            background: #f8fafc;
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 1.5rem;
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 25px;
+            border-bottom: 1px solid var(--student-border);
         }
 
-        .profile-modal-content .modal-body {
-            max-height: 75vh;
-            overflow-y: auto;
+        .panel-heading-main {
+            display: flex;
+            align-items: center;
+            gap: 13px;
         }
 
-        .profile-field {
-            height: 100%;
-            padding: 0.9rem 1rem;
-            background: #f8fafc;
-            border: 1px solid #edf1f6;
+        .panel-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 18px;
+            border: 1px solid #dce8fa;
             border-radius: 12px;
+            background: var(--student-primary-light);
+        }
+
+        .panel-title {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.25px;
+        }
+
+        .panel-subtitle {
+            margin: 5px 0 0;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .panel-body {
+            padding: 25px;
+        }
+
+        .panel-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid #dce8fa;
+            border-radius: 8px;
+            background: #f4f8ff;
+        }
+
+        /* Attendance statistics */
+
+        .attendance-stat {
+            height: 100%;
+            padding: 17px;
+            border: 1px solid #e8edf5;
+            border-radius: 13px;
+            background: #fbfcfe;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .attendance-stat:hover {
+            border-color: #d4e3f9;
+            background: #fff;
+        }
+
+        .attendance-stat-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 13px;
+            color: var(--student-muted);
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .attendance-stat-label i {
+            color: var(--student-primary);
+            font-size: 14px;
+        }
+
+        .attendance-stat-value {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
             overflow-wrap: anywhere;
         }
 
-        .profile-field-label {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-bottom: 0.3rem;
+        .attendance-stat-note {
+            margin-top: 6px;
+            color: var(--student-muted);
+            font-size: 10px;
         }
 
-        .profile-field-value {
-            font-weight: 600;
+        .text-student-green {
+            color: #16835e !important;
         }
 
-        .table thead th {
-            color: #526075;
-            font-size: 0.82rem;
-            font-weight: 700;
+        .text-student-red {
+            color: #c24150 !important;
+        }
+
+        /* Tables */
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .student-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
             white-space: nowrap;
         }
 
+        .student-table thead th {
+            padding: 15px 19px;
+            color: #65738a;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--student-border);
+            background: #f8fafd;
+        }
+
+        .student-table tbody td {
+            padding: 15px 19px;
+            color: #526075;
+            font-size: 11px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .student-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .student-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+        .student-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .table-primary-text {
+            color: var(--student-text);
+            font-weight: 700;
+        }
+
+        .date-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #526075;
+            font-size: 10px;
+        }
+
+        .date-chip i {
+            color: var(--student-primary);
+            font-size: 13px;
+        }
+
+        .result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 9px;
+            color: #18794e;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid #cdeedc;
+            border-radius: 7px;
+            background: #ecfdf5;
+        }
+
+        .result-badge::before {
+            width: 6px;
+            height: 6px;
+            content: "";
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .unavailable-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 9px;
+            color: #67758b;
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid #e1e7f0;
+            border-radius: 7px;
+            background: #f4f6fa;
+        }
+
+        .muted-value {
+            color: #a0aabb;
+        }
+
+        /* Empty states */
+
+        .empty-state {
+            padding: 45px 22px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 61px;
+            height: 61px;
+            margin: 0 auto 16px;
+            color: var(--student-primary);
+            font-size: 25px;
+            border: 1px solid #dce8fa;
+            border-radius: 18px;
+            background: var(--student-primary-light);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 7px;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            max-width: 430px;
+            margin: 0 auto;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .empty-alert {
+            margin: 0;
+            padding: 16px 17px;
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.8;
+            border: 1px solid #e1e8f2;
+            border-radius: 11px;
+            background: #f8fafc;
+        }
+
+        /* Messages */
+
+        .message-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding: 14px 16px;
+            font-size: 12px;
+            line-height: 1.8;
+            border-radius: 11px;
+        }
+
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .message-alert .btn-close {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+            margin-top: 4px;
+            padding: 4px;
+        }
+
+        .alert-success.message-alert {
+            color: #176d4d;
+            border: 1px solid #ccebdc;
+            background: #effaf4;
+        }
+
+        .alert-danger.message-alert {
+            color: #a42d47;
+            border: 1px solid #f2cbd5;
+            background: #fff1f4;
+        }
+
+        .alert-warning.message-alert {
+            color: #8a5c0c;
+            border: 1px solid #f1dfb7;
+            background: #fff9eb;
+        }
+
+        .alert-info.message-alert {
+            color: #286b88;
+            border: 1px solid #cce6f1;
+            background: #f0faff;
+        }
+
+        /* Quick links */
+
+        .quick-link-card {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            height: 100%;
+            padding: 17px;
+            color: var(--student-text);
+            border: 1px solid var(--student-border);
+            border-radius: 14px;
+            background: #fff;
+            transition: transform 0.2s ease, border-color 0.2s ease,
+                        box-shadow 0.2s ease;
+        }
+
+        .quick-link-card:hover {
+            color: var(--student-primary);
+            border-color: #c9dcfa;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(25, 42, 70, 0.06);
+        }
+
+        .quick-link-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 18px;
+            border-radius: 12px;
+            background: var(--student-primary-light);
+        }
+
+        .quick-link-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quick-link-copy h3 {
+            margin: 0 0 4px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .quick-link-copy p {
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .quick-link-arrow {
+            color: #9aa8bb;
+            font-size: 15px;
+        }
+
+        /* Student profile error state */
+
+        .error-panel {
+            max-width: 760px;
+            margin: 35px auto;
+            padding: 33px;
+            border: 1px solid #f1dfb7;
+            border-radius: 17px;
+            background: #fff;
+            box-shadow: var(--student-shadow);
+        }
+
+        .error-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 51px;
+            height: 51px;
+            margin-bottom: 18px;
+            color: #a46a08;
+            font-size: 23px;
+            border: 1px solid #f1dfb7;
+            border-radius: 14px;
+            background: #fff8e7;
+        }
+
+        .error-panel h1 {
+            margin-bottom: 9px;
+            color: var(--student-text);
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+        .error-panel p {
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 12px;
+            line-height: 1.9;
+            overflow-wrap: anywhere;
+        }
+
+        /* Footer */
+
+        .student-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 29px;
+            padding-top: 20px;
+            color: #8894a7;
+            font-size: 10px;
+            border-top: 1px solid #e4eaf3;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .footer-brand i {
+            color: var(--student-primary);
+        }
+
+        /* Responsive */
+
+        @media (max-width: 1199.98px) {
+            .student-nav-link {
+                padding-right: 9px;
+                padding-left: 9px;
+            }
+
+            .dashboard-main {
+                padding-top: 27px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-inner {
+                flex-wrap: wrap;
+                padding-top: 12px;
+                padding-bottom: 12px;
+            }
+
+            .student-nav-links {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+                width: 100%;
+                padding-top: 10px;
+                border-top: 1px solid #edf1f7;
+            }
+
+            .welcome-panel {
+                padding: 26px;
+            }
+
+            .welcome-layout {
+                align-items: flex-start;
+            }
+
+            .course-overview {
+                min-width: 205px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .dashboard-main {
+                padding-top: 21px;
+                padding-bottom: 30px;
+            }
+
+            .welcome-panel {
+                padding: 23px;
+                border-radius: 17px;
+            }
+
+            .welcome-layout {
+                flex-direction: column;
+                gap: 22px;
+            }
+
+            .course-overview {
+                width: 100%;
+                max-width: none;
+                padding: 17px;
+            }
+
+            .course-icon {
+                margin-bottom: 10px;
+            }
+
+            .section-title {
+                font-size: 15px;
+            }
+
+            .panel-heading {
+                padding: 18px;
+            }
+
+            .panel-body {
+                padding: 19px;
+            }
+
+            .student-table thead th,
+            .student-table tbody td {
+                padding: 13px;
+            }
+
+            .summary-card {
+                padding: 19px;
+            }
+
+            .student-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
         @media (max-width: 575.98px) {
-            .dashboard-header {
-                border-radius: 14px;
+            .student-navbar .container {
+                padding-right: 14px;
+                padding-left: 14px;
+            }
+
+            .brand-mark {
+                width: 39px;
+                height: 39px;
+            }
+
+            .brand-name {
+                font-size: 13px;
+            }
+
+            .brand-subtitle {
+                font-size: 9px;
+            }
+
+            .student-nav-links {
+                gap: 2px;
+            }
+
+            .student-nav-link {
+                gap: 5px;
+                padding: 9px 8px;
+                font-size: 10px;
+            }
+
+            .profile-icon-btn {
+                width: 37px;
+                height: 37px;
+            }
+
+            .logout-btn {
+                min-height: 37px;
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .dashboard-main {
+                padding-right: 14px;
+                padding-left: 14px;
+            }
+
+            .welcome-panel {
+                padding: 20px;
+            }
+
+            .welcome-title {
+                font-size: 26px;
+                letter-spacing: -0.9px;
+            }
+
+            .welcome-description {
+                font-size: 11px;
             }
 
             .summary-value {
-                font-size: 1.55rem;
+                font-size: 25px;
             }
 
-            .student-navbar .container {
-                padding-left: 0.85rem;
-                padding-right: 0.85rem;
+            .panel-heading {
+                gap: 12px;
+            }
+
+            .panel-heading-main {
+                gap: 10px;
+            }
+
+            .panel-icon {
+                width: 37px;
+                height: 37px;
+                font-size: 16px;
+            }
+
+            .panel-body {
+                padding: 15px;
+            }
+
+            .attendance-stat {
+                padding: 14px;
+            }
+
+            .attendance-stat-value {
+                font-size: 23px;
+            }
+
+            .empty-state {
+                padding: 37px 17px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
             }
         }
     </style>
@@ -212,525 +1149,928 @@
 
 <body>
 
-    <!-- Top Navigation Bar -->
+    <!-- TOP NAVIGATION -->
     <nav class="student-navbar">
-        <div class="container py-2">
-            <div class="d-flex align-items-center justify-content-between gap-3">
+        <div class="container-fluid px-3 px-lg-4 px-xl-5">
 
-                <!-- Portal Branding -->
+            <div class="navbar-inner">
+
+                <!-- PORTAL BRAND -->
                 <a href="#dashboardTop" class="student-brand">
+
                     <span class="brand-mark" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="22" height="22"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round">
-                            <path d="m2 10 10-5 10 5-10 5-10-5Z"/>
-                            <path d="M6 12v5c3 2 9 2 12 0v-5"/>
-                            <path d="M22 10v6"/>
-                        </svg>
+                        <i class="bi bi-mortarboard-fill"></i>
                     </span>
 
                     <span>
-                        Student Portal
-                        <span class="brand-subtitle">
-                            Academic Dashboard
-                        </span>
+                        <span class="brand-name">Student Portal</span>
+                        <span class="brand-subtitle">Academic Dashboard</span>
                     </span>
+
                 </a>
 
-                <!-- Navigation Actions -->
-                <div class="d-flex align-items-center gap-2 gap-md-3">
+                <!-- NAVIGATION LINKS -->
+                <div class="student-nav-links">
 
-                    <a href="#dashboardTop"
-                       class="student-nav-link d-none d-sm-inline-flex">
+                    <a
+                        href="#dashboardTop"
+                        class="student-nav-link active"
+                        aria-current="page">
+                        <i class="bi bi-grid-1x2"></i>
                         Dashboard
                     </a>
 
-                    <!-- My Profile Icon -->
+                    <a
+                        href="{% url 'student_assignments' %}"
+                        class="student-nav-link">
+                        <i class="bi bi-journal-check"></i>
+                        Assignments
+                    </a>
+
+                    <a
+                        href="{% url 'student_examination_results' %}"
+                        class="student-nav-link">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Examinations
+                    </a>
+
+                    <a
+                        href="{% url 'student_performance' %}"
+                        class="student-nav-link">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        Performance
+                    </a>
+
+                    <a
+                        href="{% url 'student_notifications' %}"
+                        class="student-nav-link">
+                        <i class="bi bi-bell"></i>
+                        Notifications
+                    </a>
+
                     <a
                         href="{% url 'student_profile' %}"
                         class="profile-icon-btn"
                         aria-label="My Profile"
-                        title="My Profile"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="21" height="21"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2"
-                             stroke-linecap="round"
-                             stroke-linejoin="round"
-                             aria-hidden="true">
-                            <circle cx="12" cy="8" r="4"/>
-                            <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
-                        </svg>
+                        title="My Profile">
+                        <i class="bi bi-person-circle" aria-hidden="true"></i>
                     </a>
 
-                    <!-- Logout -->
-                    <form method="post"
-                          action="{% url 'logout' %}"
-                          class="m-0">
+                    <!-- LOGOUT -->
+                    <form method="post" action="{% url 'logout' %}" class="m-0">
                         {% csrf_token %}
 
-                        <button type="submit"
-                                class="btn btn-outline-danger logout-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 width="17" height="17"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2"
-                                 stroke-linecap="round"
-                                 stroke-linejoin="round"
-                                 class="me-1"
-                                 aria-hidden="true">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5
-                                         a2 2 0 0 1 2-2h4"/>
-                                <path d="M16 17l5-5-5-5"/>
-                                <path d="M21 12H9"/>
-                            </svg>
-
-                            <span class="d-none d-sm-inline">Logout</span>
-                            <span class="d-sm-none">Exit</span>
+                        <button type="submit" class="logout-btn">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Logout</span>
                         </button>
                     </form>
 
                 </div>
+
             </div>
+
         </div>
     </nav>
 
-    <main id="dashboardTop" class="container py-4 py-md-5">
+    <main id="dashboardTop" class="container-fluid px-3 px-lg-4 px-xl-5 dashboard-main">
 
         {% if student_profile_error %}
 
-            <div class="alert alert-warning" role="alert">
-                <h1 class="h4">Student Dashboard</h1>
-                {{ student_profile_error }}
-            </div>
+            <!-- STUDENT PROFILE ERROR -->
+            <section class="error-panel" role="alert">
+
+                <div class="error-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+
+                <span class="section-eyebrow">Student Portal</span>
+
+                <h1>Student Dashboard</h1>
+
+                <p>{{ student_profile_error }}</p>
+
+            </section>
 
         {% else %}
 
-            <!-- Welcome Header -->
-            <section class="dashboard-header shadow-sm p-4 p-md-5 mb-4">
-                <div class="d-flex flex-column flex-md-row
-                            justify-content-between align-items-md-center gap-3">
+            <!-- WELCOME HEADER -->
+            <section class="welcome-panel">
 
-                    <div>
-                        <p class="text-primary fw-semibold mb-2">
-                            STUDENT PORTAL
-                        </p>
+                <div class="welcome-layout">
 
-                        <h1 class="h3 mb-2">
-                            Welcome, {{ student.first_name }} {{ student.last_name }}
+                    <div class="welcome-copy">
+
+                        <span class="section-eyebrow">
+                            Your Learning Space
+                        </span>
+
+                        <h1 class="welcome-title">
+                            Welcome back,
+                            <span class="student-name">
+                                {{ student.first_name }} {{ student.last_name }}
+                            </span>
                         </h1>
 
-                        <p class="profile-detail mb-0">
-                            Student ID: {{ student.student_id }}
+                        <p class="welcome-description">
+                            Keep track of your attendance, academic marks,
+                            assignments, and examinations in one place.
+                            Review your progress and stay informed about your
+                            academic journey.
                         </p>
+
+                        <div class="student-id-chip">
+                            <i class="bi bi-person-badge"></i>
+                            Student ID: {{ student.student_id }}
+                        </div>
+
                     </div>
 
-                    <div class="text-md-end">
+                    <div class="course-overview">
+
+                        <div class="course-icon">
+                            <i class="bi bi-book-half"></i>
+                        </div>
+
+                        <p class="course-label">Academic Profile</p>
+
                         {% if student.course %}
-                            <div class="fw-semibold">
-                                {{ student.course }}
-                            </div>
+                            <h2 class="course-value">{{ student.course }}</h2>
+                        {% else %}
+                            <h2 class="course-value">Course not specified</h2>
                         {% endif %}
 
                         {% if student.department %}
-                            <div class="profile-detail">
+                            <div class="course-meta">
+                                <i class="bi bi-building me-1"></i>
                                 {{ student.department }}
                             </div>
                         {% endif %}
 
                         {% if student.semester %}
-                            <div class="profile-detail">
+                            <div class="course-meta">
+                                <i class="bi bi-calendar3 me-1"></i>
                                 Semester {{ student.semester }}
                             </div>
                         {% endif %}
+
+                        <a
+                            href="{% url 'student_profile' %}"
+                            class="summary-card-action">
+                            View My Profile
+                            <i class="bi bi-arrow-up-right"></i>
+                        </a>
+
                     </div>
 
                 </div>
+
             </section>
 
-            <!-- Academic Overview -->
+            <!-- ACADEMIC OVERVIEW -->
             <section class="mb-4">
-                <h2 class="h5 section-heading mb-3">
-                    Academic Overview
-                </h2>
+
+                <div class="section-header">
+
+                    <div>
+                        <h2 class="section-title">Academic Overview</h2>
+                        <p class="section-description">
+                            A snapshot of your recorded academic progress.
+                        </p>
+                    </div>
+
+                </div>
 
                 <div class="row g-3">
 
-                    <!-- Attendance Summary Card -->
+                    <!-- ATTENDANCE SUMMARY -->
                     <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="summary-card p-4">
-                            <div class="summary-label mb-2">
-                                Overall Attendance
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-top">
+                                <div class="summary-icon icon-blue">
+                                    <i class="bi bi-calendar2-check"></i>
+                                </div>
+
+                                <span class="summary-index">01</span>
                             </div>
 
+                            <p class="summary-label">Overall Attendance</p>
+
                             {% if attendance_percentage != None %}
-                                <div class="summary-value text-primary">
+
+                                <h3 class="summary-value">
                                     {{ attendance_percentage }}%
+                                </h3>
+
+                                <div class="summary-progress">
+                                    <div
+                                        class="summary-progress-bar"
+                                        role="progressbar"
+                                        aria-label="Overall attendance"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        aria-valuenow="{{ attendance_percentage }}"
+                                        style="width: {{ attendance_percentage }}%;">
+                                    </div>
                                 </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
+                                <p class="summary-description">
                                     {{ total_classes_attended }} of
-                                    {{ total_classes_conducted }}
-                                    classes attended
+                                    {{ total_classes_conducted }} classes attended
                                 </p>
-                            {% else %}
-                                <div class="fw-semibold">
-                                    No data available
-                                </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
+                            {% else %}
+
+                                <h3 class="summary-value" style="font-size: 18px;">
+                                    No data available
+                                </h3>
+
+                                <p class="summary-description">
                                     Attendance has not been recorded.
                                 </p>
+
                             {% endif %}
+
                         </div>
+
                     </div>
 
-                    <!-- Academic Average Card -->
+                    <!-- INTERNAL MARKS -->
                     <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="summary-card p-4">
-                            <div class="summary-label mb-2">
-                                Internal Marks Average
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-top">
+                                <div class="summary-icon icon-green">
+                                    <i class="bi bi-journal-check"></i>
+                                </div>
+
+                                <span class="summary-index">02</span>
                             </div>
+
+                            <p class="summary-label">Internal Marks Average</p>
 
                             {% if academic_average != None %}
-                                <div class="summary-value text-success">
+
+                                <h3 class="summary-value text-student-green">
                                     {{ academic_average }}%
+                                </h3>
+
+                                <div class="summary-progress">
+                                    <div
+                                        class="summary-progress-bar"
+                                        role="progressbar"
+                                        aria-label="Internal marks average"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        aria-valuenow="{{ academic_average }}"
+                                        style="width: {{ academic_average }}%; background: linear-gradient(90deg, #16a34a, #34d399);">
+                                    </div>
                                 </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
-                                    Based on valid internal-mark records
+                                <p class="summary-description">
+                                    Based on valid internal-mark records.
                                 </p>
-                            {% else %}
-                                <div class="fw-semibold">
-                                    No data available
-                                </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
+                            {% else %}
+
+                                <h3 class="summary-value" style="font-size: 18px;">
+                                    No data available
+                                </h3>
+
+                                <p class="summary-description">
                                     No valid internal marks recorded.
                                 </p>
+
                             {% endif %}
+
                         </div>
+
                     </div>
 
-                    <!-- Assignment Summary Card -->
+                    <!-- ASSIGNMENTS -->
                     <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="summary-card p-4">
-                            <div class="summary-label mb-2">
-                                Total Assignments
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-top">
+                                <div class="summary-icon icon-cyan">
+                                    <i class="bi bi-files"></i>
+                                </div>
+
+                                <span class="summary-index">03</span>
                             </div>
 
-                            <div class="summary-value">
+                            <p class="summary-label">Total Assignments</p>
+
+                            <h3 class="summary-value">
                                 {{ assignment_count }}
-                            </div>
+                            </h3>
 
-                            <p class="small text-secondary mb-0 mt-2">
-                                {{ pending_assignment_count }} pending
+                            <p class="summary-description">
+                                {{ pending_assignment_count }} pending assignment{{ pending_assignment_count|pluralize }}
                             </p>
-                            <a href="{% url 'student_assignments' %}"
-                               class="btn btn-sm btn-outline-primary mt-3">
+
+                            <a
+                                href="{% url 'student_assignments' %}"
+                                class="summary-card-action">
                                 View My Assignments
+                                <i class="bi bi-arrow-right"></i>
                             </a>
+
                         </div>
+
                     </div>
 
-                    <!-- Examination Summary Card -->
+                    <!-- EXAMINATION AVERAGE -->
                     <div class="col-12 col-sm-6 col-xl-3">
-                        <div class="summary-card p-4">
-                            <div class="summary-label mb-2">
-                                Examination Average
+
+                        <div class="summary-card">
+
+                            <div class="summary-card-top">
+                                <div class="summary-icon icon-indigo">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </div>
+
+                                <span class="summary-index">04</span>
                             </div>
+
+                            <p class="summary-label">Examination Average</p>
 
                             {% if exam_average != None %}
-                                <div class="summary-value text-info">
+
+                                <h3 class="summary-value">
                                     {{ exam_average }}%
+                                </h3>
+
+                                <div class="summary-progress">
+                                    <div
+                                        class="summary-progress-bar"
+                                        role="progressbar"
+                                        aria-label="Examination average"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        aria-valuenow="{{ exam_average }}"
+                                        style="width: {{ exam_average }}%; background: linear-gradient(90deg, #6366f1, #0891b2);">
+                                    </div>
                                 </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
-                                    {{ exam_count }} recorded result(s)
+                                <p class="summary-description">
+                                    {{ exam_count }} recorded result{{ exam_count|pluralize }}
                                 </p>
-                            {% else %}
-                                <div class="fw-semibold">
-                                    No data available
-                                </div>
 
-                                <p class="small text-secondary mb-0 mt-2">
+                            {% else %}
+
+                                <h3 class="summary-value" style="font-size: 18px;">
+                                    No data available
+                                </h3>
+
+                                <p class="summary-description">
                                     No valid examination marks recorded.
                                 </p>
+
                             {% endif %}
-                            <a href="{% url 'student_examination_results' %}"
-                               class="btn btn-sm btn-outline-primary mt-3">
+
+                            <a
+                                href="{% url 'student_examination_results' %}"
+                                class="summary-card-action">
                                 View Examination Results
+                                <i class="bi bi-arrow-right"></i>
                             </a>
+
                         </div>
+
                     </div>
 
                 </div>
+
             </section>
 
-            <!-- Attendance Summary and History -->
-            <section class="content-panel p-4 p-md-5 mb-4">
+            <!-- ATTENDANCE -->
+            <section class="content-panel">
 
-                <div class="mb-4">
-                    <h2 class="h5 fw-bold mb-1">My Attendance</h2>
+                <div class="panel-heading">
 
-                    <p class="text-secondary small mb-0">
-                        Your recorded attendance and class participation history.
-                    </p>
-                </div>
+                    <div class="panel-heading-main">
 
-                <!-- Attendance Summary Cards -->
-                <div class="row g-3 mb-4">
-
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="small text-secondary mb-2">
-                                Overall Attendance
-                            </div>
-
-                            {% if attendance_percentage != None %}
-                                <div class="h3 fw-bold text-primary mb-0">
-                                    {{ attendance_percentage }}%
-                                </div>
-                            {% else %}
-                                <div class="fw-semibold">
-                                    No data available
-                                </div>
-                            {% endif %}
+                        <div class="panel-icon">
+                            <i class="bi bi-calendar2-week"></i>
                         </div>
+
+                        <div>
+                            <h2 class="panel-title">My Attendance</h2>
+
+                            <p class="panel-subtitle">
+                                Review recorded attendance and class participation history.
+                            </p>
+                        </div>
+
                     </div>
 
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="small text-secondary mb-2">
-                                Classes Conducted
-                            </div>
-
-                            <div class="h3 fw-bold mb-0">
-                                {{ total_classes_conducted }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="small text-secondary mb-2">
-                                Classes Attended
-                            </div>
-
-                            <div class="h3 fw-bold text-success mb-0">
-                                {{ total_classes_attended }}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="small text-secondary mb-2">
-                                Classes Missed
-                            </div>
-
-                            {% if total_classes_missed != None %}
-                                <div class="h3 fw-bold text-danger mb-0">
-                                    {{ total_classes_missed }}
-                                </div>
-                            {% else %}
-                                <div class="fw-semibold">
-                                    No data available
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                    <span class="panel-count">
+                        <i class="bi bi-clock-history"></i>
+                        Attendance Records
+                    </span>
 
                 </div>
 
-                <!-- Attendance History Table -->
-                <h3 class="h6 fw-bold mb-3">Attendance History</h3>
+                <div class="panel-body">
 
-                {% if attendance_history %}
+                    <!-- ATTENDANCE STATISTICS -->
+                    <div class="row g-3 mb-4">
 
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                        <!-- OVERALL ATTENDANCE -->
+                        <div class="col-12 col-sm-6 col-lg-3">
 
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Classes Conducted</th>
-                                    <th scope="col">Classes Attended</th>
-                                    <th scope="col">Classes Missed</th>
-                                    <th scope="col">Attendance</th>
-                                </tr>
-                            </thead>
+                            <div class="attendance-stat">
 
-                            <tbody>
-                                {% for record in attendance_history %}
+                                <div class="attendance-stat-label">
+                                    <i class="bi bi-percent"></i>
+                                    Overall Attendance
+                                </div>
+
+                                {% if attendance_percentage != None %}
+
+                                    <h3 class="attendance-stat-value text-primary">
+                                        {{ attendance_percentage }}%
+                                    </h3>
+
+                                {% else %}
+
+                                    <p class="fw-semibold mb-0" style="font-size: 12px;">
+                                        No data available
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <!-- CLASSES CONDUCTED -->
+                        <div class="col-12 col-sm-6 col-lg-3">
+
+                            <div class="attendance-stat">
+
+                                <div class="attendance-stat-label">
+                                    <i class="bi bi-easel"></i>
+                                    Classes Conducted
+                                </div>
+
+                                <h3 class="attendance-stat-value">
+                                    {{ total_classes_conducted }}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <!-- CLASSES ATTENDED -->
+                        <div class="col-12 col-sm-6 col-lg-3">
+
+                            <div class="attendance-stat">
+
+                                <div class="attendance-stat-label">
+                                    <i class="bi bi-check-circle"></i>
+                                    Classes Attended
+                                </div>
+
+                                <h3 class="attendance-stat-value text-student-green">
+                                    {{ total_classes_attended }}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                        <!-- CLASSES MISSED -->
+                        <div class="col-12 col-sm-6 col-lg-3">
+
+                            <div class="attendance-stat">
+
+                                <div class="attendance-stat-label">
+                                    <i class="bi bi-calendar2-x"></i>
+                                    Classes Missed
+                                </div>
+
+                                {% if total_classes_missed != None %}
+
+                                    <h3 class="attendance-stat-value text-student-red">
+                                        {{ total_classes_missed }}
+                                    </h3>
+
+                                {% else %}
+
+                                    <p class="fw-semibold mb-0" style="font-size: 12px;">
+                                        No data available
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ATTENDANCE HISTORY -->
+                    <div class="section-header">
+
+                        <div>
+                            <h3 class="section-title" style="font-size: 13px;">
+                                Attendance History
+                            </h3>
+
+                            <p class="section-description">
+                                Recorded class attendance from newest to oldest.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    {% if attendance_history %}
+
+                        <div class="table-container">
+
+                            <table class="student-table">
+
+                                <thead>
                                     <tr>
-                                        <td class="text-nowrap">
-                                            {{ record.date|date:"d M Y" }}
-                                        </td>
-
-                                        <td>
-                                            {{ record.classes_conducted }}
-                                        </td>
-
-                                        <td>
-                                            {{ record.classes_attended }}
-                                        </td>
-
-                                        <td>
-                                            {% if record.is_valid %}
-                                                {{ record.classes_missed }}
-                                            {% else %}
-                                                <span class="text-secondary">—</span>
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {% if record.is_valid %}
-                                                <span class="badge text-bg-success">
-                                                    {{ record.attendance_percentage }}%
-                                                </span>
-                                            {% else %}
-                                                <span
-                                                    class="badge text-bg-secondary"
-                                                    title="The recorded class counts do not support a valid percentage."
-                                                >
-                                                    Unavailable
-                                                </span>
-                                            {% endif %}
-                                        </td>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Classes Conducted</th>
+                                        <th scope="col">Classes Attended</th>
+                                        <th scope="col">Classes Missed</th>
+                                        <th scope="col">Attendance</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
+                                </thead>
 
-                        </table>
-                    </div>
+                                <tbody>
 
-                    <p class="small text-secondary mt-3 mb-0">
-                        Records are displayed from newest to oldest.
-                        Attendance percentages are calculated from classes
-                        attended and classes conducted.
-                    </p>
+                                    {% for record in attendance_history %}
 
-                {% else %}
+                                        <tr>
 
-                    <div class="alert alert-light border mb-0" role="status">
-                        No attendance records are available yet.
-                        Please check again after your attendance has been
-                        recorded by an authorized staff member.
-                    </div>
+                                            <td>
+                                                <span class="date-chip">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    {{ record.date|date:"d M Y" }}
+                                                </span>
+                                            </td>
 
-                {% endif %}
+                                            <td class="table-primary-text">
+                                                {{ record.classes_conducted }}
+                                            </td>
+
+                                            <td class="table-primary-text">
+                                                {{ record.classes_attended }}
+                                            </td>
+
+                                            <td>
+                                                {% if record.is_valid %}
+                                                    {{ record.classes_missed }}
+                                                {% else %}
+                                                    <span class="muted-value">—</span>
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                {% if record.is_valid %}
+
+                                                    <span class="result-badge">
+                                                        {{ record.attendance_percentage }}%
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span
+                                                        class="unavailable-badge"
+                                                        title="The recorded class counts do not support a valid percentage.">
+                                                        Unavailable
+                                                    </span>
+
+                                                {% endif %}
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <p class="small text-secondary mt-3 mb-0"
+                           style="font-size: 10px; line-height: 1.9;">
+                            Attendance percentages are calculated from classes attended
+                            and classes conducted. Invalid records are shown as unavailable.
+                        </p>
+
+                    {% else %}
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                <i class="bi bi-calendar2-x"></i>
+                            </div>
+
+                            <h3>No Attendance Records</h3>
+
+                            <p>
+                                No attendance records are available yet. Check again
+                                after your attendance has been recorded by an authorized
+                                staff member.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
 
             </section>
 
-            <!-- Academic Performance -->
-            <section class="content-panel p-4 p-md-5 mb-4">
+            <!-- ACADEMIC PERFORMANCE -->
+            <section class="content-panel">
 
-                <div class="mb-4">
-                    <h2 class="h5 fw-bold mb-1">
-                        Academic Performance
-                    </h2>
+                <div class="panel-heading">
 
-                    <p class="text-secondary small mb-0">
-                        Your recorded internal marks by subject.
-                    </p>
+                    <div class="panel-heading-main">
+
+                        <div class="panel-icon">
+                            <i class="bi bi-journal-bookmark"></i>
+                        </div>
+
+                        <div>
+                            <h2 class="panel-title">Academic Performance</h2>
+
+                            <p class="panel-subtitle">
+                                Review your internal marks and percentages by subject.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <span class="panel-count">
+                        <i class="bi bi-bar-chart-line"></i>
+                        Internal Marks
+                    </span>
+
                 </div>
 
-                {% if academic_history %}
+                <div class="panel-body">
 
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
+                    {% if academic_history %}
 
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">Subject</th>
-                                    <th scope="col">Marks Obtained</th>
-                                    <th scope="col">Maximum Marks</th>
-                                    <th scope="col">Percentage</th>
-                                </tr>
-                            </thead>
+                        <div class="table-container">
 
-                            <tbody>
-                                {% for record in academic_history %}
+                            <table class="student-table">
+
+                                <thead>
                                     <tr>
-                                        <td>
-                                            {{ record.subject }}
-                                        </td>
-
-                                        <td>
-                                            {% if record.marks_obtained != None %}
-                                                {{ record.marks_obtained }}
-                                            {% else %}
-                                                —
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {% if record.total_marks != None %}
-                                                {{ record.total_marks }}
-                                            {% else %}
-                                                —
-                                            {% endif %}
-                                        </td>
-
-                                        <td>
-                                            {% if record.is_valid %}
-                                                <span class="badge text-bg-success">
-                                                    {{ record.percentage }}%
-                                                </span>
-                                            {% else %}
-                                                <span class="text-secondary">—</span>
-                                            {% endif %}
-                                        </td>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">Marks Obtained</th>
+                                        <th scope="col">Maximum Marks</th>
+                                        <th scope="col">Percentage</th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
+                                </thead>
 
-                        </table>
-                    </div>
+                                <tbody>
 
-                {% else %}
+                                    {% for record in academic_history %}
 
-                    <div class="alert alert-light border mb-0" role="status">
-                        No academic performance records are available yet.
-                    </div>
+                                        <tr>
 
-                {% endif %}
+                                            <td class="table-primary-text">
+                                                <i class="bi bi-book me-2"
+                                                   style="color: var(--student-primary);"></i>
+                                                {{ record.subject }}
+                                            </td>
 
-            </section>
+                                            <td>
+                                                {% if record.marks_obtained != None %}
+                                                    <span class="table-primary-text">
+                                                        {{ record.marks_obtained }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="muted-value">—</span>
+                                                {% endif %}
+                                            </td>
 
-            <!-- Additional Student Features -->
-            <section class="content-panel p-4 p-md-5">
-                <div class="row align-items-center g-3">
-                    <div class="col-lg">
-                        <h2 class="h5 fw-bold mb-2">My Performance</h2>
-                        <p class="text-secondary mb-0">Visualize your recorded academic and examination performance.</p>
-                    </div>
-                    <div class="col-lg-auto d-flex flex-wrap gap-2">
-                        <a class="btn btn-primary" href="{% url 'student_performance' %}">View My Performance</a>
-                        <a class="btn btn-outline-primary" href="{% url 'student_notifications' %}">View Support Notifications</a>
-                    </div>
+                                            <td>
+                                                {% if record.total_marks != None %}
+                                                    {{ record.total_marks }}
+                                                {% else %}
+                                                    <span class="muted-value">—</span>
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                {% if record.is_valid %}
+
+                                                    <span class="result-badge">
+                                                        {{ record.percentage }}%
+                                                    </span>
+
+                                                {% else %}
+
+                                                    <span class="muted-value">—</span>
+
+                                                {% endif %}
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="empty-state">
+
+                            <div class="empty-icon">
+                                <i class="bi bi-journal-x"></i>
+                            </div>
+
+                            <h3>No Academic Records</h3>
+
+                            <p>
+                                No academic performance records are available yet.
+                                Your recorded internal marks will appear here once
+                                they have been entered by authorized staff.
+                            </p>
+
+                        </div>
+
+                    {% endif %}
+
                 </div>
+
             </section>
 
+            <!-- QUICK ACCESS -->
+            <section class="mb-4">
 
+                <div class="section-header">
+
+                    <div>
+                        <h2 class="section-title">Quick Access</h2>
+
+                        <p class="section-description">
+                            Navigate directly to your student services.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_profile' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-person-vcard"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Profile</h3>
+                                <p>View your personal and academic information.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_assignments' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #0e7490; background: #ecfeff;">
+                                <i class="bi bi-journal-check"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Assignments</h3>
+                                <p>Review your assignments and submission status.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_examination_results' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #4f46e5; background: #eef2ff;">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>Examination Results</h3>
+                                <p>View your recorded examination marks.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-6">
+
+                        <a
+                            href="{% url 'student_performance' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #16835e; background: #ecfdf5;">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Performance</h3>
+                                <p>
+                                    Explore your recorded academic and examination
+                                    performance trends.
+                                </p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-6">
+
+                        <a
+                            href="{% url 'student_notifications' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #b45309; background: #fffbeb;">
+                                <i class="bi bi-bell"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>Support Notifications</h3>
+                                <p>
+                                    Review available notices and student support
+                                    notifications.
+                                </p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
 
         {% endif %}
 
+        <!-- FOOTER -->
+        <footer class="student-footer">
+
+            <span class="footer-brand">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Dropout Risk Management System
+            </span>
+
+            <span>
+                Student Portal · Academic Dashboard
+            </span>
+
+        </footer>
+
     </main>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

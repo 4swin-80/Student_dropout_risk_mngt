@@ -1,67 +1,1325 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Support Notifications</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Support Notifications | Student Portal</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
-        body { background: #f5f7fb; color: #202938; min-height: 100vh; }
-        .panel, .notice { background: #fff; border: 1px solid #e5eaf2; border-radius: 16px; }
-        .notice-unread { border-left: 4px solid #0d6efd; }
-        .notice-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+        :root {
+            --student-primary: #2563eb;
+            --student-primary-dark: #1d4ed8;
+            --student-primary-light: #eff6ff;
+            --student-cyan: #0891b2;
+            --student-bg: #f5f8fd;
+            --student-surface: #ffffff;
+            --student-text: #202938;
+            --student-muted: #687386;
+            --student-border: #e5eaf2;
+            --student-shadow: 0 8px 28px rgba(25, 42, 70, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--student-bg);
+            color: var(--student-text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+
+        .student-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--student-border);
+            backdrop-filter: blur(14px);
+        }
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 75px;
+        }
+
+        .student-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+            color: var(--student-text);
+        }
+
+        .student-brand:hover {
+            color: var(--student-primary);
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 21px;
+            border-radius: 13px;
+            background: linear-gradient(
+                140deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+            box-shadow: 0 5px 13px rgba(37, 99, 235, 0.19);
+        }
+
+        .brand-name {
+            display: block;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.45px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: var(--student-muted);
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portal-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #dce8fa;
+            border-radius: 9px;
+            background: #f4f8ff;
+        }
+
+        .portal-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--student-cyan);
+        }
+
+        .btn-student-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 41px;
+            padding: 9px 14px;
+            color: var(--student-primary);
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #d5e3f8;
+            border-radius: 10px;
+            background: #fff;
+            transition: color 0.2s ease, background 0.2s ease,
+                        border-color 0.2s ease;
+        }
+
+        .btn-student-outline:hover {
+            color: #fff;
+            border-color: var(--student-primary);
+            background: var(--student-primary);
+        }
+
+        /* Main content */
+
+        .dashboard-main {
+            max-width: 1500px;
+            padding-top: 31px;
+            padding-bottom: 44px;
+        }
+
+        .breadcrumb-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 9px;
+            color: var(--student-muted);
+            font-size: 11px;
+        }
+
+        .breadcrumb-line a {
+            color: var(--student-muted);
+        }
+
+        .breadcrumb-line a:hover {
+            color: var(--student-primary);
+        }
+
+        .breadcrumb-current {
+            color: var(--student-primary);
+            font-weight: 700;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+        }
+
+        .section-eyebrow::before {
+            width: 7px;
+            height: 7px;
+            content: "";
+            border-radius: 50%;
+            background: var(--student-cyan);
+        }
+
+        /* Page header */
+
+        .page-header {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+            padding: 30px;
+            border: 1px solid #dce8fa;
+            border-radius: 19px;
+            background:
+                radial-gradient(
+                    circle at 100% 0,
+                    rgba(8, 145, 178, 0.11),
+                    transparent 37%
+                ),
+                #fff;
+            box-shadow: var(--student-shadow);
+        }
+
+        .page-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+        }
+
+        .page-title {
+            margin: 10px 0 8px;
+            color: var(--student-text);
+            font-size: clamp(25px, 3vw, 32px);
+            font-weight: 800;
+            letter-spacing: -1.1px;
+        }
+
+        .page-description {
+            max-width: 650px;
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        .header-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 29px;
+            border: 1px solid #dce8fa;
+            border-radius: 19px;
+            background: var(--student-primary-light);
+        }
+
+        /* Summary cards */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .summary-card {
+            position: relative;
+            height: 100%;
+            min-width: 0;
+            padding: 22px;
+            overflow: hidden;
+            border: 1px solid var(--student-border);
+            border-radius: 16px;
+            background: var(--student-surface);
+            box-shadow: 0 4px 15px rgba(25, 42, 70, 0.025);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 25px rgba(25, 42, 70, 0.07);
+        }
+
+        .summary-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 19px;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            font-size: 19px;
+            border-radius: 12px;
+        }
+
+        .icon-blue {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .icon-cyan {
+            color: #0e7490;
+            background: #ecfeff;
+        }
+
+        .icon-green {
+            color: #16835e;
+            background: #ecfdf5;
+        }
+
+        .summary-index {
+            color: #adb7c8;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        .summary-label {
+            margin-bottom: 7px;
+            color: var(--student-muted);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .summary-value {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-value-primary {
+            color: var(--student-primary);
+        }
+
+        .summary-value-green {
+            color: #16835e;
+        }
+
+        .summary-description {
+            margin: 8px 0 0;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .summary-progress {
+            height: 5px;
+            margin-top: 13px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #edf1f8;
+        }
+
+        .summary-progress-bar {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        /* Notification section */
+
+        .content-panel {
+            overflow: hidden;
+            border: 1px solid var(--student-border);
+            border-radius: 18px;
+            background: var(--student-surface);
+            box-shadow: var(--student-shadow);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 25px;
+            border-bottom: 1px solid var(--student-border);
+        }
+
+        .panel-heading-main {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .panel-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 18px;
+            border: 1px solid #dce8fa;
+            border-radius: 12px;
+            background: var(--student-primary-light);
+        }
+
+        .panel-title {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.25px;
+        }
+
+        .panel-subtitle {
+            margin: 5px 0 0;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .panel-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #dce8fa;
+            border-radius: 8px;
+            background: #f4f8ff;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 23px;
+        }
+
+        /* Individual notification */
+
+        .notification-card {
+            position: relative;
+            padding: 21px;
+            border: 1px solid var(--student-border);
+            border-radius: 15px;
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .notification-card:hover {
+            border-color: #d2e2f8;
+            box-shadow: 0 5px 16px rgba(25, 42, 70, 0.045);
+        }
+
+        .notification-card.unread {
+            border-color: #cbdffa;
+            border-left: 4px solid var(--student-primary);
+            background:
+                linear-gradient(
+                    105deg,
+                    rgba(239, 246, 255, 0.65),
+                    #fff 45%
+                );
+        }
+
+        .notification-main {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            min-width: 0;
+        }
+
+        .notification-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 18px;
+            border: 1px solid #dce8fa;
+            border-radius: 13px;
+            background: var(--student-primary-light);
+        }
+
+        .notification-card.unread .notification-icon {
+            color: #fff;
+            border-color: transparent;
+            background: linear-gradient(
+                140deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 13px;
+            margin-bottom: 9px;
+        }
+
+        .notification-title {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .notification-card.unread .notification-title {
+            color: #1e3a63;
+        }
+
+        .notification-message {
+            margin: 0;
+            color: #526075;
+            font-size: 12px;
+            line-height: 1.95;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* Read / unread badges */
+
+        .notification-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            padding: 7px 9px;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+
+        .notification-status::before {
+            width: 6px;
+            height: 6px;
+            content: "";
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-unread {
+            color: var(--student-primary);
+            border-color: #cbdffa;
+            background: #eff6ff;
+        }
+
+        .status-read {
+            color: #64748b;
+            border-color: #e1e7f0;
+            background: #f4f6fa;
+        }
+
+        /* Notification metadata and action */
+
+        .notification-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid #edf1f7;
+        }
+
+        .notification-metadata {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 9px 15px;
+            min-width: 0;
+        }
+
+        .metadata-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .metadata-item i {
+            color: #7b95b8;
+            font-size: 13px;
+        }
+
+        .category-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            color: #42618a;
+            font-size: 10px;
+            font-weight: 700;
+            border: 1px solid #dce8fa;
+            border-radius: 7px;
+            background: #f4f8ff;
+        }
+
+        .btn-mark-read {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            min-height: 37px;
+            padding: 8px 12px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #cbdffa;
+            border-radius: 9px;
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mark-read:hover {
+            color: #fff;
+            border-color: var(--student-primary);
+            background: var(--student-primary);
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            padding: 62px 22px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 18px;
+            color: var(--student-primary);
+            font-size: 28px;
+            border: 1px solid #dce8fa;
+            border-radius: 21px;
+            background: var(--student-primary-light);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--student-text);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            max-width: 420px;
+            margin: 0 auto;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .empty-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 18px;
+            color: var(--student-primary);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .empty-link:hover {
+            color: var(--student-cyan);
+        }
+
+        /* Footer */
+
+        .student-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 29px;
+            padding-top: 20px;
+            color: #8894a7;
+            font-size: 10px;
+            border-top: 1px solid #e4eaf3;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .footer-brand i {
+            color: var(--student-primary);
+        }
+
+        /* Responsive */
+
+        @media (max-width: 991.98px) {
+            .navbar-inner {
+                min-height: 68px;
+            }
+
+            .dashboard-main {
+                padding-top: 25px;
+            }
+
+            .page-header {
+                padding: 25px;
+            }
+
+            .notification-list {
+                padding: 18px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .page-header {
+                padding: 22px;
+            }
+
+            .page-title {
+                font-size: 27px;
+            }
+
+            .notification-card {
+                padding: 17px;
+            }
+
+            .panel-heading {
+                padding: 18px;
+            }
+
+            .student-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-inner {
+                flex-wrap: wrap;
+                padding-top: 11px;
+                padding-bottom: 11px;
+            }
+
+            .brand-mark {
+                width: 39px;
+                height: 39px;
+                font-size: 19px;
+            }
+
+            .brand-name {
+                font-size: 13px;
+            }
+
+            .brand-subtitle {
+                font-size: 9px;
+            }
+
+            .portal-chip {
+                display: none;
+            }
+
+            .nav-actions {
+                gap: 7px;
+            }
+
+            .btn-student-outline {
+                min-height: 38px;
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .dashboard-main {
+                padding: 20px 13px 30px;
+            }
+
+            .page-header {
+                padding: 19px;
+                border-radius: 15px;
+            }
+
+            .page-header-content {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .page-title {
+                font-size: 24px;
+                letter-spacing: -0.8px;
+            }
+
+            .page-description {
+                font-size: 11px;
+            }
+
+            .header-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                border-radius: 13px;
+            }
+
+            .summary-grid {
+                gap: 11px;
+            }
+
+            .summary-card {
+                padding: 16px;
+                border-radius: 13px;
+            }
+
+            .summary-card-top {
+                margin-bottom: 15px;
+            }
+
+            .summary-icon {
+                width: 37px;
+                height: 37px;
+                font-size: 17px;
+            }
+
+            .summary-value {
+                font-size: 25px;
+            }
+
+            .summary-label {
+                font-size: 10px;
+            }
+
+            .summary-description {
+                font-size: 9px;
+            }
+
+            .panel-heading {
+                padding: 16px;
+            }
+
+            .panel-heading-main {
+                gap: 10px;
+            }
+
+            .panel-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .panel-count {
+                padding: 7px 9px;
+            }
+
+            .notification-list {
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .notification-card {
+                padding: 14px;
+                border-radius: 12px;
+            }
+
+            .notification-main {
+                gap: 10px;
+            }
+
+            .notification-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+                border-radius: 10px;
+            }
+
+            .notification-heading {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .notification-title {
+                font-size: 12px;
+            }
+
+            .notification-message {
+                font-size: 11px;
+            }
+
+            .notification-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .notification-footer form,
+            .btn-mark-read {
+                width: 100%;
+            }
+
+            .empty-state {
+                padding: 45px 17px;
+            }
+
+            .student-footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .summary-card {
+                padding: 13px;
+            }
+
+            .summary-value {
+                font-size: 22px;
+            }
+
+            .summary-index {
+                font-size: 9px;
+            }
+
+            .header-icon {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
     </style>
 </head>
+
 <body>
-<main class="container py-4 py-md-5">
-    <header class="panel shadow-sm p-4 p-md-5 mb-4">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-            <div>
-                <p class="text-primary fw-semibold mb-1">Student Portal</p>
-                <h1 class="h2 fw-bold mb-2">Support Notifications</h1>
-                <p class="text-secondary mb-0">Messages intended for your student account.</p>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="student-navbar">
+        <div class="container-fluid px-3 px-lg-4 px-xl-5">
+
+            <div class="navbar-inner">
+
+                <a href="{% url 'student_dashboard' %}" class="student-brand">
+
+                    <span class="brand-mark">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
+
+                    <span>
+                        <span class="brand-name">Student Portal</span>
+                        <span class="brand-subtitle">Academic Dashboard</span>
+                    </span>
+
+                </a>
+
+                <div class="nav-actions">
+
+                    <span class="portal-chip">
+                        <span class="portal-dot"></span>
+                        Student Workspace
+                    </span>
+
+                    <a
+                        href="{% url 'student_dashboard' %}"
+                        class="btn-student-outline">
+                        <i class="bi bi-arrow-left"></i>
+                        Dashboard
+                    </a>
+
+                </div>
+
             </div>
-            <a class="btn btn-outline-primary" href="{% url 'student_dashboard' %}">Back to Dashboard</a>
+
         </div>
-    </header>
+    </nav>
 
-    <section class="row g-3 mb-4" aria-label="Notification summary">
-        <div class="col-12 col-sm-4"><div class="panel p-3 p-md-4 h-100"><div class="text-secondary">Total notifications</div><div class="fs-3 fw-bold">{{ total_count }}</div></div></div>
-        <div class="col-12 col-sm-4"><div class="panel p-3 p-md-4 h-100"><div class="text-secondary">Unread</div><div class="fs-3 fw-bold text-primary">{{ unread_count }}</div></div></div>
-        <div class="col-12 col-sm-4"><div class="panel p-3 p-md-4 h-100"><div class="text-secondary">Read</div><div class="fs-3 fw-bold">{{ read_count }}</div></div></div>
-    </section>
+    <!-- MAIN CONTENT -->
+    <main class="container-fluid px-3 px-lg-4 px-xl-5 dashboard-main">
 
-    <section aria-label="Your notifications">
-        {% if notifications %}
-            <div class="d-flex flex-column gap-3">
-                {% for notification in notifications %}
-                    <article class="notice shadow-sm p-4 {% if not notification.is_read %}notice-unread{% endif %}">
-                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-2">
-                            <h2 class="h5 fw-bold mb-0">{{ notification.title }}</h2>
-                            <span class="badge {% if notification.is_read %}text-bg-light border text-secondary{% else %}text-bg-primary{% endif %} align-self-start">
-                                {% if notification.is_read %}Read{% else %}Unread{% endif %}
-                            </span>
-                        </div>
-                        <p class="notice-message mb-3">{{ notification.message }}</p>
-                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
-                            <small class="text-secondary">{{ notification.get_category_display }} · {{ notification.created_at|date:"M j, Y, g:i A" }}</small>
-                            {% if not notification.is_read %}
-                                <form method="post" action="{% url 'student_notification_mark_read' notification.pk %}">
-                                    {% csrf_token %}
-                                    <button class="btn btn-sm btn-outline-primary" type="submit">Mark as Read</button>
-                                </form>
-                            {% endif %}
-                        </div>
-                    </article>
-                {% endfor %}
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+
+            <div class="page-header-content">
+
+                <div>
+                    <div class="breadcrumb-line">
+                        <a href="{% url 'student_dashboard' %}">Dashboard</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span class="breadcrumb-current">Support Notifications</span>
+                    </div>
+
+                    <span class="section-eyebrow">
+                        Student Workspace
+                    </span>
+
+                    <h1 class="page-title">Support Notifications</h1>
+
+                    <p class="page-description">
+                        Stay informed about messages and updates intended
+                        for your student account. Review unread notifications
+                        and keep track of previously read messages.
+                    </p>
+                </div>
+
+                <div class="header-icon">
+                    <i class="bi bi-bell"></i>
+                </div>
+
             </div>
-        {% else %}
-            <div class="panel p-4 p-md-5 text-center">
-                <h2 class="h5 fw-bold">No support notifications yet</h2>
-                <p class="text-secondary mb-0">Messages intended for you will appear here.</p>
+
+        </header>
+
+        <!-- NOTIFICATION SUMMARY -->
+        <section class="summary-grid" aria-label="Notification summary">
+
+            <!-- TOTAL -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-blue">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+                    <span class="summary-index">01</span>
+                </div>
+
+                <p class="summary-label">Total Notifications</p>
+
+                <h2 class="summary-value">{{ total_count }}</h2>
+
+                <p class="summary-description">
+                    All messages available in your student account.
+                </p>
+
             </div>
-        {% endif %}
-    </section>
-</main>
+
+            <!-- UNREAD -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-cyan">
+                        <i class="bi bi-envelope-exclamation"></i>
+                    </div>
+                    <span class="summary-index">02</span>
+                </div>
+
+                <p class="summary-label">Unread Notifications</p>
+
+                <h2 class="summary-value summary-value-primary">
+                    {{ unread_count }}
+                </h2>
+
+                <p class="summary-description">
+                    Messages that you have not marked as read.
+                </p>
+
+                {% if unread_count %}
+                    <div class="summary-progress">
+                        <div
+                            class="summary-progress-bar"
+                            style="width: {% widthratio unread_count total_count 100 %}%; background: linear-gradient(90deg, #2563eb, #0891b2);">
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <!-- READ -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-green">
+                        <i class="bi bi-envelope-check"></i>
+                    </div>
+                    <span class="summary-index">03</span>
+                </div>
+
+                <p class="summary-label">Read Notifications</p>
+
+                <h2 class="summary-value summary-value-green">
+                    {{ read_count }}
+                </h2>
+
+                <p class="summary-description">
+                    Messages already marked as read.
+                </p>
+
+                {% if read_count %}
+                    <div class="summary-progress">
+                        <div
+                            class="summary-progress-bar"
+                            style="width: {% widthratio read_count total_count 100 %}%; background: linear-gradient(90deg, #16a34a, #34d399);">
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        <!-- NOTIFICATION LIST -->
+        <section class="content-panel" aria-label="Your notifications">
+
+            <div class="panel-heading">
+
+                <div class="panel-heading-main">
+
+                    <div class="panel-icon">
+                        <i class="bi bi-inbox"></i>
+                    </div>
+
+                    <div>
+                        <h2 class="panel-title">Your Notifications</h2>
+
+                        <p class="panel-subtitle">
+                            Messages and support updates associated with your account.
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="panel-count">
+                    <i class="bi bi-bell"></i>
+                    {{ total_count }} Notification{{ total_count|pluralize }}
+                </span>
+
+            </div>
+
+            {% if notifications %}
+
+                <div class="notification-list">
+
+                    {% for notification in notifications %}
+
+                        <article class="notification-card {% if not notification.is_read %}unread{% endif %}">
+
+                            <div class="notification-main">
+
+                                <div class="notification-icon">
+                                    {% if notification.is_read %}
+                                        <i class="bi bi-envelope-open"></i>
+                                    {% else %}
+                                        <i class="bi bi-bell-fill"></i>
+                                    {% endif %}
+                                </div>
+
+                                <div class="notification-content">
+
+                                    <!-- TITLE AND READ STATUS -->
+                                    <div class="notification-heading">
+
+                                        <h3 class="notification-title">
+                                            {{ notification.title }}
+                                        </h3>
+
+                                        {% if notification.is_read %}
+
+                                            <span class="notification-status status-read">
+                                                Read
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="notification-status status-unread">
+                                                Unread
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                    <!-- MESSAGE -->
+                                    <p class="notification-message">{{ notification.message }}</p>
+
+                                    <!-- METADATA AND ACTION -->
+                                    <div class="notification-footer">
+
+                                        <div class="notification-metadata">
+
+                                            <span class="category-chip">
+                                                <i class="bi bi-tag"></i>
+                                                {{ notification.get_category_display }}
+                                            </span>
+
+                                            <span class="metadata-item">
+                                                <i class="bi bi-calendar3"></i>
+                                                {{ notification.created_at|date:"M j, Y" }}
+                                            </span>
+
+                                            <span class="metadata-item">
+                                                <i class="bi bi-clock"></i>
+                                                {{ notification.created_at|date:"g:i A" }}
+                                            </span>
+
+                                        </div>
+
+                                        {% if not notification.is_read %}
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'student_notification_mark_read' notification.pk %}">
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    class="btn-mark-read"
+                                                    type="submit">
+
+                                                    <i class="bi bi-check2-circle"></i>
+                                                    Mark as Read
+
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-bell-slash"></i>
+                    </div>
+
+                    <h3>No Support Notifications Yet</h3>
+
+                    <p>
+                        There are currently no messages intended for your
+                        student account. New notifications will appear here
+                        when they are available.
+                    </p>
+
+                    <a
+                        href="{% url 'student_dashboard' %}"
+                        class="empty-link">
+                        <i class="bi bi-arrow-left"></i>
+                        Return to Dashboard
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="student-footer">
+
+            <span class="footer-brand">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Dropout Risk Management System
+            </span>
+
+            <span>Student Portal · Support Notifications</span>
+
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

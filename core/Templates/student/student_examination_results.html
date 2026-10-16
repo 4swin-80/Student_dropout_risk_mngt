@@ -1,72 +1,1415 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>My Examination Results | Student Portal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+        rel="stylesheet"
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
-        :root { --page-bg: #f5f7fb; --border: #e5eaf2; --text-muted: #687386; }
-        body { background: var(--page-bg); color: #202938; min-height: 100vh; }
-        .panel, .summary-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; }
-        .summary-card { height: 100%; }
-        .summary-label { color: var(--text-muted); font-size: .9rem; }
-        .summary-value { font-size: 1.8rem; font-weight: 700; }
-        .exam-name, .exam-subject { overflow-wrap: anywhere; }
-        .table thead th { color: #526075; font-size: .82rem; white-space: nowrap; }
+        :root {
+            --student-primary: #2563eb;
+            --student-primary-dark: #1d4ed8;
+            --student-primary-light: #eff6ff;
+            --student-cyan: #0891b2;
+            --student-bg: #f5f8fd;
+            --student-surface: #ffffff;
+            --student-text: #202938;
+            --student-muted: #687386;
+            --student-border: #e5eaf2;
+            --student-shadow: 0 8px 28px rgba(25, 42, 70, 0.055);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--student-bg);
+            color: var(--student-text);
+            font-family: "Inter", sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Navigation */
+
+        .student-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--student-border);
+            backdrop-filter: blur(14px);
+        }
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 75px;
+        }
+
+        .student-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+            color: var(--student-text);
+        }
+
+        .student-brand:hover {
+            color: var(--student-primary);
+        }
+
+        .brand-mark {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 21px;
+            border-radius: 13px;
+            background: linear-gradient(
+                140deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+            box-shadow: 0 5px 13px rgba(37, 99, 235, 0.19);
+        }
+
+        .brand-name {
+            display: block;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.45px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            margin-top: 3px;
+            color: var(--student-muted);
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .portal-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #dce8fa;
+            border-radius: 9px;
+            background: #f4f8ff;
+        }
+
+        .portal-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--student-cyan);
+        }
+
+        .btn-student-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 41px;
+            padding: 9px 14px;
+            color: var(--student-primary);
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid #d5e3f8;
+            border-radius: 10px;
+            background: #fff;
+            transition: color 0.2s ease, background 0.2s ease,
+                        border-color 0.2s ease;
+        }
+
+        .btn-student-outline:hover {
+            color: #fff;
+            border-color: var(--student-primary);
+            background: var(--student-primary);
+        }
+
+        /* Main content */
+
+        .dashboard-main {
+            max-width: 1500px;
+            padding-top: 31px;
+            padding-bottom: 44px;
+        }
+
+        .breadcrumb-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 9px;
+            color: var(--student-muted);
+            font-size: 11px;
+        }
+
+        .breadcrumb-line a {
+            color: var(--student-muted);
+        }
+
+        .breadcrumb-line a:hover {
+            color: var(--student-primary);
+        }
+
+        .breadcrumb-current {
+            color: var(--student-primary);
+            font-weight: 700;
+        }
+
+        .section-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+        }
+
+        .section-eyebrow::before {
+            width: 7px;
+            height: 7px;
+            content: "";
+            border-radius: 50%;
+            background: var(--student-cyan);
+        }
+
+        .page-header {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+            padding: 30px;
+            border: 1px solid #dce8fa;
+            border-radius: 19px;
+            background:
+                radial-gradient(
+                    circle at 100% 0,
+                    rgba(8, 145, 178, 0.10),
+                    transparent 37%
+                ),
+                #fff;
+            box-shadow: var(--student-shadow);
+        }
+
+        .page-header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+        }
+
+        .page-title {
+            margin: 10px 0 8px;
+            color: var(--student-text);
+            font-size: clamp(25px, 3vw, 32px);
+            font-weight: 800;
+            letter-spacing: -1.1px;
+        }
+
+        .page-description {
+            max-width: 680px;
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        .header-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 29px;
+            border: 1px solid #dce8fa;
+            border-radius: 19px;
+            background: var(--student-primary-light);
+        }
+
+        /* Summary cards */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            position: relative;
+            height: 100%;
+            min-width: 0;
+            padding: 21px;
+            overflow: hidden;
+            border: 1px solid var(--student-border);
+            border-radius: 16px;
+            background: var(--student-surface);
+            box-shadow: 0 4px 15px rgba(25, 42, 70, 0.025);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 9px 25px rgba(25, 42, 70, 0.07);
+        }
+
+        .summary-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 43px;
+            height: 43px;
+            flex-shrink: 0;
+            font-size: 19px;
+            border-radius: 12px;
+        }
+
+        .icon-blue {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .icon-cyan {
+            color: #0e7490;
+            background: #ecfeff;
+        }
+
+        .icon-green {
+            color: #16835e;
+            background: #ecfdf5;
+        }
+
+        .icon-indigo {
+            color: #4f46e5;
+            background: #eef2ff;
+        }
+
+        .summary-index {
+            color: #adb7c8;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+        }
+
+        .summary-label {
+            margin-bottom: 7px;
+            color: var(--student-muted);
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1.7;
+        }
+
+        .summary-value {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .summary-value-green {
+            color: #16835e;
+        }
+
+        .summary-value-cyan {
+            color: #0e7490;
+        }
+
+        .summary-value-average {
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .summary-description {
+            margin: 8px 0 0;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        .summary-progress {
+            height: 5px;
+            margin-top: 13px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #edf1f8;
+        }
+
+        .summary-progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(
+                90deg,
+                var(--student-primary),
+                var(--student-cyan)
+            );
+        }
+
+        /* Examination panel */
+
+        .content-panel {
+            overflow: hidden;
+            border: 1px solid var(--student-border);
+            border-radius: 18px;
+            background: var(--student-surface);
+            box-shadow: var(--student-shadow);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 22px 25px;
+            border-bottom: 1px solid var(--student-border);
+        }
+
+        .panel-heading-main {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .panel-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 41px;
+            height: 41px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 18px;
+            border: 1px solid #dce8fa;
+            border-radius: 12px;
+            background: var(--student-primary-light);
+        }
+
+        .panel-title {
+            margin: 0;
+            color: var(--student-text);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.25px;
+        }
+
+        .panel-subtitle {
+            margin: 5px 0 0;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .panel-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            color: var(--student-primary);
+            font-size: 10px;
+            font-weight: 800;
+            white-space: nowrap;
+            border: 1px solid #dce8fa;
+            border-radius: 8px;
+            background: #f4f8ff;
+        }
+
+        /* Examination table */
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .exam-table {
+            width: 100%;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .exam-table thead th {
+            padding: 15px 17px;
+            color: #65738a;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--student-border);
+            background: #f8fafd;
+        }
+
+        .exam-table tbody td {
+            padding: 16px 17px;
+            color: #526075;
+            font-size: 11px;
+            vertical-align: middle;
+            border-bottom: 1px solid #edf1f7;
+        }
+
+        .exam-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        .exam-table tbody tr:hover {
+            background: #f9fbff;
+        }
+
+        .exam-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .exam-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 170px;
+            max-width: 270px;
+            white-space: normal;
+        }
+
+        .exam-row-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 15px;
+            border: 1px solid #dce8fa;
+            border-radius: 10px;
+            background: #eff6ff;
+        }
+
+        .exam-name {
+            color: var(--student-text);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        .exam-subject {
+            max-width: 210px;
+            color: #526075;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+
+        .exam-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: #526075;
+            font-size: 10px;
+        }
+
+        .exam-date i {
+            color: var(--student-primary);
+            font-size: 13px;
+        }
+
+        /* Result figures */
+
+        .marks-cell {
+            color: var(--student-text);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .percentage-value {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 9px;
+            color: #18794e;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid #cdeedc;
+            border-radius: 7px;
+            background: #ecfdf5;
+        }
+
+        .missing-value {
+            color: #8b97a9;
+            font-size: 10px;
+        }
+
+        /* Result status */
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 9px;
+            font-size: 10px;
+            font-weight: 800;
+            border: 1px solid transparent;
+            border-radius: 8px;
+        }
+
+        .status-badge::before {
+            width: 6px;
+            height: 6px;
+            flex-shrink: 0;
+            content: "";
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .status-valid {
+            color: #18794e;
+            border-color: #cdeedc;
+            background: #ecfdf5;
+        }
+
+        .status-awaiting {
+            color: #996408;
+            border-color: #f0dfb3;
+            background: #fff8e7;
+        }
+
+        .status-unavailable {
+            color: #67758b;
+            border-color: #e1e7f0;
+            background: #f4f6fa;
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            padding: 57px 22px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 67px;
+            height: 67px;
+            margin: 0 auto 17px;
+            color: var(--student-primary);
+            font-size: 27px;
+            border: 1px solid #dce8fa;
+            border-radius: 20px;
+            background: var(--student-primary-light);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: var(--student-text);
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .empty-state p {
+            max-width: 410px;
+            margin: 0 auto;
+            color: var(--student-muted);
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .empty-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-top: 18px;
+            color: var(--student-primary);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .empty-action:hover {
+            color: var(--student-cyan);
+        }
+
+        /* Information note */
+
+        .information-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 15px 17px;
+            border: 1px solid #dce8fa;
+            border-radius: 12px;
+            background: #f5f9ff;
+        }
+
+        .information-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 33px;
+            height: 33px;
+            flex-shrink: 0;
+            color: var(--student-primary);
+            font-size: 15px;
+            border-radius: 9px;
+            background: #e5efff;
+        }
+
+        .information-note h3 {
+            margin: 0 0 4px;
+            color: var(--student-text);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .information-note p {
+            margin: 0;
+            color: var(--student-muted);
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        /* Footer */
+
+        .student-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 29px;
+            padding-top: 20px;
+            color: #8894a7;
+            font-size: 10px;
+            border-top: 1px solid #e4eaf3;
+        }
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .footer-brand i {
+            color: var(--student-primary);
+        }
+
+        /* Responsive */
+
+        @media (max-width: 1199.98px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .navbar-inner {
+                min-height: 68px;
+            }
+
+            .dashboard-main {
+                padding-top: 22px;
+                padding-bottom: 30px;
+            }
+
+            .page-header {
+                padding: 23px;
+            }
+
+            .page-title {
+                font-size: 27px;
+            }
+
+            .header-icon {
+                width: 55px;
+                height: 55px;
+                font-size: 24px;
+            }
+
+            .panel-heading {
+                padding: 18px;
+            }
+
+            .exam-table thead th,
+            .exam-table tbody td {
+                padding: 13px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .navbar-inner {
+                flex-wrap: wrap;
+                padding-top: 11px;
+                padding-bottom: 11px;
+            }
+
+            .brand-mark {
+                width: 39px;
+                height: 39px;
+                font-size: 19px;
+            }
+
+            .brand-name {
+                font-size: 13px;
+            }
+
+            .brand-subtitle {
+                font-size: 9px;
+            }
+
+            .portal-chip {
+                display: none;
+            }
+
+            .nav-actions {
+                gap: 7px;
+            }
+
+            .btn-student-outline {
+                min-height: 38px;
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .dashboard-main {
+                padding-right: 13px;
+                padding-left: 13px;
+            }
+
+            .page-header {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .page-header-content {
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .page-title {
+                font-size: 24px;
+                letter-spacing: -0.8px;
+            }
+
+            .page-description {
+                font-size: 11px;
+            }
+
+            .header-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 13px;
+                font-size: 20px;
+            }
+
+            .summary-grid {
+                gap: 11px;
+            }
+
+            .summary-card {
+                padding: 16px;
+                border-radius: 13px;
+            }
+
+            .summary-card-top {
+                margin-bottom: 15px;
+            }
+
+            .summary-icon {
+                width: 37px;
+                height: 37px;
+                font-size: 17px;
+            }
+
+            .summary-value {
+                font-size: 25px;
+            }
+
+            .summary-value-average {
+                font-size: 16px;
+            }
+
+            .summary-label {
+                font-size: 10px;
+            }
+
+            .summary-description {
+                font-size: 9px;
+            }
+
+            .panel-heading {
+                padding: 16px;
+            }
+
+            .panel-heading-main {
+                gap: 10px;
+            }
+
+            .panel-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .panel-count {
+                padding: 7px 9px;
+            }
+
+            .empty-state {
+                padding: 43px 15px;
+            }
+
+            .student-footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .summary-card {
+                padding: 13px;
+            }
+
+            .summary-value {
+                font-size: 22px;
+            }
+
+            .summary-value-average {
+                font-size: 14px;
+            }
+
+            .summary-index {
+                font-size: 9px;
+            }
+
+            .page-title {
+                font-size: 22px;
+            }
+
+            .header-icon {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
     </style>
 </head>
+
 <body>
-<main class="container py-4 py-md-5">
-    <header class="panel shadow-sm p-4 p-md-5 mb-4">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-            <div>
-                <p class="text-primary fw-semibold mb-1">Student Portal</p>
-                <h1 class="h2 fw-bold mb-2">My Examination Results</h1>
-                <p class="text-secondary mb-0">View examination results recorded for your student account.</p>
+
+    <!-- TOP NAVIGATION -->
+    <nav class="student-navbar">
+        <div class="container-fluid px-3 px-lg-4 px-xl-5">
+
+            <div class="navbar-inner">
+
+                <a href="{% url 'student_dashboard' %}" class="student-brand">
+
+                    <span class="brand-mark">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </span>
+
+                    <span>
+                        <span class="brand-name">Student Portal</span>
+                        <span class="brand-subtitle">Academic Dashboard</span>
+                    </span>
+
+                </a>
+
+                <div class="nav-actions">
+
+                    <span class="portal-chip">
+                        <span class="portal-dot"></span>
+                        Student Workspace
+                    </span>
+
+                    <a
+                        href="{% url 'student_dashboard' %}"
+                        class="btn-student-outline">
+                        <i class="bi bi-arrow-left"></i>
+                        Dashboard
+                    </a>
+
+                </div>
+
             </div>
-            <a class="btn btn-outline-primary" href="{% url 'student_dashboard' %}">Back to Dashboard</a>
+
         </div>
-    </header>
+    </nav>
 
-    <section class="row g-3 mb-4" aria-label="Examination summary">
-        <div class="col-6 col-xl-3"><div class="summary-card p-3 p-md-4"><div class="summary-label mb-2">Total Examination Records</div><div class="summary-value">{{ exam_record_count }}</div></div></div>
-        <div class="col-6 col-xl-3"><div class="summary-card p-3 p-md-4"><div class="summary-label mb-2">Valid Results</div><div class="summary-value text-success">{{ valid_result_count }}</div></div></div>
-        <div class="col-6 col-xl-3"><div class="summary-card p-3 p-md-4"><div class="summary-label mb-2">Results Awaiting Marks</div><div class="summary-value">{{ awaiting_marks_count }}</div></div></div>
-        <div class="col-6 col-xl-3"><div class="summary-card p-3 p-md-4"><div class="summary-label mb-2">Overall Examination Average</div><div class="summary-value text-info">{% if exam_average != None %}{{ exam_average }}%{% else %}No data available{% endif %}</div></div></div>
-    </section>
+    <!-- MAIN CONTENT -->
+    <main class="container-fluid px-3 px-lg-4 px-xl-5 dashboard-main">
 
-    <section class="panel shadow-sm p-3 p-md-4">
-        <h2 class="h5 fw-bold mb-3">Examination Details</h2>
-        {% if exam_rows %}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead><tr><th scope="col">Exam Name</th><th scope="col">Subject</th><th scope="col">Examination Date</th><th scope="col">Marks Obtained</th><th scope="col">Maximum Marks</th><th scope="col">Percentage</th><th scope="col">Status</th></tr></thead>
-                    <tbody>
-                    {% for row in exam_rows %}
-                        {% with result=row.result %}
-                        <tr>
-                            <td class="exam-name fw-semibold">{{ result.exam_name }}</td>
-                            <td class="exam-subject">{{ result.subject }}</td>
-                            <td>{% if result.exam_date %}{{ result.exam_date|date:"d M Y" }}{% else %}Not specified{% endif %}</td>
-                            <td>{% if row.percentage != None %}{{ result.marks_obtained|floatformat:2 }}{% elif row.awaiting_marks %}Awaiting marks{% else %}Not available{% endif %}</td>
-                            <td>{% if row.percentage != None %}{{ result.total_marks|floatformat:2 }}{% elif row.awaiting_marks and result.total_marks != None %}{{ result.total_marks|floatformat:2 }}{% else %}Not available{% endif %}</td>
-                            <td>{% if row.percentage != None %}{{ row.percentage }}%{% else %}Not available{% endif %}</td>
-                            <td>{% if row.percentage != None %}<span class="badge text-bg-success">Valid result</span>{% elif row.awaiting_marks %}<span class="badge text-bg-warning">Awaiting marks</span>{% else %}<span class="badge text-bg-secondary">Unavailable</span>{% endif %}</td>
-                        </tr>
-                        {% endwith %}
-                    {% endfor %}
-                    </tbody>
-                </table>
+        <!-- PAGE HEADER -->
+        <header class="page-header">
+
+            <div class="page-header-content">
+
+                <div>
+                    <div class="breadcrumb-line">
+                        <a href="{% url 'student_dashboard' %}">Dashboard</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span class="breadcrumb-current">Examination Results</span>
+                    </div>
+
+                    <span class="section-eyebrow">
+                        Student Workspace
+                    </span>
+
+                    <h1 class="page-title">My Examination Results</h1>
+
+                    <p class="page-description">
+                        Review your recorded examination marks, percentages,
+                        and result status in one place.
+                    </p>
+                </div>
+
+                <div class="header-icon">
+                    <i class="bi bi-file-earmark-bar-graph"></i>
+                </div>
+
             </div>
-            {% if not valid_result_count %}<p class="text-secondary small mt-3 mb-0">No valid examination marks are available to calculate an average.</p>{% endif %}
-        {% else %}
-            <div class="text-center py-5">
-                <h3 class="h6 fw-bold">No examination results yet</h3>
-                <p class="text-secondary mb-0">No examination results have been recorded yet.</p>
+
+        </header>
+
+        <!-- EXAMINATION SUMMARY -->
+        <section class="summary-grid" aria-label="Examination summary">
+
+            <!-- TOTAL RECORDS -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-blue">
+                        <i class="bi bi-files"></i>
+                    </div>
+                    <span class="summary-index">01</span>
+                </div>
+
+                <p class="summary-label">Total Examination Records</p>
+
+                <h2 class="summary-value">{{ exam_record_count }}</h2>
+
+                <p class="summary-description">
+                    All examination records associated with your student account.
+                </p>
+
             </div>
-        {% endif %}
-    </section>
-</main>
+
+            <!-- VALID RESULTS -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-green">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <span class="summary-index">02</span>
+                </div>
+
+                <p class="summary-label">Valid Results</p>
+
+                <h2 class="summary-value summary-value-green">
+                    {{ valid_result_count }}
+                </h2>
+
+                <p class="summary-description">
+                    Results with valid marks available for review.
+                </p>
+
+            </div>
+
+            <!-- AWAITING MARKS -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-cyan">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <span class="summary-index">03</span>
+                </div>
+
+                <p class="summary-label">Results Awaiting Marks</p>
+
+                <h2 class="summary-value">
+                    {{ awaiting_marks_count }}
+                </h2>
+
+                <p class="summary-description">
+                    Examination records where marks are still pending.
+                </p>
+
+            </div>
+
+            <!-- OVERALL AVERAGE -->
+            <div class="summary-card">
+
+                <div class="summary-card-top">
+                    <div class="summary-icon icon-indigo">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                    <span class="summary-index">04</span>
+                </div>
+
+                <p class="summary-label">Overall Examination Average</p>
+
+                {% if exam_average != None %}
+
+                    <h2 class="summary-value summary-value-cyan">
+                        {{ exam_average }}%
+                    </h2>
+
+                    <p class="summary-description">
+                        Calculated from valid examination results.
+                    </p>
+
+                {% else %}
+
+                    <h2 class="summary-value summary-value-average">
+                        No data available
+                    </h2>
+
+                    <p class="summary-description">
+                        No valid examination marks are available to calculate an average.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+        <!-- EXAMINATION DETAILS -->
+        <section class="content-panel">
+
+            <div class="panel-heading">
+
+                <div class="panel-heading-main">
+
+                    <div class="panel-icon">
+                        <i class="bi bi-journal-check"></i>
+                    </div>
+
+                    <div>
+                        <h2 class="panel-title">Examination Details</h2>
+
+                        <p class="panel-subtitle">
+                            Review each examination record, marks, percentages,
+                            and result availability.
+                        </p>
+                    </div>
+
+                </div>
+
+                <span class="panel-count">
+                    <i class="bi bi-file-earmark-text"></i>
+                    {{ exam_record_count }} Record{{ exam_record_count|pluralize }}
+                </span>
+
+            </div>
+
+            {% if exam_rows %}
+
+                <div class="table-container">
+
+                    <table class="exam-table">
+
+                        <thead>
+                            <tr>
+                                <th scope="col">Exam Name</th>
+                                <th scope="col">Subject</th>
+                                <th scope="col">Examination Date</th>
+                                <th scope="col">Marks Obtained</th>
+                                <th scope="col">Maximum Marks</th>
+                                <th scope="col">Percentage</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for row in exam_rows %}
+
+                                {% with result=row.result %}
+
+                                    <tr>
+
+                                        <!-- EXAM NAME -->
+                                        <td>
+                                            <div class="exam-name-cell">
+
+                                                <div class="exam-row-icon">
+                                                    <i class="bi bi-file-earmark-text"></i>
+                                                </div>
+
+                                                <span class="exam-name">
+                                                    {{ result.exam_name }}
+                                                </span>
+
+                                            </div>
+                                        </td>
+
+                                        <!-- SUBJECT -->
+                                        <td>
+                                            <div class="exam-subject">
+                                                {{ result.subject }}
+                                            </div>
+                                        </td>
+
+                                        <!-- EXAM DATE -->
+                                        <td>
+                                            {% if result.exam_date %}
+
+                                                <span class="exam-date">
+                                                    <i class="bi bi-calendar3"></i>
+                                                    {{ result.exam_date|date:"d M Y" }}
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="missing-value">
+                                                    Not specified
+                                                </span>
+
+                                            {% endif %}
+                                        </td>
+
+                                        <!-- MARKS OBTAINED -->
+                                        <td class="marks-cell">
+
+                                            {% if row.percentage != None %}
+
+                                                {{ result.marks_obtained|floatformat:2 }}
+
+                                            {% elif row.awaiting_marks %}
+
+                                                <span class="missing-value">
+                                                    Awaiting marks
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="missing-value">
+                                                    Not available
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <!-- MAXIMUM MARKS -->
+                                        <td class="marks-cell">
+
+                                            {% if row.percentage != None %}
+
+                                                {{ result.total_marks|floatformat:2 }}
+
+                                            {% elif row.awaiting_marks and result.total_marks != None %}
+
+                                                {{ result.total_marks|floatformat:2 }}
+
+                                            {% else %}
+
+                                                <span class="missing-value">
+                                                    Not available
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <!-- PERCENTAGE -->
+                                        <td>
+
+                                            {% if row.percentage != None %}
+
+                                                <span class="percentage-value">
+                                                    {{ row.percentage }}%
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="missing-value">
+                                                    Not available
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <!-- RESULT STATUS -->
+                                        <td>
+
+                                            {% if row.percentage != None %}
+
+                                                <span class="status-badge status-valid">
+                                                    Valid result
+                                                </span>
+
+                                            {% elif row.awaiting_marks %}
+
+                                                <span class="status-badge status-awaiting">
+                                                    Awaiting marks
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="status-badge status-unavailable">
+                                                    Unavailable
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endwith %}
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% if not valid_result_count %}
+
+                    <div class="px-4 py-3 border-top">
+                        <p class="small text-secondary mb-0">
+                            <i class="bi bi-info-circle me-1"></i>
+                            No valid examination marks are available to calculate an average.
+                        </p>
+                    </div>
+
+                {% endif %}
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i class="bi bi-journal-x"></i>
+                    </div>
+
+                    <h3>No Examination Results Yet</h3>
+
+                    <p>
+                        No examination results have been recorded yet.
+                        When examination records are added to your student account,
+                        they will appear here.
+                    </p>
+
+                    <a
+                        href="{% url 'student_dashboard' %}"
+                        class="empty-action">
+                        <i class="bi bi-arrow-left"></i>
+                        Return to Dashboard
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- INFORMATION NOTE -->
+        <section class="information-note">
+
+            <div class="information-icon">
+                <i class="bi bi-info-circle"></i>
+            </div>
+
+            <div>
+                <h3>Understanding Your Results</h3>
+
+                <p>
+                    A valid result indicates that the recorded marks meet the
+                    existing validation criteria. "Awaiting marks" means the
+                    examination record is waiting for marks, while "Unavailable"
+                    means a valid percentage cannot currently be displayed.
+                    Contact your teacher if you need clarification about a result.
+                </p>
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="student-footer">
+
+            <span class="footer-brand">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Dropout Risk Management System
+            </span>
+
+            <span>Student Portal · Examination Results</span>
+
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
