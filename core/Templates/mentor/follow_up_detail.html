@@ -974,6 +974,85 @@
                 animation-iteration-count: 1 !important;
             }
         }
+    
+        /* Match the dark purple navigation used on the mentor dashboard. */
+        .mentor-sidebar {
+            background: radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.17), transparent 36%), linear-gradient(180deg, #241638 0%, #1d132d 100%);
+            border-right-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mentor-sidebar .brand {
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mentor-sidebar .brand-icon {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 15px;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.28);
+        }
+
+        .mentor-sidebar .brand-name {
+            color: #fff;
+        }
+
+        .mentor-sidebar .brand-caption {
+            color: #a99abb;
+        }
+
+        .mentor-sidebar .sidebar-section-label,
+        .mentor-sidebar .sidebar-role {
+            color: #a295b7;
+        }
+
+        .mentor-sidebar .sidebar-link {
+            min-height: 45px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: #c8bdd8;
+            font-weight: 500;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .mentor-sidebar .sidebar-link:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+
+        .mentor-sidebar .sidebar-link.active {
+            border-color: rgba(196, 181, 253, 0.15);
+            background: linear-gradient(100deg, rgba(139, 92, 246, 0.23), rgba(168, 85, 247, 0.12));
+            color: #e9d5ff;
+            font-weight: 700;
+        }
+
+        .mentor-sidebar .sidebar-link.active i {
+            color: #c4b5fd;
+        }
+
+        .mentor-sidebar .sidebar-bottom {
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .mentor-sidebar .sidebar-support {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #b4a8c6;
+        }
+
+        .mentor-sidebar .sidebar-support-icon {
+            color: #c4b5fd;
+        }
+
+        .mentor-sidebar .sidebar-logout {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: #e9d5ff;
+        }
+
+        .mentor-sidebar .sidebar-logout:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
     </style>
 </head>
 
