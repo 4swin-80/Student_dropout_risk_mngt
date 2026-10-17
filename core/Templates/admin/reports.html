@@ -335,6 +335,10 @@
             width: 100%;
             min-height: 270px;
         }
+        .admin-analytics-page #riskTrendContainer {
+            height: 300px;
+            min-height: 0;
+        }
         .admin-analytics-page .chart-container canvas {
             max-width: 100%;
         }
@@ -506,6 +510,7 @@
             .admin-analytics-page .chart-card { padding: 18px !important; }
             .admin-analytics-page .chart-card > .d-flex:first-child { align-items: flex-start !important; gap: 10px; }
             .admin-analytics-page .chart-container { min-height: 245px; }
+            .admin-analytics-page #riskTrendContainer { height: 270px; min-height: 0; }
             .admin-analytics-page .empty-chart-placeholder { min-height: 235px; }
             .admin-analytics-page #depChartView { min-height: 310px !important; }
         }
@@ -848,7 +853,7 @@
                 <div class="card chart-card bg-white p-3 p-md-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">
-                            <i class="bi bi-heart-pulse text-danger me-2"></i>Interventions Status
+                            <i class="bi bi-heart-pulse text-danger me-2"></i>Interventions &amp; Support Activity Status
                         </h6>
                         <span class="badge bg-light text-muted border" id="intervTotalBadge">Total: —</span>
                     </div>
@@ -856,7 +861,7 @@
                         <canvas id="interventionStatusChart"></canvas>
                         <div id="interventionStatusEmpty" class="empty-chart-placeholder d-none">
                             <i class="bi bi-activity fs-2"></i>
-                            <span>No intervention records found</span>
+                            <span>No intervention or support activity records found</span>
                         </div>
                     </div>
                 </div>
@@ -1147,36 +1152,29 @@
                 emptyMsg.classList.add("d-none");
 
                 const labels = trends.map(t => t.period);
+                const riskSeries = [
+                    { label: "Very Low", color: "#10b981" },
+                    { label: "Low", color: "#84cc16" },
+                    { label: "Medium", color: "#eab308" },
+                    { label: "High", color: "#f97316" },
+                    { label: "Very High", color: "#ef4444" },
+                ];
+
                 charts.riskTrend = new Chart(canvas, {
                     type: "line",
                     data: {
                         labels: labels,
-                        datasets: [
-                            {
-                                label: "High Risk",
-                                data: trends.map(t => t["High"]),
-                                borderColor: "#f97316",
-                                backgroundColor: "rgba(249, 115, 22, 0.1)",
-                                tension: 0.3,
-                                fill: false,
-                            },
-                            {
-                                label: "Very High Risk",
-                                data: trends.map(t => t["Very High"]),
-                                borderColor: "#ef4444",
-                                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                                tension: 0.3,
-                                fill: false,
-                            },
-                            {
-                                label: "Total Predictions",
-                                data: trends.map(t => t["total"]),
-                                borderColor: "#64748b",
-                                borderDash: [5, 5],
-                                tension: 0.3,
-                                fill: false,
-                            }
-                        ]
+                        datasets: riskSeries.map(series => ({
+                            label: series.label,
+                            data: trends.map(t => Number(t[series.label]) || 0),
+                            borderColor: series.color,
+                            backgroundColor: series.color,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                        }))
                     },
                     options: {
                         responsive: true,
@@ -1336,9 +1334,9 @@
                 const emptyMsg = document.getElementById("interventionStatusEmpty");
                 const totalBadge = document.getElementById("intervTotalBadge");
 
-                totalBadge.textContent = `Total: ${interv.total_interventions}`;
+                totalBadge.textContent = `Total: ${interv.total_tracked_activities}`;
                 const st = interv.status_distribution;
-                const labels = ["Planned", "In Progress", "Completed", "Follow-up Required"];
+                const labels = ["Planned", "Pending", "Accepted", "In Progress", "Completed", "Follow-up Required"];
                 const values = labels.map(l => st[l] || 0);
                 const sum = values.reduce((a, b) => a + b, 0);
 
@@ -1355,9 +1353,9 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: "Interventions",
+                            label: "Activities",
                             data: values,
-                            backgroundColor: ["#3b82f6", "#f59e0b", "#10b981", "#8b5cf6"],
+                            backgroundColor: ["#3b82f6", "#f59e0b", "#8b5cf6", "#06b6d4", "#10b981", "#8b5cf6"],
                             borderRadius: 6
                         }]
                     },

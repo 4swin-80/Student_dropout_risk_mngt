@@ -408,20 +408,27 @@ def calculate_academic_analytics(students):
 
 def calculate_intervention_analytics(students):
     """
-    Calculate intervention counts grouped strictly by existing model status choices:
-    Planned, In Progress, Completed, Follow-up Required.
+    Aggregate formal interventions, teacher support referrals, and mentor follow-ups
+    by status for the administrator's intervention and support activity chart.
     """
     interv_qs = Intervention.objects.filter(student__in=students)
+    referral_qs = StudentSupport.objects.filter(student__in=students)
+    followup_qs = StudentSupportFollowUp.objects.filter(
+        referral__student__in=students
+    )
     status_counts = {
         "Planned": 0,
+        "Pending": 0,
+        "Accepted": 0,
         "In Progress": 0,
         "Completed": 0,
         "Follow-up Required": 0,
     }
-    for item in interv_qs.values("status").annotate(count=Count("id")):
-        st = item["status"]
-        if st in status_counts:
-            status_counts[st] = item["count"]
+    for queryset in (interv_qs, referral_qs, followup_qs):
+        for item in queryset.values("status").annotate(count=Count("id")):
+            st = item["status"]
+            if st in status_counts:
+                status_counts[st] += item["count"]
 
     # Intervention type distribution
     type_counts = {
@@ -437,6 +444,9 @@ def calculate_intervention_analytics(students):
 
     return {
         "total_interventions": interv_qs.count(),
+        "total_tracked_activities": (
+            interv_qs.count() + referral_qs.count() + followup_qs.count()
+        ),
         "status_distribution": status_counts,
         "type_distribution": type_counts,
     }
@@ -704,9 +714,9 @@ def generate_csv_report(report_data):
     writer.writerow(["Metric", "Count"])
     interv = report_data["interventions"]
     supp = report_data["support_and_follow_ups"]
-    writer.writerow(["Total Interventions", interv["total_interventions"]])
+    writer.writerow(["Total Intervention & Support Activities", interv["total_tracked_activities"]])
     for st, count in interv["status_distribution"].items():
-        writer.writerow([f"Intervention Status - {sanitize_csv_cell(st)}", count])
+        writer.writerow([f"Activity Status - {sanitize_csv_cell(st)}", count])
     writer.writerow(["Total Referrals", supp["total_referrals"]])
     for st, count in supp["referral_status_distribution"].items():
         writer.writerow([f"Referral Status - {sanitize_csv_cell(st)}", count])
@@ -995,10 +1005,15 @@ def generate_excel_report(report_data):
     interv = report_data["interventions"]
     supp = report_data["support_and_follow_ups"]
 
-    ws5.cell(row=3, column=1, value="Intervention Status")
+    ws5.cell(row=3, column=1, value="Intervention & Support Activity Status")
     ws5.cell(row=3, column=2, value="Count")
     style_header_row(ws5, 3, 2)
     cur_r = 4
+    ws5.cell(row=cur_r, column=1, value="Total Intervention & Support Activities").font = regular_font
+    ws5.cell(row=cur_r, column=2, value=interv["total_tracked_activities"]).font = regular_font
+    ws5.cell(row=cur_r, column=1).border = thin_border
+    ws5.cell(row=cur_r, column=2).border = thin_border
+    cur_r += 1
     for st, count in interv["status_distribution"].items():
         ws5.cell(row=cur_r, column=1, value=st).font = regular_font
         ws5.cell(row=cur_r, column=2, value=count).font = regular_font
