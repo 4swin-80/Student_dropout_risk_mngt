@@ -285,6 +285,47 @@
             box-shadow: 0 3px 12px rgba(41, 33, 63, 0.025);
         }
 
+        .profile-actions {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            flex-shrink: 0;
+        }
+
+        .alerts-shortcut {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: var(--surface);
+            color: var(--text-primary);
+            font-size: 19px;
+            box-shadow: 0 3px 12px rgba(41, 33, 63, 0.025);
+            transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .alerts-shortcut:hover {
+            border-color: #ddd6fe;
+            background: #f5f3ff;
+            color: var(--primary-dark);
+        }
+
+        .alerts-shortcut .alert-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 9px;
+            height: 9px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
         .profile-avatar {
             display: flex;
             align-items: center;
@@ -1018,7 +1059,7 @@
                         <span>Risk Scores</span>
                     </a>
 
-                    <a href="#alerts" class="nav-link">
+                    <a href="{% url 'mentor_risk_alerts' %}" class="nav-link">
                         <i class="bi bi-bell"></i>
                         <span>Risk Alerts</span>
                     </a>
@@ -1087,6 +1128,19 @@
                         </p>
                     </div>
 
+                    <div class="profile-actions">
+                        <a
+                            href="{% url 'mentor_risk_alerts' %}"
+                            class="alerts-shortcut"
+                            aria-label="View risk alerts{% if alert_count %}, {{ alert_count }} unread{% endif %}"
+                            title="View risk alerts"
+                        >
+                            <i class="bi bi-bell" aria-hidden="true"></i>
+                            {% if alert_count %}
+                                <span class="alert-dot" aria-hidden="true"></span>
+                            {% endif %}
+                        </a>
+
                     <div class="profile-summary">
                         <div class="profile-avatar">
                             <i class="bi bi-person-heart"></i>
@@ -1102,6 +1156,7 @@
                                 Mentor
                             </div>
                         </div>
+                    </div>
                     </div>
 
                 </header>
@@ -1362,50 +1417,6 @@
                                         >
                                             <i class="bi bi-arrow-right-circle"></i>
                                             Monitor Risk Scores
-                                        </a>
-
-                                    </div>
-                                </article>
-                            </div>
-
-                            <!-- ================================
-                                 RISK ALERTS
-                            ================================= -->
-
-                            <div
-                                class="col-md-6 col-xl-4"
-                                id="alerts"
-                            >
-                                <article class="function-card alerts h-100">
-
-                                    <div class="function-card-body">
-
-                                        <div class="function-top">
-                                            <div class="function-icon">
-                                                <i class="bi bi-bell-fill"></i>
-                                            </div>
-
-                                            <span class="function-badge">
-                                                Early Warning
-                                            </span>
-                                        </div>
-
-                                        <h4 class="function-title">
-                                            View Risk Alerts
-                                        </h4>
-
-                                        <p class="function-description">
-                                            Review assigned students with High or Very High
-                                            dropout-risk predictions who may need timely
-                                            intervention and follow-up.
-                                        </p>
-
-                                        <a
-                                            href="{% url 'mentor_risk_alerts' %}"
-                                            class="function-action"
-                                        >
-                                            <i class="bi bi-arrow-right-circle"></i>
-                                            View Risk Alerts
                                         </a>
 
                                     </div>
