@@ -377,6 +377,46 @@
             background: #ffffff;
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .alerts-shortcut {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: #fff;
+            color: var(--teacher-800);
+            font-size: 19px;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .alerts-shortcut:hover {
+            border-color: #f2c4c4;
+            background: #fff5f5;
+            color: #c03636;
+        }
+
+        .alerts-shortcut .alert-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 9px;
+            height: 9px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
         .header-user-avatar {
             width: 39px;
             height: 39px;
@@ -1046,8 +1086,13 @@
                 margin-bottom: 26px;
             }
 
-            .header-user {
+            .header-actions {
                 width: 100%;
+            }
+
+            .header-user {
+                flex: 1;
+                min-width: 0;
             }
 
             .header-user-name {
@@ -1306,7 +1351,7 @@
                     </li>
 
                     <li>
-                        <a href="#alerts" class="sidebar-link">
+                        <a href="{% url 'teacher_alerts' %}" class="sidebar-link">
                             <i class="bi bi-bell"></i>
                             Alerts
                         </a>
@@ -1390,6 +1435,20 @@
                 </p>
             </div>
 
+            <div class="header-actions">
+
+                <a
+                    href="{% url 'teacher_alerts' %}"
+                    class="alerts-shortcut"
+                    aria-label="View alerts{% if total_alerts %}, new alerts available{% endif %}"
+                    title="View alerts"
+                >
+                    <i class="bi bi-bell" aria-hidden="true"></i>
+                    {% if total_alerts %}
+                        <span class="alert-dot" aria-hidden="true"></span>
+                    {% endif %}
+                </a>
+
             <div class="header-user">
 
                 <div class="header-user-avatar">
@@ -1407,6 +1466,7 @@
                     </div>
                 </div>
 
+            </div>
             </div>
 
         </header>
@@ -1443,7 +1503,7 @@
                             <div>
                                 <span class="overview-label">Students</span>
 
-                                <h3 class="overview-number">—</h3>
+                                <h3 class="overview-number">{{ total_students }}</h3>
 
                                 <div class="overview-note">
                                     <i class="bi bi-people"></i>
@@ -1467,7 +1527,7 @@
                             <div>
                                 <span class="overview-label">Attendance</span>
 
-                                <h3 class="overview-number">—</h3>
+                                <h3 class="overview-number">{{ total_attendance_records }}</h3>
 
                                 <div class="overview-note">
                                     <i class="bi bi-calendar-check"></i>
@@ -1491,7 +1551,7 @@
                             <div>
                                 <span class="overview-label">Assignments</span>
 
-                                <h3 class="overview-number">—</h3>
+                                <h3 class="overview-number">{{ total_assignments }}</h3>
 
                                 <div class="overview-note">
                                     <i class="bi bi-file-earmark-check"></i>
@@ -1515,7 +1575,7 @@
                             <div>
                                 <span class="overview-label">Risk Alerts</span>
 
-                                <h3 class="overview-number">—</h3>
+                                <h3 class="overview-number">{{ total_alerts }}</h3>
 
                                 <div class="overview-note">
                                     <i class="bi bi-shield-exclamation"></i>
@@ -1832,57 +1892,6 @@
                                 >
                                     <i class="bi bi-activity"></i>
                                     View Risk Scores
-                                </a>
-                            </div>
-
-                        </div>
-                    </article>
-                </div>
-
-                <!-- ALERTS -->
-                <div class="col-md-6 col-xl-4" id="alerts">
-                    <article class="function-card">
-
-                        <div class="function-card-accent accent-alerts"></div>
-
-                        <div class="function-card-body">
-
-                            <div class="function-card-top">
-                                <div class="function-icon icon-alerts">
-                                    <i class="bi bi-bell-fill"></i>
-                                </div>
-
-                                <span class="function-badge badge-alerts">
-                                    Early Warning
-                                </span>
-                            </div>
-
-                            <h3 class="function-title">
-                                View Alerts
-                            </h3>
-
-                            <p class="function-description">
-                                Review students classified as High or Very
-                                High dropout risk who may require timely
-                                attention and intervention.
-                            </p>
-
-                            <div class="priority-note">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-
-                                <p>
-                                    Review high-priority risk alerts and
-                                    follow your institution's intervention process.
-                                </p>
-                            </div>
-
-                            <div class="function-actions">
-                                <a
-                                    href="{% url 'teacher_alerts' %}"
-                                    class="function-btn function-btn-danger"
-                                >
-                                    <i class="bi bi-bell"></i>
-                                    View Alerts
                                 </a>
                             </div>
 

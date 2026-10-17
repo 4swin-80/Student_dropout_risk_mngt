@@ -893,7 +893,7 @@ def attendance_create(request):
                 "Attendance record added successfully."
             )
 
-            return redirect("attendance_create")
+            return redirect("attendance_list")
 
     else:
 
@@ -1075,7 +1075,7 @@ def assignment_create(request):
                 "Assignment added successfully."
             )
 
-            return redirect("assignment_create")
+            return redirect("assignment_list")
 
     else:
         form = AssignmentForm()
@@ -1148,7 +1148,7 @@ def exam_result_create(request):
                 "Examination result added successfully."
             )
 
-            return redirect("exam_result_create")
+            return redirect("exam_result_list")
 
     else:
         form = ExamResultForm()
