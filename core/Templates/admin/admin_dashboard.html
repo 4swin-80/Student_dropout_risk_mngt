@@ -371,6 +371,46 @@
             background: #fff;
         }
 
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .alerts-shortcut {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border: 1px solid var(--admin-border);
+            border-radius: 13px;
+            background: #fff;
+            color: var(--admin-text);
+            font-size: 1.2rem;
+            transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .alerts-shortcut:hover {
+            border-color: #d5dafa;
+            background: var(--admin-indigo-soft);
+            color: var(--admin-indigo);
+        }
+
+        .alerts-shortcut .alert-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 9px;
+            height: 9px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+
         .user-avatar {
             display: flex;
             align-items: center;
@@ -778,8 +818,13 @@
                 font-size: 1.7rem;
             }
 
-            .user-profile {
+            .topbar-actions {
                 width: 100%;
+            }
+
+            .user-profile {
+                flex: 1;
+                min-width: 0;
                 max-width: 100%;
             }
 
@@ -957,7 +1002,7 @@
                         Risk Monitoring
                     </a>
 
-                    <a href="#alerts" class="nav-link">
+                    <a href="{% url 'admin_alerts' %}" class="nav-link">
                         <i class="bi bi-bell" aria-hidden="true"></i>
                         Alerts
                     </a>
@@ -1055,7 +1100,7 @@
                     <span>Risk Monitoring</span>
                 </a>
 
-                <a href="#alerts" class="nav-link">
+                <a href="{% url 'admin_alerts' %}" class="nav-link">
                     <i class="bi bi-bell" aria-hidden="true"></i>
                     <span>Alerts</span>
                 </a>
@@ -1118,9 +1163,21 @@
 
                 </div>
 
-                
+                <div class="topbar-actions">
 
-                <div class="user-profile">
+                    <a
+                        href="{% url 'admin_alerts' %}"
+                        class="alerts-shortcut"
+                        aria-label="View alerts{% if unread_alerts %}, {{ unread_alerts }} unread{% endif %}"
+                        title="View alerts"
+                    >
+                        <i class="bi bi-bell" aria-hidden="true"></i>
+                        {% if unread_alerts %}
+                            <span class="alert-dot" aria-hidden="true"></span>
+                        {% endif %}
+                    </a>
+
+                    <div class="user-profile">
 
                     <div class="user-avatar" aria-hidden="true">
                         <i class="bi bi-person-fill"></i>
@@ -1134,6 +1191,8 @@
                         <div class="user-role">
                             Administrator
                         </div>
+                    </div>
+
                     </div>
 
                 </div>
@@ -1614,59 +1673,6 @@
                                 >
                                     <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
                                     <span>Monitor Risk Scores</span>
-                                    <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
-                                </a>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                    <!-- =========================================
-                         RISK ALERTS
-                    ========================================== -->
-
-                    <div
-                        class="col-md-6 col-xl-4"
-                        id="alerts"
-                    >
-
-                        <article class="card feature-card">
-
-                            <div class="card-body">
-
-                                <div class="feature-top">
-
-                                    <div
-                                        class="feature-icon feature-icon-danger"
-                                        aria-hidden="true"
-                                    >
-                                        <i class="bi bi-bell-fill"></i>
-                                    </div>
-
-                                    <span class="feature-tag tag-danger">
-                                        Early Warning
-                                    </span>
-
-                                </div>
-
-                                <h3 class="feature-title">
-                                    View Alerts
-                                </h3>
-
-                                <p class="feature-description">
-                                    Review generated alerts for students
-                                    with High and Very High dropout risk
-                                    who may require attention.
-                                </p>
-
-                                <a
-                                    href="{% url 'admin_alerts' %}"
-                                    class="btn-admin-primary"
-                                >
-                                    <i class="bi bi-bell" aria-hidden="true"></i>
-                                    <span>View Alerts</span>
                                     <i class="bi bi-arrow-right ms-auto" aria-hidden="true"></i>
                                 </a>
 
