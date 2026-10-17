@@ -1090,6 +1090,12 @@
 
                 <div class="profile-card-body">
 
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                        class="profile-form"
+                        novalidate>
+
                     <!-- PROFILE IDENTITY AND PHOTO -->
                     <div class="identity-row">
 
@@ -1153,12 +1159,6 @@
                     </div>
 
                     <!-- PERSONAL INFORMATION FORM -->
-                    <form
-                        method="post"
-                        enctype="multipart/form-data"
-                        class="profile-form"
-                        novalidate>
-
                         {% csrf_token %}
 
                         {% if form.non_field_errors %}
