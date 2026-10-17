@@ -978,9 +978,7 @@ def academic_performance_create(request):
                 "Academic performance added successfully."
             )
 
-            return redirect(
-                "academic_performance_create"
-            )
+            return redirect("academic_performance_list")
 
     else:
 

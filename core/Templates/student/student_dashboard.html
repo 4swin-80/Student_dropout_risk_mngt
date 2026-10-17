@@ -1327,6 +1327,142 @@
 
             </section>
 
+            <!-- QUICK ACCESS -->
+            <section class="mb-4">
+
+                <div class="section-header">
+
+                    <div>
+                        <h2 class="section-title">Quick Access</h2>
+
+                        <p class="section-description">
+                            Navigate directly to your student services.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_profile' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon">
+                                <i class="bi bi-person-vcard"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Profile</h3>
+                                <p>View your personal and academic information.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_assignments' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #0e7490; background: #ecfeff;">
+                                <i class="bi bi-journal-check"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Assignments</h3>
+                                <p>Review your assignments and submission status.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <a
+                            href="{% url 'student_examination_results' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #4f46e5; background: #eef2ff;">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>Examination Results</h3>
+                                <p>View your recorded examination marks.</p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-6">
+
+                        <a
+                            href="{% url 'student_performance' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #16835e; background: #ecfdf5;">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>My Performance</h3>
+                                <p>
+                                    Explore your recorded academic and examination
+                                    performance trends.
+                                </p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-12 col-md-6 col-xl-6">
+
+                        <a
+                            href="{% url 'student_notifications' %}"
+                            class="quick-link-card">
+
+                            <div class="quick-link-icon"
+                                 style="color: #b45309; background: #fffbeb;">
+                                <i class="bi bi-bell"></i>
+                            </div>
+
+                            <div class="quick-link-copy">
+                                <h3>Support Notifications</h3>
+                                <p>
+                                    Review available notices and student support
+                                    notifications.
+                                </p>
+                            </div>
+
+                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
             <!-- ACADEMIC OVERVIEW -->
             <section class="mb-4">
 
@@ -1916,141 +2052,7 @@
 
             </section>
 
-            <!-- QUICK ACCESS -->
-            <section class="mb-4">
-
-                <div class="section-header">
-
-                    <div>
-                        <h2 class="section-title">Quick Access</h2>
-
-                        <p class="section-description">
-                            Navigate directly to your student services.
-                        </p>
-                    </div>
-
-                </div>
-
-                <div class="row g-3">
-
-                    <div class="col-12 col-md-6 col-xl-4">
-
-                        <a
-                            href="{% url 'student_profile' %}"
-                            class="quick-link-card">
-
-                            <div class="quick-link-icon">
-                                <i class="bi bi-person-vcard"></i>
-                            </div>
-
-                            <div class="quick-link-copy">
-                                <h3>My Profile</h3>
-                                <p>View your personal and academic information.</p>
-                            </div>
-
-                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
-
-                        </a>
-
-                    </div>
-
-                    <div class="col-12 col-md-6 col-xl-4">
-
-                        <a
-                            href="{% url 'student_assignments' %}"
-                            class="quick-link-card">
-
-                            <div class="quick-link-icon"
-                                 style="color: #0e7490; background: #ecfeff;">
-                                <i class="bi bi-journal-check"></i>
-                            </div>
-
-                            <div class="quick-link-copy">
-                                <h3>My Assignments</h3>
-                                <p>Review your assignments and submission status.</p>
-                            </div>
-
-                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
-
-                        </a>
-
-                    </div>
-
-                    <div class="col-12 col-md-6 col-xl-4">
-
-                        <a
-                            href="{% url 'student_examination_results' %}"
-                            class="quick-link-card">
-
-                            <div class="quick-link-icon"
-                                 style="color: #4f46e5; background: #eef2ff;">
-                                <i class="bi bi-file-earmark-text"></i>
-                            </div>
-
-                            <div class="quick-link-copy">
-                                <h3>Examination Results</h3>
-                                <p>View your recorded examination marks.</p>
-                            </div>
-
-                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
-
-                        </a>
-
-                    </div>
-
-                    <div class="col-12 col-md-6 col-xl-6">
-
-                        <a
-                            href="{% url 'student_performance' %}"
-                            class="quick-link-card">
-
-                            <div class="quick-link-icon"
-                                 style="color: #16835e; background: #ecfdf5;">
-                                <i class="bi bi-graph-up-arrow"></i>
-                            </div>
-
-                            <div class="quick-link-copy">
-                                <h3>My Performance</h3>
-                                <p>
-                                    Explore your recorded academic and examination
-                                    performance trends.
-                                </p>
-                            </div>
-
-                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
-
-                        </a>
-
-                    </div>
-
-                    <div class="col-12 col-md-6 col-xl-6">
-
-                        <a
-                            href="{% url 'student_notifications' %}"
-                            class="quick-link-card">
-
-                            <div class="quick-link-icon"
-                                 style="color: #b45309; background: #fffbeb;">
-                                <i class="bi bi-bell"></i>
-                            </div>
-
-                            <div class="quick-link-copy">
-                                <h3>Support Notifications</h3>
-                                <p>
-                                    Review available notices and student support
-                                    notifications.
-                                </p>
-                            </div>
-
-                            <i class="bi bi-arrow-up-right quick-link-arrow"></i>
-
-                        </a>
-
-                    </div>
-
-                </div>
-
-            </section>
+            
 
         {% endif %}
 
