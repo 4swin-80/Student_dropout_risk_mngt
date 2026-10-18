@@ -1132,6 +1132,12 @@
                                 </span>
                             </label>
 
+                            {% if form.profile_photo.errors %}
+                                <div class="field-error" role="alert">
+                                    {{ form.profile_photo.errors }}
+                                </div>
+                            {% endif %}
+
                         </div>
                         <div class="identity-details">
 

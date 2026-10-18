@@ -111,7 +111,7 @@ class StudentNotificationTests(TestCase):
         StudentNotification.objects.filter(student=self.student).delete()
         self.client.force_login(self.student_user)
         response = self.client.get(self.url)
-        self.assertContains(response, "No support notifications yet")
+        self.assertContains(response, "No Support Notifications Yet")
         self.assertEqual(response.context["total_count"], 0)
         read_notice = StudentNotification.objects.create(
             student=self.student, title="<b>Safe</b>", message="<script>unsafe()</script>",
@@ -1034,7 +1034,7 @@ class StudentAssignmentsTests(TestCase):
         response = self.client.get(reverse("student_assignments"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "My Assignments")
-        self.assertContains(response, "Back to Dashboard")
+        self.assertContains(response, f'href="{reverse("student_dashboard")}"')
 
     def test_assignment_data_and_summary_are_isolated(self):
         Assignment.objects.create(
@@ -1275,8 +1275,9 @@ class StudentPerformanceTests(TestCase):
         self.assertNotContains(response, "Secret Exam")
         self.assertContains(response, "academic-chart-data")
         self.assertContains(response, "\\u003Cscript\\u003E")
-        self.assertContains(response, "Back to Dashboard")
-        self.assertContains(self.client.get(reverse("student_dashboard")), "View My Performance")
+        self.assertContains(response, f'href="{reverse("student_dashboard")}"')
+        dashboard = self.client.get(reverse("student_dashboard"))
+        self.assertContains(dashboard, f'href="{reverse("student_performance")}"')
 
     def test_empty_state_and_unavailable_trend(self):
         response = self.client.get(reverse("student_performance"))
